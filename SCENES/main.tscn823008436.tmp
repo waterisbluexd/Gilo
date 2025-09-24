@@ -1,0 +1,94 @@
+[gd_scene load_steps=11 format=3 uid="uid://hq2dn4st8e10"]
+
+[ext_resource type="PackedScene" uid="uid://2jvcmrel4u2c" path="res://SCENES/Assets/House1.tscn" id="1_xh1h4"]
+[ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
+[ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_no8bm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_itxqv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_no8bm"]
+next_pass = SubResource("ShaderMaterial_itxqv")
+albedo_color = Color(0.6345353, 0.6100022, 0.32616436, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_v0l8b"]
+sky_material = SubResource("ProceduralSkyMaterial_itxqv")
+
+[sub_resource type="Environment" id="Environment_wp4xf"]
+background_mode = 2
+sky = SubResource("Sky_v0l8b")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xh1h4"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[node name="Main" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_no8bm")
+surface_material_override/0 = SubResource("StandardMaterial3D_no8bm")
+
+[node name="Node" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Node"]
+environment = SubResource("Environment_wp4xf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node/WorldEnvironment"]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Node2" type="Node" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="Control"]
+visible = false
+texture_filter = 1
+position = Vector2(962.16644, 544.33325)
+scale = Vector2(2.24317, 2.2319446)
+texture = SubResource("ViewportTexture_xh1h4")
+
+[node name="House1" parent="." instance=ExtResource("1_xh1h4")]
+transform = Transform3D(0.046999995, 0, 0, 0, 0.047, 0, 0, 0, 0.046999995, 0, 0, 0)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="CameraPivot" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.9227602, 0, -0.38537455, 0, 1, 0, 0.38537455, 0, 0.9227602, 0, 0, 0)
+script = ExtResource("2_ac0l5")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/CameraPivot"]
+transform = Transform3D(0.37998912, -0.46249554, 0.8010658, 0, 0.8660254, 0.50000006, -0.92499113, -0.18999454, 0.32908022, 3.311022, 2.0666358, 1.3601778)
+projection = 1
+current = true
+size = 2.846
+script = ExtResource("3_i3vxn")

@@ -1,0 +1,190 @@
+[gd_scene load_steps=16 format=3 uid="uid://hq2dn4st8e10"]
+
+[ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
+[ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
+[ext_resource type="PackedScene" uid="uid://brq7bouabf3kf" path="res://SCENES/Assets/house_all.tscn" id="5_0u8pi"]
+[ext_resource type="Script" uid="uid://dojs4xrohef6q" path="res://SCRIPTS/console.gd" id="5_df0lc"]
+[ext_resource type="Script" uid="uid://cphxeqdqu78u7" path="res://SCRIPTS/worldgenvert.gd" id="5_ys6xq"]
+[ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="6_df0lc"]
+[ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="7_h2jjw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_v0l8b"]
+sky_material = SubResource("ProceduralSkyMaterial_itxqv")
+
+[sub_resource type="Environment" id="Environment_wp4xf"]
+background_mode = 2
+sky = SubResource("Sky_v0l8b")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_df0lc"]
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+texture_filter = 0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ab6ae"]
+noise_type = 3
+seed = 54106
+frequency = 0.0182
+fractal_octaves = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys6xq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+corner_detail = 5
+
+[sub_resource type="Theme" id="Theme_df0lc"]
+Panel/styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_df0lc"]
+viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
+
+[node name="Main" type="Node3D"]
+
+[node name="light" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="light"]
+environment = SubResource("Environment_wp4xf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="light/WorldEnvironment"]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="assets" type="Node" parent="."]
+
+[node name="House_all" parent="assets" instance=ExtResource("5_0u8pi")]
+transform = Transform3D(0.94, 0, 0, 0, 0.94, 0, 0, 0, 0.94, 0, 0, 0)
+
+[node name="ground" type="MeshInstance3D" parent="assets" node_paths=PackedStringArray("player")]
+transform = Transform3D(-0.3, -2.6226841e-08, -4.5298744e-08, -2.6226834e-08, 0.3, -4.5298744e-08, 4.5298748e-08, -4.5298737e-08, -0.3, -1.0581694, 0.1854248, 0.044921696)
+material_override = SubResource("StandardMaterial3D_df0lc")
+skeleton = NodePath("../..")
+script = ExtResource("5_ys6xq")
+pixel_size = 1.0
+terrain_height_variation = 5.0
+world_active = null
+auto_generate_on_ready = null
+primary_biome_noise = ExtResource("6_df0lc")
+secondary_biome_noise = ExtResource("7_h2jjw")
+height_noise = SubResource("FastNoiseLite_ab6ae")
+auto_create_default_noise = null
+secondary_noise_weight = 0.585
+threshold_1 = -0.942
+threshold_2 = -0.779
+threshold_3 = -0.716
+threshold_4 = -0.667
+threshold_5 = -0.604
+threshold_6 = -0.383
+threshold_7 = -0.34299999999999997
+use_geometry_material = null
+thread_count = 16
+enable_frustum_culling = null
+enable_occlusion_culling = null
+max_chunks_per_frame = null
+cache_enabled = null
+player = NodePath("../../Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot")
+
+[node name="UI" type="Node" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
+follow_viewport_scale = 0.001
+
+[node name="Control" type="Control" parent="UI/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control"]
+custom_minimum_size = Vector2(0, 51.825)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.14400001
+offset_bottom = -51.840004
+grow_horizontal = 2
+mouse_filter = 2
+theme = SubResource("Theme_df0lc")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/CanvasLayer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "2.0"
+script = ExtResource("5_df0lc")
+
+[node name="Pixelated" type="Node" parent="."]
+
+[node name="Main" type="Control" parent="Pixelated"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Pixelated/Main"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
+transform = Transform3D(0.9227602, 0, -0.38537452, 0, 1, 0, 0.38537452, 0, 0.9227602, 0, 0, 0)
+script = ExtResource("2_ac0l5")
+
+[node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
+transform = Transform3D(0.70710677, -0.3535534, 0.6123724, 0, 0.8660254, 0.50000006, -0.70710677, -0.3535534, 0.6123724, 283.1386, 231.1817, 283.1386)
+projection = 1
+current = true
+size = 50.565
+script = ExtResource("3_i3vxn")
+
+[node name="Display" type="Control" parent="Pixelated"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Pixelated/Display"]
+texture_filter = 1
+scale = Vector2(3.003, 3)
+texture = SubResource("ViewportTexture_df0lc")
+centered = false
