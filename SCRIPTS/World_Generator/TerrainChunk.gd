@@ -149,6 +149,7 @@ static func _calculate_quad_normal(bl: Vector3, br: Vector3, tr: Vector3, tl: Ve
 	return normal if normal.y >= 0 else -normal
 
 # Method to create the mesh instance from generated data
+# Replace your create_mesh method in TerrainChunk class with this:
 func create_mesh(chunk_size: int, pixel_size: float, use_geometry_material: bool, custom_material: StandardMaterial3D):
 	if not mesh_instance:
 		return
@@ -161,26 +162,40 @@ func create_mesh(chunk_size: int, pixel_size: float, use_geometry_material: bool
 	arrays[Mesh.ARRAY_TEX_UV] = data.uvs
 	arrays[Mesh.ARRAY_COLOR] = data.colors
 	arrays[Mesh.ARRAY_INDEX] = data.indices
+	
 	array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	mesh_instance.mesh = array_mesh
 	
+	# Configure material for proper lighting and shadows
 	var material: StandardMaterial3D = null
-	if use_geometry_material:
-		material = StandardMaterial3D.new()
-	if not material and custom_material:
+	if custom_material:
 		material = custom_material.duplicate()
-	if not material:
+	else:
 		material = StandardMaterial3D.new()
-		
+	
+	# CRITICAL FIX: Use PER_PIXEL shading instead of UNSHADED
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	material.vertex_color_use_as_albedo = true
 	material.albedo_color = Color.WHITE
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.roughness = 1.0
+	
+	# Shadow and lighting settings
+	material.roughness = 0.8
 	material.metallic = 0.0
-	material.specular = 0.0
+	material.specular = 0.2
+	
+	# Keep pixelated look but allow lighting
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	
+	# Optional: Disable backface culling if you want shadows on both sides
+	material.cull_mode = BaseMaterial3D.CULL_BACK
+	
 	mesh_instance.material_override = material
-
+	
+	# IMPORTANT: Enable shadow casting and receiving
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	
+	# Ensure proper geometry instance settings
+	mesh_instance.gi_mode = GeometryInstance3D.GI_MODE_STATIC
 # File I/O methods
 func save_to_file(path: String):
 	var file_path = path + "chunk_%d_%d.dat" % [chunk_coord.x, chunk_coord.y]

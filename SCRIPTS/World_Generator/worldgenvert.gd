@@ -346,10 +346,13 @@ func _on_chunk_generated(chunk_coord: Vector2i, chunk_data: Dictionary):
 		chunk.create_mesh(chunk_size, pixel_size, use_geometry_material, custom_material)
 		var world_pos = chunk_to_world(chunk_coord)
 		chunk.mesh_instance.position = Vector3(world_pos.x, 0, world_pos.y)
+		
+		# IMPORTANT: Configure shadows after mesh creation
+		_configure_chunk_shadows(chunk)
+		
 		add_child(chunk.mesh_instance)
 		loaded_chunks[chunk_coord] = chunk
 	generation_mutex.unlock()
-
 func _unload_chunk(chunk_coord: Vector2i):
 	if chunk_coord in loaded_chunks:
 		var chunk = loaded_chunks[chunk_coord]
@@ -455,3 +458,19 @@ func get_height_at_position(world_pos: Vector3) -> float:
 	if not enable_height_variation or not height_noise:
 		return 0.0
 	return height_noise.get_noise_2d(world_pos.x, world_pos.z) * terrain_height_variation * height_influence
+
+func _configure_chunk_shadows(chunk: TerrainChunk):
+	"""Ensure chunk is properly configured for shadows"""
+	if not chunk.mesh_instance:
+		return
+	
+	# Force shadow casting on
+	chunk.mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	
+	# Set proper layer for lighting
+	chunk.mesh_instance.layers = 1
+	
+	# Ensure material allows lighting
+	var material = chunk.mesh_instance.material_override
+	if material and material is StandardMaterial3D:
+		material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
