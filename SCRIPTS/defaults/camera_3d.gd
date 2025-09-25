@@ -2,7 +2,7 @@ extends Camera3D
 
 # --- User-tweakable ---
 @export var snap : bool = true
-@export var min_size: float = 40.97
+@export var min_size: float = 34.97
 @export var max_size: float = 100.0
 @export var zoom_speed: float = 0.4
 # How big a world tile is (your pixel_size)

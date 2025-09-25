@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=24 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cphxeqdqu78u7" path="res://SCRIPTS/World_Generator/worldgenvert.gd" id="5_ys6xq"]
 [ext_resource type="PackedScene" uid="uid://do8uqji4urspu" path="res://SCENES/Assets/castle.tscn" id="6_ab6ae"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="6_df0lc"]
+[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/human_type_ceviliean.tscn" id="7_ceyew"]
 [ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="7_h2jjw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
@@ -96,10 +97,13 @@ directional_shadow_split_3 = 0.096
 [node name="assets" type="Node" parent="."]
 
 [node name="House_all" parent="assets" instance=ExtResource("5_0u8pi")]
-transform = Transform3D(0.94, 0, 0, 0, 0.94, 0, 0, 0, 0.94, 0, 0, 0)
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+
+[node name="House_all2" parent="assets" instance=ExtResource("5_0u8pi")]
+transform = Transform3D(0.49999997, 0, -0.8660254, 0, 1, 0, 0.8660254, 0, 0.49999997, 8.71586, 0, -0.5474292)
 
 [node name="ground" type="MeshInstance3D" parent="assets" node_paths=PackedStringArray("player")]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
 skeleton = NodePath("../..")
 script = ExtResource("5_ys6xq")
 chunk_size = 64
@@ -130,7 +134,10 @@ mesh = SubResource("PlaneMesh_h2jjw")
 surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
 [node name="Castle" parent="assets" instance=ExtResource("6_ab6ae")]
-transform = Transform3D(0.6646803, 0, 0.66468036, 0, 0.94, 0, -0.66468036, 0, 0.6646803, -6.7691584, 0, 0.4788723)
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -6.1304803, 0, -2.8344088)
+
+[node name="Human_Type_Ceviliean" parent="assets" instance=ExtResource("7_ceyew")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, -1.592952)
 
 [node name="UI" type="Node" parent="."]
 
@@ -213,6 +220,8 @@ projection = 1
 current = true
 size = 50.565
 script = ExtResource("3_i3vxn")
+target_pixels_per_tile = 1
+show_debug_print = false
 
 [node name="Display" type="Control" parent="Pixelated"]
 layout_mode = 3
