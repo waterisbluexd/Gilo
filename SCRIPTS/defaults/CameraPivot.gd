@@ -1,4 +1,4 @@
-#CameraPivot Script with Chunk System Integration
+#CameraPivot Script with Chunk System Integration and Panning
 extends Node3D
 
 # Rotation settings
@@ -8,6 +8,11 @@ var mouse_sensitivity := -0.5
 var rotation_speed := 5.0
 var dragging := false
 var mouse_movement := 0.0
+
+# Panning settings
+var panning := false
+var pan_sensitivity := 0.03
+var pan_input := Vector2.ZERO
 
 # Movement settings
 @export var movement_speed := 10.0  # Units per second
@@ -72,6 +77,7 @@ func _find_chunk_terrain_recursive(node: Node) -> ChunkPixelTerrain:
 
 func _process(delta):
 	handle_movement_input()
+	handle_panning_input(delta)
 	update_position(delta)
 	handle_rotation(delta)
 	apply_snap_effects()
@@ -108,6 +114,32 @@ func handle_movement_input():
 	if movement_input.length() > 0:
 		movement_input = movement_input.normalized()
 
+func handle_panning_input(delta):
+	# Apply panning movement if panning is active
+	if panning and pan_input.length() > 0:
+		# Get the camera's right and forward vectors (relative to camera orientation)
+		var camera_right = transform.basis.x    # Camera's right direction
+		var camera_forward = -transform.basis.z # Camera's forward direction (negative Z)
+		
+		# Calculate pan movement relative to camera orientation
+		# Invert the input to make it feel like "grabbing and dragging" the world
+		var pan_movement = Vector3.ZERO
+		pan_movement += camera_right * -pan_input.x     # Drag left = move camera right (world moves left)
+		pan_movement += camera_forward * pan_input.y    # Drag down = move camera forward (world moves back)
+		
+		# Keep movement on the horizontal plane (no Y movement)
+		pan_movement.y = 0
+		
+		# Apply pan movement
+		if smooth_movement:
+			target_position += pan_movement
+		else:
+			global_position += pan_movement
+			target_position = global_position
+		
+		# Reset pan input for next frame
+		pan_input = Vector2.ZERO
+
 func update_position(delta):
 	# Calculate the current speed
 	var current_speed = movement_speed
@@ -130,6 +162,7 @@ func update_position(delta):
 	elif smooth_movement:
 		# Smooth stop
 		global_position = global_position.lerp(target_position, movement_smoothness * delta)
+
 func update_chunk_system():
 	if not chunk_terrain:
 		return
@@ -180,6 +213,18 @@ func handle_keyboard_input(event):
 				# Toggle smooth movement
 				smooth_movement = not smooth_movement
 				print("Smooth movement: ", smooth_movement)
+			KEY_P:
+				# Print panning status
+				print("Panning: ", panning)
+				print("Pan sensitivity: ", pan_sensitivity)
+			KEY_BRACKETLEFT:  # [ key
+				# Decrease pan sensitivity
+				pan_sensitivity = max(0.001, pan_sensitivity - 0.005)
+				print("Pan sensitivity: ", pan_sensitivity)
+			KEY_BRACKETRIGHT:  # ] key
+				# Increase pan sensitivity
+				pan_sensitivity = min(0.1, pan_sensitivity + 0.005)
+				print("Pan sensitivity: ", pan_sensitivity)
 			KEY_F5:
 				# Force save all chunks
 				if chunk_terrain:
@@ -202,14 +247,27 @@ func handle_keyboard_input(event):
 func handle_mouse_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
+			# Left click for rotation
 			dragging = event.pressed
 			if dragging:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			else:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		elif event.button_index == MOUSE_BUTTON_MIDDLE:
+			# Middle click for panning
+			panning = event.pressed
+			if panning:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			else:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	
-	elif event is InputEventMouseMotion and dragging:
-		mouse_movement += event.relative.x
+	elif event is InputEventMouseMotion:
+		if dragging:
+			# Handle rotation
+			mouse_movement += event.relative.x
+		elif panning:
+			# Handle panning
+			pan_input += event.relative * pan_sensitivity
 
 func reset_camera():
 	"""Reset camera to origin with 45 degree angle"""
@@ -236,7 +294,7 @@ func get_right_direction() -> Vector3:
 
 func is_moving() -> bool:
 	"""Check if the camera/player is currently moving"""
-	return movement_input.length() > 0
+	return movement_input.length() > 0 or panning
 
 func get_current_speed() -> float:
 	"""Get the current movement speed"""
@@ -264,12 +322,18 @@ func teleport_to_chunk(chunk_coord: Vector2i):
 		target_position = chunk_center
 		print("Teleported to chunk ", chunk_coord)
 
+func set_pan_sensitivity(sensitivity: float):
+	"""Set the panning sensitivity"""
+	pan_sensitivity = clamp(sensitivity, 0.001, 0.1)
+	print("Pan sensitivity set to: ", pan_sensitivity)
+
 # Debug functions
 func print_status():
 	print("Position: ", global_position)
 	print("Rotation: ", rad_to_deg(rotation.y))
 	print("Moving: ", is_moving())
 	print("Sprinting: ", is_sprinting)
+	print("Panning: ", panning)
 
 func print_detailed_status():
 	print("=== Camera Status ===")
@@ -278,6 +342,8 @@ func print_detailed_status():
 	print("Rotation: ", rad_to_deg(rotation.y), "°")
 	print("Moving: ", is_moving())
 	print("Sprinting: ", is_sprinting)
+	print("Panning: ", panning)
+	print("Pan Sensitivity: ", pan_sensitivity)
 	if chunk_terrain:
 		print("Current Chunk: ", get_chunk_position())
 		print("Loaded Chunks: ", chunk_terrain.get_loaded_chunk_count())

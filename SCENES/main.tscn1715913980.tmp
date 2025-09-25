@@ -196,7 +196,7 @@ size_2d_override_stretch = true
 render_target_update_mode = 4
 
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+transform = Transform3D(-0.99999994, 0, 1.5099579e-07, 0, 1, 0, -1.5099579e-07, 0, -0.99999994, 0, 0, 0)
 script = ExtResource("2_ac0l5")
 
 [node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]

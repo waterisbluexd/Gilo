@@ -98,6 +98,7 @@ transform = Transform3D(0.94, 0, 0, 0, 0.94, 0, 0, 0, 0.94, 0, 0, 0)
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 skeleton = NodePath("../..")
 script = ExtResource("5_ys6xq")
+chunk_size = 512
 pixel_size = 1.0
 terrain_height_variation = 5.0
 world_active = true
@@ -196,7 +197,7 @@ size_2d_override_stretch = true
 render_target_update_mode = 4
 
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+transform = Transform3D(-0.99999994, 0, 1.5099579e-07, 0, 1, 0, -1.5099579e-07, 0, -0.99999994, 0, 0, 0)
 script = ExtResource("2_ac0l5")
 
 [node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
@@ -205,6 +206,9 @@ projection = 1
 current = true
 size = 50.565
 script = ExtResource("3_i3vxn")
+snap = null
+min_size = null
+max_size = null
 
 [node name="Display" type="Control" parent="Pixelated"]
 layout_mode = 3
