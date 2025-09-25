@@ -40,7 +40,7 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vbse1"]
 resource_name = "House_Body_House2"
 cull_mode = 2
-albedo_color = Color(0.78352374, 0.7835233, 0.7835234, 1)
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 albedo_texture = ExtResource("1_k2n88")
 roughness = 0.5
 texture_filter = 2
@@ -146,7 +146,7 @@ shadow_mesh = SubResource("ArrayMesh_2gqka")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2tkv"]
 resource_name = "Hood_Body_House1"
 cull_mode = 2
-albedo_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 albedo_texture = ExtResource("2_x1tf4")
 roughness = 0.5
 texture_filter = 2
@@ -252,7 +252,7 @@ shadow_mesh = SubResource("ArrayMesh_pur4h")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5636g"]
 resource_name = "Hood_Body_House3"
 cull_mode = 2
-albedo_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 albedo_texture = ExtResource("3_6oukc")
 roughness = 0.5
 texture_filter = 2
@@ -336,7 +336,7 @@ shadow_mesh = SubResource("ArrayMesh_5ttu3")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjxdi"]
 resource_name = "Hood_Body_House4"
 cull_mode = 2
-albedo_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 albedo_texture = ExtResource("4_lity4")
 roughness = 0.5
 texture_filter = 2
@@ -442,7 +442,7 @@ shadow_mesh = SubResource("ArrayMesh_a6dji")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gx3t2"]
 resource_name = "Hood_Body_House5"
 cull_mode = 2
-albedo_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 albedo_texture = ExtResource("5_x1tf4")
 roughness = 0.5
 texture_filter = 2
