@@ -325,7 +325,7 @@ func teleport_to_chunk(chunk_coord: Vector2i):
 func set_pan_sensitivity(sensitivity: float):
 	"""Set the panning sensitivity"""
 	pan_sensitivity = clamp(sensitivity, 0.001, 0.1)
-	print("Pan sensitivity set to: ", pan_sensitivity)
+	#print("Pan sensitivity set to: ", pan_sensitivity)
 
 # Debug functions
 func print_status():
