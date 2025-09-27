@@ -674,37 +674,35 @@ shadow_mesh = SubResource("ArrayMesh_cdaeu")
 [node name="House_all" type="Node3D"]
 
 [node name="House2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.29146942, 0, 0, 0, 0.29146942, 0, 0, 0, 0.29146942, -1.0731838, 0.00039058924, 0)
 material_overlay = SubResource("ShaderMaterial_6oukc")
+lod_bias = 0.001
 mesh = SubResource("ArrayMesh_hpivf")
 skeleton = NodePath("")
 
 [node name="House1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5021377, 0, 0, 0, 0.18993908, 0, 0, 0, 0.31656513, 0, 0, 0)
 material_overlay = SubResource("ShaderMaterial_6oukc")
 mesh = SubResource("ArrayMesh_1w0k7")
 skeleton = NodePath("")
 
 [node name="House3" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.30993572, 0, 0, 0, 0.30993572, 0, 0, 0, 0.30993572, 1.1, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, 0)
 material_overlay = SubResource("ShaderMaterial_6oukc")
 mesh = SubResource("ArrayMesh_imt2a")
 skeleton = NodePath("")
 
 [node name="House4" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.3616032, 0, 0, 0, 0.3616032, 0, 0, 0, 0.3616032, 0, 0, 1.0999999)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.0999999)
 material_overlay = SubResource("ShaderMaterial_6oukc")
 mesh = SubResource("ArrayMesh_nfsts")
 skeleton = NodePath("")
 
 [node name="House5" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5909892, 0, 0, 0, 0.5909892, 0, 0, 0, 0.5909892, -1.1, 0, 1.1)
 material_overlay = SubResource("ShaderMaterial_6oukc")
 mesh = SubResource("ArrayMesh_jdnwm")
 skeleton = NodePath("")
 
 [node name="House6" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.45942962, 0, 0, 0, 0.20320718, 0, 0, 0, 0.45942962, 1.1, 0, 1.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, 1.1)
 material_overlay = SubResource("ShaderMaterial_6oukc")
 mesh = SubResource("ArrayMesh_7lka0")
 skeleton = NodePath("")

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=3 format=3 uid="uid://bo88afessxe6"]
+
+[ext_resource type="PackedScene" uid="uid://brq7bouabf3kf" path="res://SCENES/Assets/house_all.tscn" id="1_bakxp"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/World_Generator/BuildingData.gd" id="1_iixcb"]
+
+[resource]
+script = ExtResource("1_iixcb")
+name = "House_All"
+size = Vector2(1, 1)
+color = Color(0.88563746, 0.6654237, 0.6572679, 1)
+prefab = ExtResource("1_bakxp")
+cost = 33
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

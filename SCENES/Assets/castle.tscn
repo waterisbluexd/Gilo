@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://do8uqji4urspu"]
+[gd_scene load_steps=12 format=4 uid="uid://do8uqji4urspu"]
 
 [ext_resource type="Texture2D" uid="uid://bxo4o08u3csq3" path="res://MODLES/assetsmodel/Castle_Castle1.png" id="1_15ya3"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_s46yq"]
@@ -143,9 +143,25 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wqmey")
 
-[node name="Castle" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_j7dqp"]
+size = Vector3(1.8903503, 0.9361572, 2.1290283)
 
-[node name="Castle_small" type="MeshInstance3D" parent="."]
+[node name="Castle" type="Node3D"]
+transform = Transform3D(1.797, 0, 0, 0, 1.797, 0, 0, 0, 1.797, 0, 0, 0)
+
+[node name="CastleMesh" type="MeshInstance3D" parent="."]
 material_overlay = SubResource("ShaderMaterial_0s54j")
+lod_bias = 0.715
+ignore_occlusion_culling = true
 mesh = SubResource("ArrayMesh_ethax")
 skeleton = NodePath("")
+
+[node name="IdleZone" type="Area3D" parent="CastleMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.023259, 0, -2.779396)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CastleMesh/IdleZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025405884, 0.4710083, 0.15435791)
+shape = SubResource("BoxShape3D_j7dqp")
+
+[node name="EntranceMarker" type="Marker3D" parent="CastleMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825114, 0.30830812, 0)

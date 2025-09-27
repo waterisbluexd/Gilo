@@ -1,0 +1,56 @@
+[gd_scene load_steps=11 format=3 uid="uid://dn7khush7j3"]
+
+[ext_resource type="Script" uid="uid://cphxeqdqu78u7" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.gd" id="1_ucsy1"]
+[ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_te0ef"]
+[ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="3_orww8"]
+[ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
+[ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/World_Generator/BuildingData.gd" id="6_jl6tj"]
+[ext_resource type="Resource" uid="uid://2cppeenv6ejg" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type_1.tres" id="7_m1wsa"]
+[ext_resource type="Resource" uid="uid://bo88afessxe6" path="res://SCRIPTS/enviorment/Building_Data/House_All.tres" id="8_m1wsa"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ab6ae"]
+noise_type = 3
+seed = 54106
+frequency = 0.0182
+fractal_octaves = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_df0lc"]
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+
+[node name="ChunkPixelTerrain" type="MeshInstance3D"]
+transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
+skeleton = NodePath("../../..")
+script = ExtResource("1_ucsy1")
+chunk_size = 64
+render_distance = 8
+pixel_size = 1.0
+terrain_height_variation = 5.0
+world_active = true
+auto_generate_on_ready = true
+primary_biome_noise = ExtResource("2_te0ef")
+secondary_biome_noise = ExtResource("3_orww8")
+height_noise = SubResource("FastNoiseLite_ab6ae")
+secondary_noise_weight = 0.585
+threshold_1 = -0.942
+threshold_2 = -0.779
+threshold_3 = -0.716
+threshold_4 = -0.667
+threshold_5 = -0.604
+threshold_6 = -0.383
+threshold_7 = -0.34299999999999997
+use_geometry_material = false
+custom_material = SubResource("StandardMaterial3D_df0lc")
+thread_count = 16
+
+[node name="NavigationGrid" type="Node3D" parent="."]
+script = ExtResource("4_jl6tj")
+chunk_size = 64
+
+[node name="BuildingPlacer" type="Node3D" parent="."]
+script = ExtResource("5_te0ef")
+building_data = Array[ExtResource("6_jl6tj")]([ExtResource("7_m1wsa"), ExtResource("8_m1wsa")])
+grid_update_threshold = 3.37

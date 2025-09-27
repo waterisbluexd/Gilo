@@ -2,138 +2,299 @@ extends Camera3D
 
 # --- User-tweakable ---
 @export var snap : bool = true
-@export var min_size: float = 34.97
-@export var max_size: float = 100.0
-@export var zoom_speed: float = 0.4
+@export var min_size: float = 80.0
+@export var max_size: float = 200.0
+@export var zoom_speed: float = 5
 # How big a world tile is (your pixel_size)
 @export var tile_world_size: float = 1.0
 # Desired pixel-art density you'd like to target (px per tile)
-@export var target_pixels_per_tile: int = 4
+@export var target_pixels_per_tile: int = 1
 # Debugging
 @export var show_debug_print: bool = true
 
+# --- Raycasting settings ---
+@export var raycast_length: float = 1000.0
+@export var show_raycast_debug: bool = true
+@export var show_visual_debug: bool = true
+@export var ray_color: Color = Color.RED
+@export var hit_point_color: Color = Color.GREEN
+@export var hit_point_size: float = 0.5
+
+# --- Mouse cursor world position settings ---
+@export var show_cursor_indicator: bool = true
+@export var cursor_indicator_color: Color = Color.CYAN
+@export var cursor_indicator_size: float = 0.3
+@export var cursor_ground_plane_y: float = 0.0
+@export var continuous_raycast_update: bool = true
+
 # internal
 var zoom_level: float
+var world_3d: World3D
+var space_state: PhysicsDirectSpaceState3D
+
+# Current mouse world position
+var current_mouse_world_pos: Vector3
+var current_hit_object: Node3D
+var current_hit_normal: Vector3
+
+# Visual debug components
+var debug_ray_mesh: MeshInstance3D
+var debug_hit_point_mesh: MeshInstance3D
+var cursor_indicator_mesh: MeshInstance3D
+var ray_material: StandardMaterial3D
+var hit_material: StandardMaterial3D
+var cursor_material: StandardMaterial3D
+
+# For getting the SubViewport properly
+var sub_viewport: SubViewport
+var sub_viewport_container: SubViewportContainer
+
+# --- SIGNALS ---
+# Emitted continuously as the mouse moves over the world
+signal mouse_world_position_changed(world_pos: Vector3, hit_normal: Vector3, hit_object: Node3D)
+# Emitted only when the left mouse button is clicked
+signal mouse_world_position_clicked(world_pos: Vector3, hit_object: Node3D)
+
 
 func _ready():
 	zoom_level = size
+	world_3d = get_world_3d()
+	
+	# Find the SubViewport and SubViewportContainer in the hierarchy
+	find_viewport_components()
+	
+	# Setup visual debug components
+	setup_visual_debug()
+
+func find_viewport_components():
+	# Walk up the tree to find SubViewport and SubViewportContainer
+	var current_node = get_parent()
+	while current_node:
+		if current_node is SubViewport:
+			sub_viewport = current_node
+		elif current_node is SubViewportContainer:
+			sub_viewport_container = current_node
+		current_node = current_node.get_parent()
+	
+	if show_debug_print:
+		print("SubViewport found: ", sub_viewport != null)
+		print("SubViewportContainer found: ", sub_viewport_container != null)
+
+func setup_visual_debug():
+	# Create materials
+	ray_material = StandardMaterial3D.new()
+	ray_material.flags_unshaded = true
+	ray_material.vertex_color_use_as_albedo = true
+	ray_material.flags_transparent = true
+	ray_material.albedo_color = ray_color
+	ray_material.albedo_color.a = 0.8
+	
+	hit_material = StandardMaterial3D.new()
+	hit_material.flags_unshaded = true
+	hit_material.albedo_color = hit_point_color
+	hit_material.emission_enabled = true
+	hit_material.emission = hit_point_color * 0.5
+	
+	# Cursor indicator material
+	cursor_material = StandardMaterial3D.new()
+	cursor_material.flags_unshaded = true
+	cursor_material.albedo_color = cursor_indicator_color
+	cursor_material.emission_enabled = true
+	cursor_material.emission = cursor_indicator_color * 0.7
+	cursor_material.flags_transparent = true
+	cursor_material.albedo_color.a = 0.8
+	
+	if show_visual_debug:
+		# Create ray debug mesh (initially invisible)
+		debug_ray_mesh = MeshInstance3D.new()
+		debug_ray_mesh.material_override = ray_material
+		add_child(debug_ray_mesh)
+		
+		# Create hit point debug mesh (initially invisible)
+		debug_hit_point_mesh = MeshInstance3D.new()
+		debug_hit_point_mesh.material_override = hit_material
+		var sphere_mesh = SphereMesh.new()
+		sphere_mesh.radius = hit_point_size
+		sphere_mesh.radial_segments = 8
+		sphere_mesh.rings = 6
+		debug_hit_point_mesh.mesh = sphere_mesh
+		add_child(debug_hit_point_mesh)
+		
+		# Start hidden
+		debug_ray_mesh.visible = false
+		debug_hit_point_mesh.visible = false
+	
+	if show_cursor_indicator:
+		# Create cursor indicator mesh
+		cursor_indicator_mesh = MeshInstance3D.new()
+		cursor_indicator_mesh.material_override = cursor_material
+		var cursor_sphere = SphereMesh.new()
+		cursor_sphere.radius = cursor_indicator_size
+		cursor_sphere.radial_segments = 12
+		cursor_sphere.rings = 8
+		cursor_indicator_mesh.mesh = cursor_sphere
+		add_child(cursor_indicator_mesh)
+		cursor_indicator_mesh.visible = false
+
+# Continuous update in physics process for smooth cursor tracking
+func _physics_process(_delta):
+	if continuous_raycast_update:
+		var mouse_pos = get_viewport().get_mouse_position()
+		update_mouse_world_position(mouse_pos)
 
 func _input(event):
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_F:
-			fit_to_target_pixels()
-		return
-	
 	if event is InputEventMouseButton:
 		var zoom_changed = false
-		
-		# Mouse wheel events don't have a 'pressed' state, so remove the check.
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			if snap:
-				zoom_to_next_pixel_level(true)  # zoom in
-			else:
-				zoom_level -= zoom_speed
-				size = zoom_level
+
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+			if current_mouse_world_pos:
+				emit_signal("mouse_world_position_clicked", current_mouse_world_pos, current_hit_object)
+
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.is_pressed():
+			zoom_level -= zoom_speed
 			zoom_changed = true
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			if snap:
-				zoom_to_next_pixel_level(false)  # zoom out
-			else:
-				zoom_level += zoom_speed
-				size = zoom_level
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.is_pressed():
+			zoom_level += zoom_speed
 			zoom_changed = true
-		
-		if zoom_changed and not snap:
-			# Clamp zoom level within defined limits (only for non-snap mode)
+
+		if zoom_changed:
 			zoom_level = clamp(zoom_level, min_size, max_size)
 			size = zoom_level
+func update_mouse_world_position(mouse_pos: Vector2):
+	if not world_3d:
+		return
+		
+	space_state = world_3d.direct_space_state
+	if not space_state:
+		return
+	
+	# Convert mouse position to the correct coordinate space
+	var viewport_mouse_pos = get_viewport_mouse_position(mouse_pos)
+	
+	# Create ray from camera through mouse position
+	var ray_origin = project_ray_origin(viewport_mouse_pos)
+	var ray_direction = project_ray_normal(viewport_mouse_pos)
+	var ray_end = ray_origin + ray_direction * raycast_length
+	
+	# Update visual debug ray
+	if show_visual_debug:
+		update_visual_ray(ray_origin, ray_end)
+	
+	# Perform raycast
+	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+	var result = space_state.intersect_ray(query)
+	
+	var world_position: Vector3
+	var hit_normal: Vector3 = Vector3.UP
+	var hit_object: Node3D = null
+	
+	if result:
+		# Hit an object
+		world_position = result.position
+		hit_normal = result.normal
+		hit_object = result.collider as Node3D
+		
+		if show_visual_debug:
+			update_visual_hit_point(world_position, true)
+	else:
+		# No object hit, raycast to ground plane
+		world_position = raycast_to_ground_plane(ray_origin, ray_direction, cursor_ground_plane_y)
+		if world_position == Vector3.ZERO:
+			if show_visual_debug and debug_hit_point_mesh: debug_hit_point_mesh.visible = false
+			if show_cursor_indicator and cursor_indicator_mesh: cursor_indicator_mesh.visible = false
+			return
+		
+		hit_normal = Vector3.UP
+		if show_visual_debug:
+			update_visual_hit_point(world_position, false)
 
-# --- Core helpers ---
-# Compute how many screen pixels correspond to ONE world tile given the camera & viewport
+	# Update cursor indicator position
+	if show_cursor_indicator and cursor_indicator_mesh:
+		cursor_indicator_mesh.global_position = world_position
+		cursor_indicator_mesh.visible = true
+	
+	# Store current values
+	current_mouse_world_pos = world_position
+	current_hit_object = hit_object
+	current_hit_normal = hit_normal
+	
+	# Emit signal for other systems to use
+	emit_signal("mouse_world_position_changed", world_position, hit_normal, hit_object)
+
+func get_viewport_mouse_position(screen_mouse_pos: Vector2) -> Vector2:
+	if sub_viewport_container and sub_viewport:
+		var container_rect = sub_viewport_container.get_global_rect()
+		if container_rect.has_point(screen_mouse_pos):
+			var container_mouse_pos = screen_mouse_pos - container_rect.position
+			var viewport_size = sub_viewport.size
+			var container_size = container_rect.size
+			# FIX: Cast viewport_size (Vector2i) to Vector2 before division
+			var scale = Vector2(viewport_size) / container_size
+			return container_mouse_pos * scale
+	else:
+		return get_viewport().get_mouse_position()
+	
+	return Vector2.ZERO
+
+func raycast_to_ground_plane(ray_origin: Vector3, ray_direction: Vector3, ground_y: float = 0.0) -> Vector3:
+	if abs(ray_direction.y) < 0.001: return Vector3.ZERO
+	var t = (ground_y - ray_origin.y) / ray_direction.y
+	if t < 0: return Vector3.ZERO
+	return ray_origin + ray_direction * t
+
+func update_visual_ray(ray_origin: Vector3, ray_end: Vector3):
+	if not show_visual_debug or not debug_ray_mesh: return
+	debug_ray_mesh.mesh = create_line_mesh(ray_origin, ray_end)
+	debug_ray_mesh.visible = true
+
+func update_visual_hit_point(hit_pos: Vector3, is_object_hit: bool):
+	if not show_visual_debug or not debug_hit_point_mesh: return
+	debug_hit_point_mesh.global_position = hit_pos
+	debug_hit_point_mesh.visible = true
+	var color = hit_point_color if is_object_hit else Color.YELLOW
+	hit_material.albedo_color = color
+	hit_material.emission = color * 0.5
+
+func create_line_mesh(start: Vector3, end: Vector3) -> ArrayMesh:
+	var line_mesh = ImmediateMesh.new()
+	line_mesh.surface_begin(Mesh.PRIMITIVE_LINES, ray_material)
+	line_mesh.surface_add_vertex(start)
+	line_mesh.surface_add_vertex(end)
+	line_mesh.surface_end()
+	return line_mesh
+
+# --- Public utility functions ---
+func get_mouse_world_position() -> Vector3: return current_mouse_world_pos
+func get_mouse_hit_object() -> Node3D: return current_hit_object
+func get_mouse_hit_normal() -> Vector3: return current_hit_normal
+func get_mouse_tile_position() -> Vector2i: return world_to_tile(current_mouse_world_pos)
+func world_to_tile(world_pos: Vector3) -> Vector2i: return Vector2i(int(floor(world_pos.x / tile_world_size)), int(floor(world_pos.z / tile_world_size)))
+func tile_to_world(tile_pos: Vector2i) -> Vector3: return Vector3(tile_pos.x * tile_world_size + tile_world_size * 0.5, 0.0, tile_pos.y * tile_world_size + tile_world_size * 0.5)
+
 func pixels_per_tile() -> float:
-	var vp := get_viewport()
-	if not vp:
-		return 0.0
-	# Use the viewport's internal resolution (height)
-	var vp_size: Vector2i = vp.size
-	# Cast to float to avoid integer division issues
-	var vp_h: float = float(vp_size.y)
-	var visible_world_height: float = size * 2.0
-	if visible_world_height == 0.0:
-		return 0.0
-	var px_per_world: float = vp_h / visible_world_height
-	return px_per_world * tile_world_size
+	var vp_h = float(get_viewport().size.y)
+	var visible_world_height = size * 2.0
+	if visible_world_height == 0.0: return 0.0
+	return (vp_h / visible_world_height) * tile_world_size
 
-# Calculate camera.size required to make pixels_per_tile == desired_px
 func camera_size_for_target(desired_px: float) -> float:
-	var vp := get_viewport()
-	if not vp:
-		return size
-	var vp_size: Vector2i = vp.size
-	var vp_h: float = float(vp_size.y)
-	# camera.size = (vp_h * tile_world_size) / (2 * desired_px)
+	var vp_h = float(get_viewport().size.y)
 	return (vp_h * tile_world_size) / (2.0 * desired_px)
 
-# ---- Step to next/previous pixel-perfect zoom level ----
 func zoom_to_next_pixel_level(zoom_in: bool):
-	var current_px: float = pixels_per_tile()
-	var current_px_int: int = int(round(current_px))
-	var target_px: int
-	
-	if zoom_in:
-		# Zoom in = more pixels per tile (smaller camera size)
-		target_px = current_px_int + 1
-	else:
-		# Zoom out = fewer pixels per tile (larger camera size)
-		target_px = max(1, current_px_int - 1)  # Don't go below 1 pixel per tile
-	
-	var new_size = camera_size_for_target(float(target_px))
-	
-	# Enforce bounds on the new size
-	new_size = clamp(new_size, min_size, max_size)
-	
-	# Only update if we're actually changing something
-	if abs(new_size - size) > 0.001:
-		size = new_size
-		zoom_level = new_size
-		
-		if show_debug_print:
-			print("Stepped to: ", target_px, " pixels per tile, camera size: ", new_size)
-
-# ---- Snap to the nearest integer pixels-per-tile ----
-func snap_to_pixel_size():
-	var current_px: float = pixels_per_tile()
-	var best_px: int = int(round(current_px))
-	
-	# Ensure the pixel count is at least 1
-	if best_px < 1:
-		best_px = 1
-		
-	var new_size = camera_size_for_target(float(best_px))
-	
-	# Enforce bounds on the new snapped size
-	new_size = clamp(new_size, min_size, max_size)
-	size = new_size
-	zoom_level = new_size # Keep the zoom_level variable in sync
-	
-	if show_debug_print:
-		print("Snapped to: ", best_px, " pixels per tile, camera size: ", new_size)
-
-# Set camera to match target_pixels_per_tile, optionally snapping to integer px
-func fit_to_target_pixels():
-	var desired: float = float(target_pixels_per_tile)
-	if snap:
-		var current_px: float = pixels_per_tile()
-		# choose the nearest reasonable integer pixel-per-tile to current
-		var best_px: int = int(round(current_px))
-		if best_px < 1:
-			best_px = max(1, int(desired))
-		desired = float(best_px)
-	var new_size := camera_size_for_target(desired)
-	# enforce bounds
-	new_size = clamp(new_size, min_size, max_size)
-	size = new_size
+	var current_px_int = int(round(pixels_per_tile()))
+	var target_px = current_px_int + 1 if zoom_in else max(1, current_px_int - 1)
+	size = clamp(camera_size_for_target(float(target_px)), min_size, max_size)
 	zoom_level = size
-	
-	if show_debug_print:
-		print("Fit to target: ", desired, " pixels per tile, camera size: ", new_size)
+
+func snap_to_pixel_size():
+	var best_px = max(1, int(round(pixels_per_tile())))
+	size = clamp(camera_size_for_target(float(best_px)), min_size, max_size)
+	zoom_level = size
+
+func fit_to_target_pixels():
+	var desired = float(target_pixels_per_tile)
+	if snap:
+		desired = float(max(1, int(round(pixels_per_tile()))))
+	size = clamp(camera_size_for_target(desired), min_size, max_size)
+	zoom_level = size

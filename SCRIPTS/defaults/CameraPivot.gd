@@ -10,7 +10,7 @@ var dragging := false
 var mouse_movement := 0.0
 
 # Panning settings
-var panning := false
+var panning := true
 var pan_sensitivity := 0.03
 var pan_input := Vector2.ZERO
 
@@ -245,23 +245,7 @@ func handle_keyboard_input(event):
 				print_detailed_status()
 
 func handle_mouse_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			# Left click for rotation
-			dragging = event.pressed
-			if dragging:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			else:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		elif event.button_index == MOUSE_BUTTON_MIDDLE:
-			# Middle click for panning
-			panning = event.pressed
-			if panning:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			else:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	
-	elif event is InputEventMouseMotion:
+	if event is InputEventMouseMotion:
 		if dragging:
 			# Handle rotation
 			mouse_movement += event.relative.x
