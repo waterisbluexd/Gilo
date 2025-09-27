@@ -2,13 +2,23 @@
 extends Node3D
 class_name NavigationGrid
 
-# --- GRID PARAMETERS ---
+# --- INSPECTOR CONFIGURABLE PARAMETERS ---
+@export_group("Grid Settings")
 @export var grid_cell_size: float = 1.0
 @export var chunk_size: int = 64
-@export var active: bool = false
+@export var active: bool = true
+
+@export_group("Performance")
+@export var max_loaded_chunks: int = 100  # Unload chunks when exceeded
+@export var auto_unload_distance: float = 200.0  # Unload chunks beyond this distance
+
+@export_group("Debug")
+@export var debug_mode: bool = false
+@export var show_chunk_info: bool = false
 
 # --- INTERNAL VARIABLES ---
 var nav_chunks: Dictionary = {}
+var chunk_access_times: Dictionary = {}  # For LRU cache management
 var terrain_system: ChunkPixelTerrain
 
 # Cell states
@@ -17,103 +27,193 @@ enum CellState { WALKABLE = 0, BLOCKED = 1 }
 # --- INITIALIZATION ---
 func _ready():
 	terrain_system = get_parent() if get_parent() is ChunkPixelTerrain else null
+	if debug_mode:
+		print("NavigationGrid initialized - Cell size: %s, Chunk size: %s" % [grid_cell_size, chunk_size])
 
-# --- CHUNK MANAGEMENT ---
+# --- OPTIMIZED CHUNK MANAGEMENT ---
 func ensure_chunk_loaded(chunk_coord: Vector2i):
 	if not nav_chunks.has(chunk_coord):
+		# Check if we need to unload old chunks first
+		if nav_chunks.size() >= max_loaded_chunks:
+			_unload_oldest_chunk()
+		
 		var chunk_data = PackedByteArray()
 		chunk_data.resize(chunk_size * chunk_size)
 		chunk_data.fill(CellState.WALKABLE)
 		nav_chunks[chunk_coord] = chunk_data
+		
+		if show_chunk_info:
+			print("Loaded chunk: %s (Total chunks: %s)" % [chunk_coord, nav_chunks.size()])
+	
+	# Update access time for LRU
+	chunk_access_times[chunk_coord] = Time.get_ticks_msec()
+
+func _unload_oldest_chunk():
+	if chunk_access_times.is_empty():
+		return
+	
+	var oldest_chunk = null
+	var oldest_time = INF
+	
+	for chunk_coord in chunk_access_times:
+		if chunk_access_times[chunk_coord] < oldest_time:
+			oldest_time = chunk_access_times[chunk_coord]
+			oldest_chunk = chunk_coord
+	
+	if oldest_chunk:
+		unload_chunk(oldest_chunk)
 
 func unload_chunk(chunk_coord: Vector2i):
 	nav_chunks.erase(chunk_coord)
+	chunk_access_times.erase(chunk_coord)
+	if show_chunk_info:
+		print("Unloaded chunk: %s" % chunk_coord)
+
+# Auto-unload distant chunks (call this periodically from your main game loop)
+func cleanup_distant_chunks(center_world_pos: Vector3):
+	var center_chunk = world_to_chunk(center_world_pos)
+	var chunks_to_unload = []
+	
+	for chunk_coord in nav_chunks:
+		var chunk_world_pos = Vector3(
+			chunk_coord.x * chunk_size * grid_cell_size + (chunk_size * grid_cell_size * 0.5),
+			0,
+			chunk_coord.y * chunk_size * grid_cell_size + (chunk_size * grid_cell_size * 0.5)
+		)
+		
+		if center_world_pos.distance_to(chunk_world_pos) > auto_unload_distance:
+			chunks_to_unload.append(chunk_coord)
+	
+	for chunk_coord in chunks_to_unload:
+		unload_chunk(chunk_coord)
 
 # --- COORDINATE CONVERSION ---
 func world_to_grid(world_pos: Vector3) -> Vector2i:
-	return Vector2i(int(floor(world_pos.x / grid_cell_size)), int(floor(world_pos.z / grid_cell_size)))
+	return Vector2i(
+		int(floor(world_pos.x / grid_cell_size)), 
+		int(floor(world_pos.z / grid_cell_size))
+	)
 
 func world_to_chunk(world_pos: Vector3) -> Vector2i:
 	var chunk_world_size = chunk_size * grid_cell_size
-	return Vector2i(int(floor(world_pos.x / chunk_world_size)), int(floor(world_pos.z / chunk_world_size)))
+	return Vector2i(
+		int(floor(world_pos.x / chunk_world_size)), 
+		int(floor(world_pos.z / chunk_world_size))
+	)
 
-# FIXED: Proper local coordinate calculation
-func grid_to_local(grid_pos: Vector2i, chunk_coord: Vector2i) -> Vector2i:
-	# Use modulo for proper local coordinates, handling negative numbers correctly
+func grid_to_local(grid_pos: Vector2i) -> Vector2i:
+	# Simplified - no need for chunk_coord parameter
 	var local_x = ((grid_pos.x % chunk_size) + chunk_size) % chunk_size
 	var local_y = ((grid_pos.y % chunk_size) + chunk_size) % chunk_size
 	return Vector2i(local_x, local_y)
 
-# FIXED: More robust chunk coordinate calculation
 func get_chunk_coord_from_grid(grid_pos: Vector2i) -> Vector2i:
-	# Handle negative coordinates properly
-	var chunk_x = int(floor(float(grid_pos.x) / float(chunk_size)))
-	var chunk_y = int(floor(float(grid_pos.y) / float(chunk_size)))
-	return Vector2i(chunk_x, chunk_y)
+	return Vector2i(
+		int(floor(float(grid_pos.x) / float(chunk_size))),
+		int(floor(float(grid_pos.y) / float(chunk_size)))
+	)
 
-# --- CELL STATE MANAGEMENT ---
+# --- OPTIMIZED CELL STATE MANAGEMENT ---
 func set_cell(grid_pos: Vector2i, state: CellState):
 	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
 	ensure_chunk_loaded(chunk_coord)
-	var local_pos = grid_to_local(grid_pos, chunk_coord)
+	var local_pos = grid_to_local(grid_pos)
 	
-	# Bounds check (should always pass with proper modulo, but safety first)
-	if local_pos.x >= 0 and local_pos.x < chunk_size and local_pos.y >= 0 and local_pos.y < chunk_size:
-		var chunk_data = nav_chunks[chunk_coord]
-		chunk_data[local_pos.y * chunk_size + local_pos.x] = state
-	else:
-		push_error("Invalid local coordinates: %s in chunk %s" % [local_pos, chunk_coord])
+	var chunk_data = nav_chunks[chunk_coord]
+	chunk_data[local_pos.y * chunk_size + local_pos.x] = state
 
 func get_cell(grid_pos: Vector2i) -> CellState:
 	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
 	if not nav_chunks.has(chunk_coord):
 		return CellState.WALKABLE
 	
-	var local_pos = grid_to_local(grid_pos, chunk_coord)
-	if local_pos.x >= 0 and local_pos.x < chunk_size and local_pos.y >= 0 and local_pos.y < chunk_size:
-		var chunk_data = nav_chunks[chunk_coord]
-		return chunk_data[local_pos.y * chunk_size + local_pos.x]
-	
-	push_error("Invalid local coordinates: %s in chunk %s" % [local_pos, chunk_coord])
-	return CellState.WALKABLE
+	var local_pos = grid_to_local(grid_pos)
+	var chunk_data = nav_chunks[chunk_coord]
+	return chunk_data[local_pos.y * chunk_size + local_pos.x]
 
 func is_walkable(grid_pos: Vector2i) -> bool:
 	return get_cell(grid_pos) == CellState.WALKABLE
 
-# --- AREA BLOCKING ---
+# --- AREA OPERATIONS ---
 func block_area(world_pos: Vector3, size: Vector2):
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
 	
-	print("Blocking area from grid %s to %s (size: %s)" % [grid_start, grid_end, size])
+	if debug_mode:
+		print("Blocking area from grid %s to %s (size: %s)" % [grid_start, grid_end, size])
 	
-	for x in range(grid_start.x, grid_end.x + 1):
-		for y in range(grid_start.y, grid_end.y + 1):
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
 			set_cell(Vector2i(x, y), CellState.BLOCKED)
 
 func unblock_area(world_pos: Vector3, size: Vector2):
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
 	
-	print("Unblocking area from grid %s to %s (size: %s)" % [grid_start, grid_end, size])
+	if debug_mode:
+		print("Unblocking area from grid %s to %s (size: %s)" % [grid_start, grid_end, size])
 	
-	for x in range(grid_start.x, grid_end.x + 1):
-		for y in range(grid_start.y, grid_end.y + 1):
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
 			set_cell(Vector2i(x, y), CellState.WALKABLE)
 
-# NEW: Debug function to check area state
 func is_area_walkable(world_pos: Vector3, size: Vector2) -> bool:
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
 	
-	for x in range(grid_start.x, grid_end.x + 1):
-		for y in range(grid_start.y, grid_end.y + 1):
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
 			if not is_walkable(Vector2i(x, y)):
 				return false
 	return true
 
-# --- PATHFINDING (A*) ---
-func find_path(start_world: Vector3, end_world: Vector3) -> Array[Vector3]:
+# NEW: Detailed area check with debug info
+func check_area_placement(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
+	var result = {
+		"can_place": true,
+		"blocked_cells": [],
+		"grid_start": Vector2i.ZERO,
+		"grid_end": Vector2i.ZERO,
+		"total_cells": 0
+	}
+	
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
+	
+	result.grid_start = grid_start
+	result.grid_end = grid_end
+	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
+	
+	if debug_mode:
+		print("=== PLACEMENT CHECK ===")
+		print("Building: %s" % building_name)
+		print("World Position: %s" % world_pos)
+		print("Building Size: %s" % size)
+		print("Grid Range: %s to %s (%d cells)" % [grid_start, grid_end, result.total_cells])
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var cell_pos = Vector2i(x, y)
+			if not is_walkable(cell_pos):
+				result.can_place = false
+				result.blocked_cells.append(cell_pos)
+				
+				if debug_mode:
+					print("  ❌ BLOCKED cell at grid %s" % cell_pos)
+			elif debug_mode:
+				print("  ✅ FREE cell at grid %s" % cell_pos)
+	
+	if debug_mode:
+		var status = "✅ YES" if result.can_place else "❌ NO"
+		print("RESULT: Can place '%s'? %s" % [building_name, status])
+		if not result.can_place:
+			print("Blocked cells: %s" % result.blocked_cells)
+		print("======================")
+	
+	return result
+
+# --- OPTIMIZED PATHFINDING (A*) ---
+func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1000) -> Array[Vector3]:
 	var start_grid = world_to_grid(start_world)
 	var end_grid = world_to_grid(end_world)
 	
@@ -126,8 +226,11 @@ func find_path(start_world: Vector3, end_world: Vector3) -> Array[Vector3]:
 	var f_score: Dictionary = {start_grid: _heuristic(start_grid, end_grid)}
 	
 	var directions = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, -1), Vector2i(-1, 0)]
+	var iterations = 0
 	
-	while open_set.size() > 0:
+	while open_set.size() > 0 and iterations < max_iterations:
+		iterations += 1
+		
 		var current = _get_lowest_f_score(open_set, f_score)
 		if current == end_grid:
 			return _reconstruct_path(came_from, current)
@@ -147,6 +250,9 @@ func find_path(start_world: Vector3, end_world: Vector3) -> Array[Vector3]:
 				if neighbor not in open_set:
 					open_set.append(neighbor)
 	
+	if debug_mode and iterations >= max_iterations:
+		print("Pathfinding stopped at max iterations: %s" % max_iterations)
+	
 	return []
 
 func _heuristic(a: Vector2i, b: Vector2i) -> int:
@@ -165,18 +271,24 @@ func _get_lowest_f_score(open_set: Array[Vector2i], f_score: Dictionary) -> Vect
 func _reconstruct_path(came_from: Dictionary, current: Vector2i) -> Array[Vector3]:
 	var path: Array[Vector3] = []
 	while came_from.has(current):
-		var world_pos = Vector3(current.x * grid_cell_size + grid_cell_size * 0.5, 0, current.y * grid_cell_size + grid_cell_size * 0.5)
+		var world_pos = Vector3(
+			current.x * grid_cell_size + grid_cell_size * 0.5, 
+			0, 
+			current.y * grid_cell_size + grid_cell_size * 0.5
+		)
 		path.push_front(world_pos)
 		current = came_from[current]
 	return path
 
-# --- PUBLIC API ---
+# --- SIMPLE PUBLIC API ---
 func place_building(world_pos: Vector3, building_size: Vector2):
-	print("Placing building at world pos: %s, size: %s" % [world_pos, building_size])
+	if debug_mode:
+		print("Placing building at: %s, size: %s" % [world_pos, building_size])
 	block_area(world_pos, building_size)
 
 func remove_building(world_pos: Vector3, building_size: Vector2):
-	print("Removing building at world pos: %s, size: %s" % [world_pos, building_size])
+	if debug_mode:
+		print("Removing building at: %s, size: %s" % [world_pos, building_size])
 	unblock_area(world_pos, building_size)
 
 func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
@@ -184,13 +296,19 @@ func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 
 func clear_all():
 	nav_chunks.clear()
+	chunk_access_times.clear()
+	if debug_mode:
+		print("Cleared all navigation data")
 
-# NEW: Debug function to print chunk state
-func debug_print_chunk_state(world_pos: Vector3):
-	var grid_pos = world_to_grid(world_pos)
-	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
-	var local_pos = grid_to_local(grid_pos, chunk_coord)
-	
-	print("World: %s -> Grid: %s -> Chunk: %s -> Local: %s -> Walkable: %s" % [
-		world_pos, grid_pos, chunk_coord, local_pos, is_walkable(grid_pos)
-	])
+# --- UTILITY FUNCTIONS ---
+func get_chunk_count() -> int:
+	return nav_chunks.size()
+
+func get_memory_usage_estimate() -> String:
+	var bytes = nav_chunks.size() * chunk_size * chunk_size
+	if bytes < 1024:
+		return "%d bytes" % bytes
+	elif bytes < 1024 * 1024:
+		return "%.1f KB" % (bytes / 1024.0)
+	else:
+		return "%.1f MB" % (bytes / (1024.0 * 1024.0))

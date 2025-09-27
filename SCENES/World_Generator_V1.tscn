@@ -48,7 +48,6 @@ thread_count = 16
 
 [node name="NavigationGrid" type="Node3D" parent="."]
 script = ExtResource("4_jl6tj")
-active = true
 
 [node name="BuildingPlacer" type="Node3D" parent="."]
 script = ExtResource("5_te0ef")

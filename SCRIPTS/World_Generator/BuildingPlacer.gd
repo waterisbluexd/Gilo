@@ -1,20 +1,32 @@
 extends Node3D
 class_name BuildingPlacer
 
-# --- REFERENCES ---
+# --- INSPECTOR CONFIGURABLE PARAMETERS ---
+@export_group("References")
 @export var camera: Camera3D  # Drag and drop your isometric camera here
 @export var building_data: Array[BuildingData] = []
+
+@export_group("Building Settings")
 @export var current_building_index: int = 0
 @export var snap_to_grid: bool = true
+@export var click_cooldown: float = 0.2  # Delay between building placements (seconds)
+@export var auto_select_next_building: bool = false  # Auto-select next building after placement
+
+@export_group("Preview Settings")
+@export var preview_height: float = 0.5  # How high above ground the preview floats
+@export var valid_color: Color = Color(0, 1, 0, 0.5)  # Green for valid placement
+@export var invalid_color: Color = Color(1, 0, 0, 0.5)  # Red for invalid placement
+
+@export_group("Debug")
+@export var debug_placement: bool = false
+@export var show_grid_coordinates: bool = false
+@export var always_show_placement_attempts: bool = true  # Show placement info even when debug_placement is off
 
 # --- INTERNAL ---
 var navigation_grid: NavigationGrid
 var is_placing_mode: bool = false
 var preview_mesh: MeshInstance3D
-
-# --- CLICK PREVENTION ---
 var last_click_time: float = 0.0
-var click_cooldown: float = 0.2  # 200ms cooldown between clicks
 
 func get_current_building() -> BuildingData:
 	if building_data.is_empty() or current_building_index >= building_data.size():
@@ -40,8 +52,11 @@ func _ready():
 
 	if not navigation_grid:
 		push_warning("BuildingPlacer: No NavigationGrid found. Some features may not work properly.")
+	elif debug_placement:
+		print("NavigationGrid found: %s chunks loaded" % navigation_grid.get_chunk_count())
 
-	print("BuildingPlacer ready.")
+	if debug_placement:
+		print("BuildingPlacer ready - %d buildings available" % building_data.size())
 	
 	if camera:
 		if camera.has_signal("mouse_world_position_changed"):
@@ -79,14 +94,14 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 		return
 	
 	# Check cooldown to prevent multiple rapid placements
-	var current_time = Time.get_time_dict_from_system()
-	var time_float = current_time.hour * 3600.0 + current_time.minute * 60.0 + current_time.second + current_time.get("millisecond", 0) / 1000.0
+	var current_time = Time.get_ticks_msec() / 1000.0
 	
-	if time_float - last_click_time < click_cooldown:
-		print("Click ignored due to cooldown")
+	if current_time - last_click_time < click_cooldown:
+		if debug_placement:
+			print("Click ignored due to cooldown (%.2fs remaining)" % (click_cooldown - (current_time - last_click_time)))
 		return
 	
-	last_click_time = time_float
+	last_click_time = current_time
 		
 	var snapped_pos = snap_to_grid_position(world_pos)
 	_try_place_building(snapped_pos)
@@ -100,30 +115,48 @@ func snap_to_grid_position(world_pos: Vector3) -> Vector3:
 	return Vector3(snapped_x, 0, snapped_z)
 
 func _try_place_building(world_pos: Vector3):
-	print("Attempting to place building at: %s" % world_pos)
-	
 	var building = get_current_building()
 	if not building:
-		print("No building selected!")
+		if debug_placement or always_show_placement_attempts:
+			print("❌ No building selected!")
 		return
+	
+	if debug_placement:
+		print("Attempting to place building at: %s" % world_pos)
+		if show_grid_coordinates:
+			var grid_pos = navigation_grid.world_to_grid(world_pos) if navigation_grid else Vector2i.ZERO
+			print("Grid coordinates: %s" % grid_pos)
 	
 	if _can_place_at(world_pos):
 		_place_building_at(world_pos)
-	else:
-		print("Cannot place building at %s - area is blocked" % world_pos)
+		
+		# Auto-select next building if enabled
+		if auto_select_next_building and building_data.size() > 1:
+			select_building((current_building_index + 1) % building_data.size())
+	# Note: Error message is now handled in _can_place_at() function
 
 func _can_place_at(world_pos: Vector3) -> bool:
 	if not navigation_grid:
 		return true 
 	
+	var building = get_current_building()
+	var building_name = building.name if building else "Unknown"
 	var building_size = get_current_building_size()
-	var grid_start = navigation_grid.world_to_grid(world_pos)
 	
-	for x in range(grid_start.x, grid_start.x + int(building_size.x)):
-		for y in range(grid_start.y, grid_start.y + int(building_size.y)):
-			if not navigation_grid.is_walkable(Vector2i(x, y)):
-				return false
-	return true
+	# Use the new detailed placement check
+	var check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
+	
+	# For non-debug mode, also show basic info when trying to place on occupied grid
+	if not navigation_grid.debug_mode and not check_result.can_place:
+		print("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
+			building_name, 
+			world_pos, 
+			check_result.grid_start, 
+			check_result.grid_end,
+			check_result.blocked_cells.size()
+		])
+	
+	return check_result.can_place
 
 func _place_building_at(world_pos: Vector3):
 	var building = get_current_building()
@@ -132,12 +165,17 @@ func _place_building_at(world_pos: Vector3):
 	
 	# Double-check before placing
 	if not _can_place_at(world_pos):
-		print("Cannot place building - area became blocked!")
+		if debug_placement:
+			print("Cannot place building - area became blocked!")
 		return
 	
 	navigation_grid.place_building(world_pos, building.size)
 	_create_building_visual(world_pos, building)
-	print("Building placed: %s at: %s" % [building.name, world_pos])
+	
+	if debug_placement:
+		print("Building placed: %s at: %s" % [building.name, world_pos])
+		if navigation_grid.has_method("get_memory_usage_estimate"):
+			print("Navigation grid memory: %s" % navigation_grid.get_memory_usage_estimate())
 
 func _create_preview_mesh():
 	preview_mesh = MeshInstance3D.new()
@@ -166,17 +204,21 @@ func _update_preview(world_pos: Vector3):
 		return
 		
 	var building_size = get_current_building_size()
-	preview_mesh.position = world_pos + Vector3(building_size.x * 0.5, 0.5, building_size.y * 0.5)
+	preview_mesh.position = world_pos + Vector3(building_size.x * 0.5, preview_height, building_size.y * 0.5)
 	
 	var can_place = _can_place_at(world_pos)
 	var material = preview_mesh.material_override as StandardMaterial3D
 	if material:
-		material.albedo_color = Color(0, 1, 0, 0.5) if can_place else Color(1, 0, 0, 0.5)
+		material.albedo_color = valid_color if can_place else invalid_color
 
 func _toggle_placement_mode():
 	is_placing_mode = not is_placing_mode
 	preview_mesh.visible = is_placing_mode
-	print("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
+	
+	if debug_placement:
+		print("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
+		if is_placing_mode and navigation_grid:
+			print("Current building: %s" % (get_current_building().name if get_current_building() else "None"))
 
 func _create_building_visual(world_pos: Vector3, building: BuildingData):
 	var building_node: Node3D
@@ -200,4 +242,5 @@ func select_building(index: int):
 	if index >= 0 and index < building_data.size():
 		current_building_index = index
 		_update_preview_mesh()
-		print("Selected: %s" % building_data[index].name)
+		if debug_placement:
+			print("Selected: %s (Index: %d)" % [building_data[index].name, index])
