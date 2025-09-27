@@ -12,17 +12,9 @@ var navigation_grid: NavigationGrid
 var is_placing_mode: bool = false
 var preview_mesh: MeshInstance3D
 
-# --- Grid visualization ---
-var grid_lines: Node3D
-@export var show_grid: bool = true
-@export var grid_size: float = 1.0
-@export var grid_extent: int = 50  # How far the grid extends from center
-@export var grid_color: Color = Color(0.5, 0.5, 0.5, 0.3)
-# --- NEW: Variables to smartly update the grid ---
-# How far the camera must move before the grid redraws
-@export var grid_update_threshold: float = 5.0 
-var last_grid_update_camera_pos: Vector3 = Vector3.INF
-
+# --- CLICK PREVENTION ---
+var last_click_time: float = 0.0
+var click_cooldown: float = 0.2  # 200ms cooldown between clicks
 
 func get_current_building() -> BuildingData:
 	if building_data.is_empty() or current_building_index >= building_data.size():
@@ -36,7 +28,7 @@ func get_current_building_size() -> Vector2:
 func _ready():
 	# Try to find navigation grid in parent
 	var parent = get_parent()
-	if parent.has_method("get_node"): # Check if parent is a valid Node
+	if parent.has_method("get_node"):
 		navigation_grid = parent.get_node("NavigationGrid") as NavigationGrid
 
 	if not camera:
@@ -62,82 +54,9 @@ func _ready():
 			camera.mouse_world_position_clicked.connect(_on_world_position_clicked)
 			print("Successfully connected to camera 'mouse_world_position_clicked' signal.")
 		else:
-			push_warning("Camera script is missing the 'mouse_world_position_clicked' signal! (This is for placing buildings).")
+			push_warning("Camera script is missing the 'mouse_world_position_clicked' signal!")
 	
 	_create_preview_mesh()
-	_create_grid_visualization()
-
-# --- NEW: _process function to handle grid updates ---
-func _process(_delta):
-	# Only check for grid updates if we are in placement mode and the grid is visible
-	if is_placing_mode and show_grid and camera:
-		# Project current camera position to the ground plane for a stable comparison
-		var current_cam_pos_flat = camera.global_position
-		current_cam_pos_flat.y = 0
-		
-		# Check if the camera has moved past our threshold distance
-		if current_cam_pos_flat.distance_to(last_grid_update_camera_pos) > grid_update_threshold:
-			_update_grid_visualization()
-
-
-func _create_grid_visualization():
-	if not grid_lines:
-		grid_lines = Node3D.new()
-		grid_lines.name = "GridLines"
-		add_child(grid_lines)
-	
-	grid_lines.visible = show_grid
-	if show_grid:
-		_update_grid_visualization()
-
-func _update_grid_visualization():
-	if not grid_lines or not show_grid or not camera:
-		return
-	
-	for child in grid_lines.get_children():
-		child.queue_free()
-	
-	var line_material = StandardMaterial3D.new()
-	line_material.albedo_color = grid_color
-	line_material.flags_unshaded = true
-	line_material.flags_transparent = true
-	
-	var camera_pos = camera.global_position
-	camera_pos.y = 0
-	
-	# --- NEW: Store the position where we last updated the grid ---
-	last_grid_update_camera_pos = camera_pos
-	
-	var visible_radius = (camera.size if camera else 50.0) + 20.0
-	
-	var min_x = floor((camera_pos.x - visible_radius) / grid_size) * grid_size
-	var max_x = ceil((camera_pos.x + visible_radius) / grid_size) * grid_size
-	var min_z = floor((camera_pos.z - visible_radius) / grid_size) * grid_size
-	var max_z = ceil((camera_pos.z + visible_radius) / grid_size) * grid_size
-	
-	var x = min_x
-	while x <= max_x:
-		var line = _create_line_mesh(Vector3(x, 0.01, min_z), Vector3(x, 0.01, max_z))
-		line.material_override = line_material
-		grid_lines.add_child(line)
-		x += grid_size
-	
-	var z = min_z
-	while z <= max_z:
-		var line = _create_line_mesh(Vector3(min_x, 0.01, z), Vector3(max_x, 0.01, z))
-		line.material_override = line_material
-		grid_lines.add_child(line)
-		z += grid_size
-
-func _create_line_mesh(start: Vector3, end: Vector3) -> MeshInstance3D:
-	var mesh_instance = MeshInstance3D.new()
-	var imm_mesh = ImmediateMesh.new()
-	imm_mesh.surface_begin(Mesh.PRIMITIVE_LINES)
-	imm_mesh.surface_add_vertex(start)
-	imm_mesh.surface_add_vertex(end)
-	imm_mesh.surface_end()
-	mesh_instance.mesh = imm_mesh
-	return mesh_instance
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -147,8 +66,6 @@ func _input(event):
 	elif event is InputEventKey and event.pressed:
 		if event.keycode >= KEY_1 and event.keycode <= KEY_9:
 			select_building(event.keycode - KEY_1)
-		elif event.keycode == KEY_G:
-			toggle_grid_visibility()
 
 func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_object: Node3D):
 	if not is_placing_mode:
@@ -160,6 +77,16 @@ func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_o
 func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 	if not is_placing_mode:
 		return
+	
+	# Check cooldown to prevent multiple rapid placements
+	var current_time = Time.get_time_dict_from_system()
+	var time_float = current_time.hour * 3600.0 + current_time.minute * 60.0 + current_time.second + current_time.get("millisecond", 0) / 1000.0
+	
+	if time_float - last_click_time < click_cooldown:
+		print("Click ignored due to cooldown")
+		return
+	
+	last_click_time = time_float
 		
 	var snapped_pos = snap_to_grid_position(world_pos)
 	_try_place_building(snapped_pos)
@@ -167,20 +94,28 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 func snap_to_grid_position(world_pos: Vector3) -> Vector3:
 	if not navigation_grid:
 		return world_pos
-	var cell_size = 1.0 # Fallback
-	if "grid_cell_size" in navigation_grid:
-		cell_size = navigation_grid.grid_cell_size
+	var cell_size = navigation_grid.grid_cell_size if navigation_grid else 1.0
 	var snapped_x = floor(world_pos.x / cell_size) * cell_size
 	var snapped_z = floor(world_pos.z / cell_size) * cell_size
 	return Vector3(snapped_x, 0, snapped_z)
 
 func _try_place_building(world_pos: Vector3):
+	print("Attempting to place building at: %s" % world_pos)
+	
+	var building = get_current_building()
+	if not building:
+		print("No building selected!")
+		return
+	
 	if _can_place_at(world_pos):
 		_place_building_at(world_pos)
+	else:
+		print("Cannot place building at %s - area is blocked" % world_pos)
 
 func _can_place_at(world_pos: Vector3) -> bool:
 	if not navigation_grid:
 		return true 
+	
 	var building_size = get_current_building_size()
 	var grid_start = navigation_grid.world_to_grid(world_pos)
 	
@@ -192,11 +127,17 @@ func _can_place_at(world_pos: Vector3) -> bool:
 
 func _place_building_at(world_pos: Vector3):
 	var building = get_current_building()
-	if not building: return
+	if not building: 
+		return
+	
+	# Double-check before placing
+	if not _can_place_at(world_pos):
+		print("Cannot place building - area became blocked!")
+		return
 	
 	navigation_grid.place_building(world_pos, building.size)
 	_create_building_visual(world_pos, building)
-	print("Building placed: ", building.name, " at: ", world_pos)
+	print("Building placed: %s at: %s" % [building.name, world_pos])
 
 func _create_preview_mesh():
 	preview_mesh = MeshInstance3D.new()
@@ -206,7 +147,9 @@ func _create_preview_mesh():
 	preview_mesh.visible = false
 
 func _update_preview_mesh():
-	if not preview_mesh: return
+	if not preview_mesh: 
+		return
+		
 	var building_size = get_current_building_size()
 	var box_mesh = BoxMesh.new()
 	box_mesh.size = Vector3(building_size.x, 1.0, building_size.y)
@@ -219,7 +162,8 @@ func _update_preview_mesh():
 	preview_mesh.material_override = material
 
 func _update_preview(world_pos: Vector3):
-	if not preview_mesh or not is_placing_mode: return
+	if not preview_mesh or not is_placing_mode: 
+		return
 		
 	var building_size = get_current_building_size()
 	preview_mesh.position = world_pos + Vector3(building_size.x * 0.5, 0.5, building_size.y * 0.5)
@@ -232,24 +176,7 @@ func _update_preview(world_pos: Vector3):
 func _toggle_placement_mode():
 	is_placing_mode = not is_placing_mode
 	preview_mesh.visible = is_placing_mode
-	
-	if is_placing_mode:
-		# Force an immediate grid update when entering placement mode
-		last_grid_update_camera_pos = Vector3.INF # Invalidate last pos
-		_process(0) # Call process once to draw the grid
-	
-	if grid_lines:
-		grid_lines.visible = is_placing_mode and show_grid
-		
-	print("Placement mode: ", "ON" if is_placing_mode else "OFF")
-
-func toggle_grid_visibility():
-	show_grid = not show_grid
-	if grid_lines:
-		grid_lines.visible = show_grid and is_placing_mode
-		if show_grid and is_placing_mode:
-			_update_grid_visualization()
-	print("Grid visibility: ", "ON" if show_grid else "OFF")
+	print("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
 
 func _create_building_visual(world_pos: Vector3, building: BuildingData):
 	var building_node: Node3D
@@ -266,11 +193,11 @@ func _create_building_visual(world_pos: Vector3, building: BuildingData):
 		building_node = mesh_instance
 	
 	building_node.position = world_pos + Vector3(building.size.x * 0.5, 0, building.size.y * 0.5)
-	building_node.name = "Building_" + building.name
+	building_node.name = "Building_" + building.name + "_" + str(Time.get_ticks_msec())
 	get_parent().add_child(building_node)
 
 func select_building(index: int):
 	if index >= 0 and index < building_data.size():
 		current_building_index = index
 		_update_preview_mesh()
-		print("Selected: ", building_data[index].name)
+		print("Selected: %s" % building_data[index].name)

@@ -151,6 +151,7 @@ mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Pixelated/Main"]
+clip_children = 1
 texture_filter = 1
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 1
@@ -162,7 +163,7 @@ grow_vertical = 2
 mouse_filter = 0
 
 [node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
-handle_input_locally = false
+transparent_bg = true
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 anisotropic_filtering_level = 0
