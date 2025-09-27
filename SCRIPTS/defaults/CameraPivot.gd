@@ -1,4 +1,4 @@
-#CameraPivot Script with Chunk System Integration and Panning
+#CameraPivot Script with Chunk System Integration and RTS-style Panning
 extends Node3D
 
 # Rotation settings
@@ -9,10 +9,14 @@ var rotation_speed := 5.0
 var dragging := false
 var mouse_movement := 0.0
 
-# Panning settings
-var panning := true
-var pan_sensitivity := 0.03
-var pan_input := Vector2.ZERO
+# Panning settings - RTS style
+var panning := false  # Only active when middle mouse is held
+var pan_sensitivity := 0.2  # Base sensitivity
+var pan_speed_multiplier := 1.0  # Speed multiplier for panning
+var pan_acceleration := 1.0  # Acceleration factor for fast movements
+var last_mouse_position := Vector2.ZERO
+var middle_mouse_pressed := false
+var fast_pan_threshold := 50.0  # Pixel movement threshold for fast panning
 
 # Movement settings
 @export var movement_speed := 10.0  # Units per second
@@ -77,7 +81,6 @@ func _find_chunk_terrain_recursive(node: Node) -> ChunkPixelTerrain:
 
 func _process(delta):
 	handle_movement_input()
-	handle_panning_input(delta)
 	update_position(delta)
 	handle_rotation(delta)
 	apply_snap_effects()
@@ -113,32 +116,6 @@ func handle_movement_input():
 	# Normalize diagonal movement
 	if movement_input.length() > 0:
 		movement_input = movement_input.normalized()
-
-func handle_panning_input(delta):
-	# Apply panning movement if panning is active
-	if panning and pan_input.length() > 0:
-		# Get the camera's right and forward vectors (relative to camera orientation)
-		var camera_right = transform.basis.x    # Camera's right direction
-		var camera_forward = -transform.basis.z # Camera's forward direction (negative Z)
-		
-		# Calculate pan movement relative to camera orientation
-		# Invert the input to make it feel like "grabbing and dragging" the world
-		var pan_movement = Vector3.ZERO
-		pan_movement += camera_right * -pan_input.x     # Drag left = move camera right (world moves left)
-		pan_movement += camera_forward * pan_input.y    # Drag down = move camera forward (world moves back)
-		
-		# Keep movement on the horizontal plane (no Y movement)
-		pan_movement.y = 0
-		
-		# Apply pan movement
-		if smooth_movement:
-			target_position += pan_movement
-		else:
-			global_position += pan_movement
-			target_position = global_position
-		
-		# Reset pan input for next frame
-		pan_input = Vector2.ZERO
 
 func update_position(delta):
 	# Calculate the current speed
@@ -215,16 +192,42 @@ func handle_keyboard_input(event):
 				print("Smooth movement: ", smooth_movement)
 			KEY_P:
 				# Print panning status
-				print("Panning: ", panning)
+				print("=== Panning Status ===")
+				print("Panning active: ", panning)
+				print("Middle mouse pressed: ", middle_mouse_pressed)
 				print("Pan sensitivity: ", pan_sensitivity)
+				print("Pan speed multiplier: ", pan_speed_multiplier)
+				print("Pan acceleration: ", pan_acceleration)
 			KEY_BRACKETLEFT:  # [ key
 				# Decrease pan sensitivity
-				pan_sensitivity = max(0.001, pan_sensitivity - 0.005)
+				pan_sensitivity = max(0.001, pan_sensitivity - 0.001)
 				print("Pan sensitivity: ", pan_sensitivity)
 			KEY_BRACKETRIGHT:  # ] key
 				# Increase pan sensitivity
-				pan_sensitivity = min(0.1, pan_sensitivity + 0.005)
+				pan_sensitivity = min(0.02, pan_sensitivity + 0.001)
 				print("Pan sensitivity: ", pan_sensitivity)
+			KEY_MINUS:  # - key
+				# Decrease pan speed multiplier
+				pan_speed_multiplier = max(0.1, pan_speed_multiplier - 0.1)
+				print("Pan speed multiplier: ", pan_speed_multiplier)
+			KEY_EQUAL:  # + key (= key without shift)
+				# Increase pan speed multiplier
+				pan_speed_multiplier = min(5.0, pan_speed_multiplier + 0.1)
+				print("Pan speed multiplier: ", pan_speed_multiplier)
+			KEY_COMMA:  # , key
+				# Decrease pan acceleration
+				pan_acceleration = max(0.5, pan_acceleration - 0.1)
+				print("Pan acceleration: ", pan_acceleration)
+			KEY_PERIOD:  # . key
+				# Increase pan acceleration
+				pan_acceleration = min(3.0, pan_acceleration + 0.1)
+				print("Pan acceleration: ", pan_acceleration)
+			KEY_SLASH:  # / key
+				# Reset all panning values to defaults
+				pan_sensitivity = 0.005
+				pan_speed_multiplier = 1.0
+				pan_acceleration = 1.0
+				print("Pan settings reset to defaults")
 			KEY_F5:
 				# Force save all chunks
 				if chunk_terrain:
@@ -245,13 +248,67 @@ func handle_keyboard_input(event):
 				print_detailed_status()
 
 func handle_mouse_input(event):
-	if event is InputEventMouseMotion:
-		if dragging:
+	if event is InputEventMouseButton:
+		# Handle middle mouse button for panning (like RTS games)
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			if event.pressed:
+				middle_mouse_pressed = true
+				panning = true
+				last_mouse_position = event.position
+				# Change cursor to indicate panning mode
+				Input.set_default_cursor_shape(Input.CURSOR_MOVE)
+			else:
+				middle_mouse_pressed = false
+				panning = false
+				# Reset cursor
+				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+		
+		# Handle right mouse button for rotation
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			if event.pressed:
+				dragging = true
+				Input.set_default_cursor_shape(Input.CURSOR_MOVE)
+			else:
+				dragging = false
+				Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+	
+	elif event is InputEventMouseMotion:
+		if panning and middle_mouse_pressed:
+			# RTS-style panning: drag to move camera
+			var mouse_delta = event.position - last_mouse_position
+			last_mouse_position = event.position
+			
+			# Calculate movement distance for acceleration
+			var movement_magnitude = mouse_delta.length()
+			
+			# Apply acceleration for fast movements
+			var acceleration_factor = 1.0
+			if movement_magnitude > fast_pan_threshold:
+				acceleration_factor = pan_acceleration
+			
+			# Get the camera's right and forward vectors
+			var camera_right = transform.basis.x
+			var camera_forward = -transform.basis.z
+			
+			# Calculate pan movement with all multipliers
+			var final_sensitivity = pan_sensitivity * pan_speed_multiplier * acceleration_factor
+			var pan_movement = Vector3.ZERO
+			pan_movement += camera_right * -mouse_delta.x * final_sensitivity
+			pan_movement += camera_forward * mouse_delta.y * final_sensitivity
+			
+			# Keep movement on the horizontal plane
+			pan_movement.y = 0
+			
+			# Apply movement
+			if smooth_movement:
+				target_position += pan_movement
+			else:
+				global_position += pan_movement
+				target_position = global_position
+		
+		elif dragging:
 			# Handle rotation
 			mouse_movement += event.relative.x
-		elif panning:
-			# Handle panning
-			pan_input += event.relative * pan_sensitivity
 
 func reset_camera():
 	"""Reset camera to origin with 45 degree angle"""
@@ -308,8 +365,22 @@ func teleport_to_chunk(chunk_coord: Vector2i):
 
 func set_pan_sensitivity(sensitivity: float):
 	"""Set the panning sensitivity"""
-	pan_sensitivity = clamp(sensitivity, 0.001, 0.1)
-	#print("Pan sensitivity set to: ", pan_sensitivity)
+	pan_sensitivity = clamp(sensitivity, 0.001, 0.02)
+	print("Pan sensitivity set to: ", pan_sensitivity)
+
+func set_pan_speed_multiplier(multiplier: float):
+	"""Set the panning speed multiplier"""
+	pan_speed_multiplier = clamp(multiplier, 0.1, 5.0)
+	print("Pan speed multiplier set to: ", pan_speed_multiplier)
+
+func set_pan_acceleration(acceleration: float):
+	"""Set the panning acceleration factor"""
+	pan_acceleration = clamp(acceleration, 0.5, 3.0)
+	print("Pan acceleration set to: ", pan_acceleration)
+
+func get_effective_pan_speed() -> float:
+	"""Get the current effective pan speed (for UI display)"""
+	return pan_sensitivity * pan_speed_multiplier
 
 # Debug functions
 func print_status():
@@ -326,9 +397,15 @@ func print_detailed_status():
 	print("Rotation: ", rad_to_deg(rotation.y), "°")
 	print("Moving: ", is_moving())
 	print("Sprinting: ", is_sprinting)
-	print("Panning: ", panning)
-	print("Pan Sensitivity: ", pan_sensitivity)
+	print("=== Panning Settings ===")
+	print("Panning active: ", panning)
+	print("Middle mouse pressed: ", middle_mouse_pressed)
+	print("Pan sensitivity: ", pan_sensitivity)
+	print("Pan speed multiplier: ", pan_speed_multiplier)
+	print("Pan acceleration: ", pan_acceleration)
+	print("Effective pan speed: ", get_effective_pan_speed())
 	if chunk_terrain:
+		print("=== Chunk System ===")
 		print("Current Chunk: ", get_chunk_position())
 		print("Loaded Chunks: ", chunk_terrain.get_loaded_chunk_count())
 		print("Loading Chunks: ", chunk_terrain.get_loading_chunk_count())
