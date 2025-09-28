@@ -1,13 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=18 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
+[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/human_type_ceviliean.tscn" id="2_ys6xq"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
-[ext_resource type="PackedScene" uid="uid://brq7bouabf3kf" path="res://SCENES/Assets/house_all.tscn" id="5_0u8pi"]
 [ext_resource type="PackedScene" uid="uid://dn7khush7j3" path="res://SCENES/World_Generator_V1.tscn" id="5_ab6ae"]
 [ext_resource type="Script" uid="uid://dojs4xrohef6q" path="res://SCRIPTS/console.gd" id="5_df0lc"]
 [ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
-[ext_resource type="PackedScene" uid="uid://do8uqji4urspu" path="res://SCENES/Assets/castle.tscn" id="6_ab6ae"]
-[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/human_type_ceviliean.tscn" id="7_ceyew"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -30,8 +28,11 @@ size = Vector2(1000, 1000)
 [sub_resource type="Gradient" id="Gradient_ceyew"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_o4jo6"]
-noise_type = 2
+noise_type = 3
 frequency = 0.0412
+fractal_octaves = 2
+fractal_lacunarity = 1.285
+domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l28hy"]
 width = 1000
@@ -48,7 +49,7 @@ shader_parameter/noiseTexture = SubResource("NoiseTexture2D_l28hy")
 shader_parameter/isSoft = false
 shader_parameter/speed = 0.002000000095
 shader_parameter/brightness = 0.6000000285
-shader_parameter/threshold = 1.42800006783
+shader_parameter/threshold = 1.250000059375
 shader_parameter/fluffiness = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys6xq"]
@@ -70,7 +71,7 @@ viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
 [node name="light" type="Node" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="light"]
-transform = Transform3D(-0.11985929, -0.8757982, -0.46755862, -0.9886973, 0.062575325, 0.13624197, -0.0900625, 0.47860378, -0.87339973, 0, 0, 0)
+transform = Transform3D(-0.025797226, -0.92186046, -0.38666248, -0.69963044, -0.25962663, 0.6656659, -0.7140389, 0.28769314, -0.63826394, 0, 0, 0)
 light_color = Color(0.77762455, 0.7145413, 0.44411469, 1)
 shadow_enabled = true
 shadow_opacity = 0.72
@@ -85,18 +86,11 @@ environment = SubResource("Environment_wp4xf")
 [node name="assets" type="Node" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="assets"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0456696, 236.36472, -12.764636)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0456696, 454.98288, -12.764636)
 mesh = SubResource("PlaneMesh_h2jjw")
 surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
-[node name="Castle" parent="assets" instance=ExtResource("6_ab6ae")]
-transform = Transform3D(1.797, 0, 0, 0, 1.797, 0, 0, 0, 1.797, -8.521346, 0, -4.317335)
-
-[node name="Human_Type_Ceviliean" parent="assets" instance=ExtResource("7_ceyew")]
-transform = Transform3D(-5.6824803e-08, 0, 1.3, 0, 1.3, 0, -1.3, 0, -5.6824803e-08, -5.759279, 0, -4.1207128)
-
-[node name="House_all" parent="assets" instance=ExtResource("5_0u8pi")]
-transform = Transform3D(0.742, 0, 0, 0, 0.742, 0, 0, 0, 0.742, 0, 0, 0)
+[node name="Human_Type_Ceviliean" parent="assets" instance=ExtResource("2_ys6xq")]
 
 [node name="UI" type="Node" parent="."]
 
@@ -164,6 +158,7 @@ mouse_filter = 0
 
 [node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
 transparent_bg = true
+handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 anisotropic_filtering_level = 0
@@ -182,6 +177,7 @@ projection = 1
 current = true
 size = 100.0
 script = ExtResource("3_i3vxn")
+min_size = 40.0
 max_size = 220.0
 show_debug_print = false
 show_raycast_debug = false
@@ -190,16 +186,18 @@ show_visual_debug = false
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("player", "camera3D") instance=ExtResource("5_ab6ae")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(0.9999335, 0, 0.01153637, 0, 1, 0, -0.01153637, 0, 0.9999335, 0, 0, 0)
 skeleton = NodePath("../../../../../..")
+chunk_size = 256
 render_distance = 1
 player = NodePath("../CameraPivot")
 camera3D = NodePath("../CameraPivot/Camera3D")
 
-[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="9"]
+[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
+active = false
 
-[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="10" node_paths=PackedStringArray("camera")]
+[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="1" node_paths=PackedStringArray("camera")]
 camera = NodePath("../../CameraPivot/Camera3D")
 
 [node name="Display" type="Control" parent="Pixelated"]

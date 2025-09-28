@@ -312,3 +312,11 @@ func get_memory_usage_estimate() -> String:
 		return "%.1f KB" % (bytes / 1024.0)
 	else:
 		return "%.1f MB" % (bytes / (1024.0 * 1024.0))
+# Add this method to your NavigationGrid class
+func grid_to_world(grid_pos: Vector2i) -> Vector3:
+	"""Convert grid coordinates to world position (center of cell)"""
+	return Vector3(
+		grid_pos.x * grid_cell_size + grid_cell_size * 0.5,
+		0,
+		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
+	)

@@ -1,6 +1,7 @@
 [gd_scene load_steps=12 format=4 uid="uid://do8uqji4urspu"]
 
 [ext_resource type="Texture2D" uid="uid://bxo4o08u3csq3" path="res://MODLES/assetsmodel/Castle_Castle1.png" id="1_15ya3"]
+[ext_resource type="Script" uid="uid://1lmx1qfc3il3" path="res://SCRIPTS/enviorment/buildings/Castle/BuildingSpawner.gd" id="1_j7dqp"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_s46yq"]
 [ext_resource type="Texture2D" uid="uid://c18mwvqbs6tm0" path="res://MODLES/assetsmodel/Castle_Castle.png" id="2_s46yq"]
 
@@ -143,9 +144,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wqmey")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_j7dqp"]
-size = Vector3(1.8903503, 0.9361572, 2.1290283)
-
 [node name="Castle" type="Node3D"]
 transform = Transform3D(1.797, 0, 0, 0, 1.797, 0, 0, 0, 1.797, 0, 0, 0)
 
@@ -156,12 +154,14 @@ ignore_occlusion_culling = true
 mesh = SubResource("ArrayMesh_ethax")
 skeleton = NodePath("")
 
-[node name="IdleZone" type="Area3D" parent="CastleMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.023259, 0, -2.779396)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CastleMesh/IdleZone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025405884, 0.4710083, 0.15435791)
-shape = SubResource("BoxShape3D_j7dqp")
-
 [node name="EntranceMarker" type="Marker3D" parent="CastleMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825114, 0.30830812, 0)
+
+[node name="Idlezone" type="Marker3D" parent="CastleMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825114, 0.30830812, -3.4374745)
+
+[node name="BuildingSpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_marker", "idle_marker")]
+script = ExtResource("1_j7dqp")
+spawn_interval = 1.0
+spawn_marker = NodePath("../CastleMesh/EntranceMarker")
+idle_marker = NodePath("../CastleMesh/Idlezone")

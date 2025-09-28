@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="BuildingData" load_steps=3 format=3 uid="uid://bo88afessxe6"]
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://bo88afessxe6"]
 
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/enviorment/Building_Data/NPCType.gd" id="1_3iyto"]
 [ext_resource type="PackedScene" uid="uid://brq7bouabf3kf" path="res://SCENES/Assets/house_all.tscn" id="1_bakxp"]
-[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/World_Generator/BuildingData.gd" id="1_iixcb"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="1_iixcb"]
 
 [resource]
 script = ExtResource("1_iixcb")

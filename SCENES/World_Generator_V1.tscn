@@ -5,8 +5,8 @@
 [ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="3_orww8"]
 [ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
-[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/World_Generator/BuildingData.gd" id="6_jl6tj"]
-[ext_resource type="Resource" uid="uid://2cppeenv6ejg" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type_1.tres" id="7_m1wsa"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_jl6tj"]
+[ext_resource type="Resource" uid="uid://h405nckjcs32" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type1.tres" id="7_m1wsa"]
 [ext_resource type="Resource" uid="uid://bo88afessxe6" path="res://SCRIPTS/enviorment/Building_Data/House_All.tres" id="8_m1wsa"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ab6ae"]

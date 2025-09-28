@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NPCType" load_steps=3 format=3 uid="uid://bqoor3khx1nql"]
+
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/enviorment/Building_Data/NPCType.gd" id="1_ylruw"]
+[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/human_type_ceviliean.tscn" id="2_r4utb"]
+
+[resource]
+script = ExtResource("1_ylruw")
+description = "No Jobb"
+visual_scene = ExtResource("2_r4utb")
+sleeps_at_night = false
+metadata/_custom_type_script = "uid://nlcjomlb1de0"

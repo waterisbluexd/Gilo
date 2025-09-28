@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=4 uid="uid://c2toi2o671k6c"]
 
-[ext_resource type="Script" uid="uid://b4vxmjxx5cdeb" path="res://SCRIPTS/entite/human_type_ceviliean.gd" id="1_oauld"]
+[ext_resource type="Script" uid="uid://bwdfuixab6v0s" path="res://SCRIPTS/entite/NPCGridemovement.gd" id="1_oauld"]
 [ext_resource type="Texture2D" uid="uid://c8gvnikifry3g" path="res://MODLES/en_tities/Social_Animals/Human_Type_1_0.png" id="1_yagjy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_56e0a"]
@@ -240,7 +240,10 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cgd18")
 
 [node name="Human_Type_Ceviliean" type="Node3D"]
+transform = Transform3D(2.7, 0, 0, 0, 2.7, 0, 0, 0, 2.7, 0, 0, 0)
 script = ExtResource("1_oauld")
+debug_movement = true
+debug_ai = true
 
 [node name="body" type="MeshInstance3D" parent="."]
 
