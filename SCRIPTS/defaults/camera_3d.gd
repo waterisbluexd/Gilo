@@ -2,8 +2,8 @@ extends Camera3D
 
 # --- User-tweakable ---
 @export var snap : bool = true
-@export var min_size: float = 80.0
-@export var max_size: float = 200.0
+@export var min_size: float = 0.0
+@export var max_size: float = 1000.0
 @export var zoom_speed: float = 5
 # How big a world tile is (your pixel_size)
 @export var tile_world_size: float = 1.0
@@ -26,6 +26,8 @@ extends Camera3D
 @export var cursor_indicator_size: float = 0.3
 @export var cursor_ground_plane_y: float = 0.0
 @export var continuous_raycast_update: bool = true
+
+
 
 # internal
 var zoom_level: float
@@ -57,6 +59,7 @@ signal mouse_world_position_clicked(world_pos: Vector3, hit_object: Node3D)
 
 
 func _ready():
+	DebugManager.register_camera(self)
 	zoom_level = size
 	world_3d = get_world_3d()
 	
@@ -77,8 +80,8 @@ func find_viewport_components():
 		current_node = current_node.get_parent()
 	
 	if show_debug_print:
-		print("SubViewport found: ", sub_viewport != null)
-		print("SubViewportContainer found: ", sub_viewport_container != null)
+		ConsoleCapture.console_log("SubViewport found: " + str(sub_viewport != null))
+		ConsoleCapture.console_log("SubViewportContainer found: " + str(sub_viewport_container != null))
 
 func setup_visual_debug():
 	# Create materials
@@ -160,6 +163,7 @@ func _input(event):
 		if zoom_changed:
 			zoom_level = clamp(zoom_level, min_size, max_size)
 			size = zoom_level
+
 func update_mouse_world_position(mouse_pos: Vector2):
 	if not world_3d:
 		return
@@ -255,7 +259,7 @@ func update_visual_hit_point(hit_pos: Vector3, is_object_hit: bool):
 	hit_material.albedo_color = color
 	hit_material.emission = color * 0.5
 
-func create_line_mesh(start: Vector3, end: Vector3) -> ArrayMesh:
+func create_line_mesh(start: Vector3, end: Vector3) -> ImmediateMesh:
 	var line_mesh = ImmediateMesh.new()
 	line_mesh.surface_begin(Mesh.PRIMITIVE_LINES, ray_material)
 	line_mesh.surface_add_vertex(start)
@@ -298,3 +302,74 @@ func fit_to_target_pixels():
 		desired = float(max(1, int(round(pixels_per_tile()))))
 	size = clamp(camera_size_for_target(desired), min_size, max_size)
 	zoom_level = size
+
+# ========================================
+# DEBUG INTERFACE - For DebugManager
+# ========================================
+
+# Toggle functions for debug menu
+func toggle_visual_debug():
+	show_visual_debug = !show_visual_debug
+	if debug_ray_mesh: debug_ray_mesh.visible = false
+	if debug_hit_point_mesh: debug_hit_point_mesh.visible = false
+
+func toggle_cursor_indicator():
+	show_cursor_indicator = !show_cursor_indicator
+	if cursor_indicator_mesh: 
+		cursor_indicator_mesh.visible = show_cursor_indicator
+
+func toggle_snap():
+	snap = !snap
+	if snap: snap_to_pixel_size()
+
+func toggle_continuous_raycast():
+	continuous_raycast_update = !continuous_raycast_update
+
+# Setters for debug menu sliders/inputs
+func set_zoom_level_debug(value: float):
+	zoom_level = clamp(value, min_size, max_size)
+	size = zoom_level
+
+func set_zoom_speed_debug(value: float):
+	zoom_speed = value
+
+func set_raycast_length_debug(value: float):
+	raycast_length = value
+
+func set_hit_point_size_debug(value: float):
+	hit_point_size = value
+	if debug_hit_point_mesh and debug_hit_point_mesh.mesh:
+		var sphere = debug_hit_point_mesh.mesh as SphereMesh
+		sphere.radius = value
+
+func set_cursor_size_debug(value: float):
+	cursor_indicator_size = value
+	if cursor_indicator_mesh and cursor_indicator_mesh.mesh:
+		var sphere = cursor_indicator_mesh.mesh as SphereMesh
+		sphere.radius = value
+
+# Camera manipulation
+func teleport_to(pos: Vector3):
+	global_position = pos
+
+func reset_camera_position():
+	global_position = Vector3.ZERO
+	global_rotation = Vector3.ZERO
+
+# Getters for debug menu display
+func get_debug_info() -> Dictionary:
+	return {
+		"position": global_position,
+		"rotation": global_rotation,
+		"zoom_level": zoom_level,
+		"size": size,
+		"pixels_per_tile": pixels_per_tile(),
+		"mouse_world_pos": current_mouse_world_pos,
+		"mouse_hit_object": current_hit_object.name if current_hit_object else "None",
+		"mouse_tile_pos": get_mouse_tile_position(),
+		"fov": fov,
+		"snap_enabled": snap,
+		"visual_debug": show_visual_debug,
+		"cursor_indicator": show_cursor_indicator,
+		"continuous_raycast": continuous_raycast_update
+	}

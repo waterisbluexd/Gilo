@@ -1,0 +1,145 @@
+[gd_scene load_steps=10 format=4 uid="uid://dtdxjrr2gjfs"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_m4qrc"]
+[ext_resource type="Texture2D" uid="uid://byj7dphwojopf" path="res://MODLES/assetsmodel/House_all_House3.png" id="2_px405"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6oukc"]
+render_priority = 0
+shader = ExtResource("1_m4qrc")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4499999899416
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_453a1"]
+resource_name = "Hood_Window"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5636g"]
+resource_name = "Hood_Body_House3"
+cull_mode = 2
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
+albedo_texture = ExtResource("2_px405")
+roughness = 0.5
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dc02w"]
+resource_name = "Hood"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.80612284, 0.41037467, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e20u3"]
+resource_name = "Hood_chem"
+cull_mode = 2
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_cdaeu"]
+_surfaces = [{
+"aabb": AABB(-1, -0.004228294, -1, 2, 3.556216, 2),
+"format": 34896613377,
+"index_count": 48,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABQAEAAcABQAHAAgACQAKAAsACQAMAAoADQAOAA8ADgANABAADgAQABEAEgATABQAEwASABUAEwAVABYAFwAYABkAGAAXABoAGAAaABsA"),
+"name": "Hood_Window",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 28,
+"vertex_data": PackedByteArray("/2kAAAAAAABnn2loAAAAAP9paWgAAAAAZ58AAAAAAACVaELXAAAAANKdXdQAAAAA0p1B1wAAAACVaCmwAAAAANKdKrAAAAAAAADu9rdsAAAAAL3L2p0AAAAAvcu3bAAAAADu9tqdAADMnv7///8AAE1mGP3//wAATWb/////AADMnhXR//8AAE1mFdH//wAA///fTkhtAAD//95LcaEAAP//305xoQAA///VHkhtAAD//9UecaEAAP//HPcuawAA//+q9dadAAD//xz31p0AAP//tsouawAA//+2ytadAAA=")
+}, {
+"aabb": AABB(-1, -0.004228294, -1, 2, 6.1143184, 2),
+"format": 34896613377,
+"index_count": 150,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAACAAEAAAAFAAMABgACAAQABgAEAAUAAAAHAAUABQAHAAYACAAAAAIAAgAJAAgAAgAKAAkACwAAAAgACQAKAAwADQAAAAsADQALAA4ADQAOAAwADQAMAAoAAAAPAAcADwAGAAcAAAAQAA8AEAAAAA0ADwARAAYAEgARAA8AEQASABMABgARABQAFQAGABQAFgAGABUAFgAVABcAGAATABAAEQATABgAEAANABgAEQAYABkAFgAXABkAGQAYABYAGAANABoAGgANABsAGAAaABwACgAbAA0AGAAcAB0ACgAeABsAHQAfABgAHgAfAB0AGAAfABYAHwAeACAAIAAeAAoAFgAfACEAIAAKACIAIwAWACEACgAWACMACgAjACIA"),
+"name": "Hood_Body_House3",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AAAAAP//AAAAAJ6P2p0AAAAA/////wAAAAB/dtqdAAAAAJ6Pt2wAAAAAf3a3bAAAAAD//wAAAAAAAAAAAAAAAE1mNJP//wAATWbklP//AAD///////8AAE1mm3n//wAAzJ7klP//AAD//wAA//8AAMyem3n//wAA/2kAAAAAAABnnwAAAAAAAJVodWYAAAAA/2m6PAAAAABnn7o8AAAAAJVoMn0AAAAA0p0yfQAAAAD/////AAAAANKdg3sAAAAA//8AAAAAAADSnXZmAAAAAP//7xFxoQAA//8gLHGhAAD//+8RSG0AAP//3y1IbQAA///fLXGhAAD//+Z1LmsAAP//5nXWnQAA//+5jy5rAAD//+KO1p0AAP//uY/WnQAA")
+}, {
+"aabb": AABB(-1.327057, 6.1100903, -1.327057, 2.654114, 0.29499245, 2.654114),
+"format": 34359742465,
+"index_count": 72,
+"index_data": PackedByteArray("AAABAAIAAgABAAMAAgADAAQAAAAFAAEABgAFAAAABAAHAAYABgAHAAUABAADAAcABQAIAAEAAQAJAAMAAQAIAAkAAwAKAAcAAwAJAAoABwALAAUABQALAAgABwAKAAsACAAMAAkACQAMAA0ACQANAAoACAAOAAwACwAOAAgACgANAA8ACwAPAA4ACgAPAAsA"),
+"name": "Hood",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("AACAv9yFw0AAAIC/Ad2pv9yFw0AB3ak/AACAv9yFw0AAAIA/Ad2pP9yFw0AB3ak/AACAP9yFw0AAAIA/Ad2pv9yFw0AB3am/AACAP9yFw0AAAIC/Ad2pP9yFw0AB3am/Ad2pv3D2zEAB3ak/Ad2pP3D2zEAB3ak/Ad2pP3D2zEAB3am/Ad2pv3D2zEAB3am/PHJ3PnD2zEDQTS0/PHJ3PnD2zEDnUkY+HHJ3vnD2zEDQTS0/HHJ3vnD2zEDnUkY+")
+}, {
+"aabb": AABB(-0.24164623, 6.4050827, 0.19367562, 0.48329294, 1.8815804, 0.48329294),
+"format": 34359742465,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAgABAAMAAgADAAQAAAAFAAEAAwABAAUABgAFAAAABAADAAcABAAHAAYAAwAFAAcABgAHAAUA"),
+"name": "Hood_chem",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("HHJ3vnD2zEDQTS0/PHJ3PiyWBEHQTS0/PHJ3PnD2zEDQTS0/PHJ3PiyWBEHnUkY+PHJ3PnD2zEDnUkY+HHJ3viyWBEHQTS0/HHJ3vnD2zEDnUkY+HHJ3viyWBEHnUkY+")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7lka0"]
+resource_name = "House_all_Cube_005"
+_surfaces = [{
+"aabb": AABB(-1, -0.004228294, -1, 2, 3.556216, 2),
+"attribute_data": PackedByteArray("/19gqMNt/JPEbWCo/1/8kzWLzK6hikKPNYtCj1yDzK5cg0KPpJZqzzOP6fEzj2rPpJbp8WOTUDHOktkPY5PZD/iJUDH4idkP1G8YbzpvEE/UbxBPMGYYbzBmEE+akWJwUJFHUZqRR1GxiGJwsYhHUQ=="),
+"format": 34896613399,
+"index_count": 48,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABQAEAAcABQAHAAgACQAKAAsACQAMAAoADQAOAA8ADgANABAADgAQABEAEgATABQAEwASABUAEwAVABYAFwAYABkAGAAXABoAGAAaABsA"),
+"material": SubResource("StandardMaterial3D_453a1"),
+"name": "Hood_Window",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 28,
+"vertex_data": PackedByteArray("/2kAAAAA//9nn2loAAD///9paWgAAP//Z58AAAAA//+VaELXAAD//9KdXdQAAP//0p1B1wAA//+VaCmwAAD//9KdKrAAAP//AADu9rdsVNUAAL3L2p1U1QAAvcu3bFTVAADu9tqdVNXMnv7/////v01mGP3///+/TWb//////7/MnhXR////v01mFdH///+////fTkhtVNX//95LcaFU1f//305xoVTV///VHkhtVNX//9UecaFU1f//HPcua1TV//+q9dadVNX//xz31p1U1f//tsoua1TV//+2ytadVNX/v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+//79U1VTVVNVU1VTVVNVU1VTV//////////////////////////+qKqoqqiqqKqoqqiqqKqoqqiqqKqoqqiqqKqoqqiqqKqoqqiqqKqoq")
+}, {
+"aabb": AABB(-1, -0.004228294, -1, 2, 6.1143184, 2),
+"attribute_data": PackedByteArray("/1///6SW6fH/n///M4/p8TOPas//X/+//5//v9mc/7+klmrP2Zz///9fYKj/n/+//1//v1yDzK41i8yuxG1gqMNt/JP/X/9//1/8k1yDQo//n/9/NYtCj52d/7+dnf9/oYpCj/9f/38wZhhv1G8YbzBmEE//X/8/Om8QT/+f/z/UbxBPsYhHUVCRR1GxiGJw/5//f5qRYnAFnf8/mpFHUQWd/3//X/8/Y5NQMf+f/z/4iVAx+InZD/9fAADOktkP/58AAGOT2Q//nP8//5wAAP8f/z+eN/9//x//fwJM/3//X/8//1//fw=="),
+"format": 34896613399,
+"index_count": 150,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAAAEAAMAAAAFAAQABAAFAAYABwAIAAQACAAJAAEABwAJAAgACgALAAwACgANAAsACwANAA4ADwANAAoADQAPABAADQAQABEAEQAQABIADQARABMAEwARABQAFQAWAA4AFwAWABUAFwAYABMAFwAVABgAGQAaABsAGQAcABoAGQAdABwAHAAdAB4AHwAeAB0AHwAgAB4AIQAgAB8AIQAfACIAIwAgACEAIAAjABsAGwAjABkAGQAjACQAJAAjACUAJgAnACIAJwAoACUAJgAoACcAKQAqACsAKQAsACoAKQAtACwAKQAuAC0ALQAuAC8ALwAuADAAMQAyACoAMwAxAC8AMwAyADEANAA1ADYANAA3ADUANwA0ADgANwA4ADkA"),
+"material": SubResource("StandardMaterial3D_5636g"),
+"name": "Hood_Body_House3",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 58,
+"vertex_data": PackedByteArray("AAAAAP//cdMAAJ6P2p1I0AAA/////1TVAAB/dtqdTNcAAH92t2xU1QAAAAAAAObSAAD//wAAVNUAAP//AAB32AAAno+3bIXUAAD/////wNf/aQAAAAD//wAA//8AAP//AAAAAAAA//+VaHVmAAD//5VoMn0AAP///2m6PAAA//9nn7o8AAD/////AAAAAP//Z58AAAAA///SnXZmAAD///////8AAP//0p0yfQAA//8AAP//AAD///////8AAP//0p2DewAA/////wAAAACK1P//7xFIbZbj///fLUhtqtX//+8RcaFe0P//AAD//yDR//8gLHGhVNX///////+P1f//3y1xoVvV///mddadzdX//+KO1p1U1f//5nUua17V/////wAAVNX//7mPLmsP0P///////1bX//+5j9adT9T/////AACT1v//AAD//3q9zJ7klP//Ibf/////////v8yem3n//wjDTWabef//W8EAAAAA//95vE1mNJP///+/AAD//////79NZuSU//+hvv///////zvDAAD/////zMQAAAAA////v/9pAAAAAP+/AAAAAAAA/79nnwAAAAD/v///AAD///+///8AAAAA/7/80oDWss6l2FTVVNWm1yvUVNVU1UjS2tZU1VTV+NiC01fU09Ur2OnTssBMv8/CL73/v/+/KsTTuwG6/cVJwbS+jeWNZaC/XsD/v/+//7//v/+//7/fvh/BJsLXveLCG73/v/+/oSsvKq0bKTJDKt0qLTFpJxow8ieqKqoqYyrNKqIqrioYKvMqqiqqKp4qsCqqKqoqnjEwJ0wo2SvqKwoqLiloK///////////////////////////////////////////////////////////AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/")
+}, {
+"aabb": AABB(-1.327057, 6.1100903, -1.327057, 2.654114, 0.29499245, 2.654114),
+"attribute_data": PackedByteArray("AAAgPwAAQD8AACA/AACAPwAAID8AAIA/AAAgPwAAQD8AACA/AAAAPwAAID8AAAA/AAAgPwAAgD4AACA/AACAPgAAID8AAAAAAAAgPwAAAAAAACA/AAAAAAAAID8AAIA+AAAgPwAAgD4AACA/AAAAAAAAID8AAAAAAAAgPwAAgD4AACA/AACAPgAAID8AAAAAAAAgPwAAAD8AACA/AAAAPwAAID8AAEA/AAAgPwAAQD8AACA/AACAPwAAID8AAIA/AAAgPwAAAD8AACA/AABAPwAAID8AAEA/AAAgPwAAAD8AACA/AACAPgAAID8AAAA/AAAgPwAAAD8AACA/AACAPgAAID8AAEA/AAAgPwAAgD8AACA/AACAPwAAID8AAEA/"),
+"format": 34359742487,
+"index_count": 72,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAADAAAABAAFAAMABgAFAAQABgAHAAUACAAHAAYACAAJAAcACgALAAwACgANAAsADgAPABAADgARAA8AEAAPABIAEAASABMAEwASABQAEwAUABUAFQAUABYAFQAWABcAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEA"),
+"material": SubResource("StandardMaterial3D_dc02w"),
+"name": "Hood",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAv9yFw0AAAIC/Ad2pv9yFw0AB3ak/AACAv9yFw0AAAIA/Ad2pv9yFw0AB3am/AACAP9yFw0AAAIC/Ad2pP9yFw0AB3am/AACAP9yFw0AAAIA/Ad2pP9yFw0AB3ak/AACAv9yFw0AAAIA/Ad2pv9yFw0AB3ak/Ad2pv9yFw0AB3ak/Ad2pP3D2zEAB3ak/Ad2pP9yFw0AB3ak/Ad2pv3D2zEAB3ak/Ad2pv3D2zEAB3ak/PHJ3PnD2zEDQTS0/Ad2pP3D2zEAB3ak/HHJ3vnD2zEDQTS0/PHJ3PnD2zEDnUkY+Ad2pP3D2zEAB3am/HHJ3vnD2zEDnUkY+Ad2pv3D2zEAB3am/HHJ3vnD2zEDQTS0/Ad2pv3D2zEAB3ak/Ad2pP9yFw0AB3am/Ad2pv3D2zEAB3am/Ad2pv9yFw0AB3am/Ad2pP3D2zEAB3am/Ad2pP9yFw0AB3ak/Ad2pP3D2zEAB3am/Ad2pP9yFw0AB3am/Ad2pP3D2zEAB3ak/Ad2pv9yFw0AB3am/Ad2pv3D2zEAB3ak/Ad2pv9yFw0AB3ak/Ad2pv3D2zEAB3am//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//fwAA////v/9/AAD///+//38AAP///7//f/9/////P/9//3////8//3//f////z//f/9/////P/9///////+//3///////7//f///////v/9///////+//3///////7//f///////v/9///////+//3///////7//f///////v/9///////+//////////7//////////v/////////+//////////7////9/////v////3////+/////f////7////9/////vwAA/3////+/AAD/f////78AAP9/////vwAA/3////+/")
+}, {
+"aabb": AABB(-0.24164623, 6.4050827, 0.19367562, 0.48329294, 1.8815804, 0.48329294),
+"attribute_data": PackedByteArray("AAAgPwAAAAAAACA/AACAPgAAID8AAIA+AAAgPwAAAAAAACA/AAAAPwAAYD8AAIA+AABgPwAAAD8AACA/AACAPgAAID8AAAA/AAAgPwAAQD8AACA/AABAPwAAID8AAAA/AAAgPwAAgD4AACA/AAAAPwAAID8AAAA/AAAgPwAAgD4AACA/AABAPwAAID8AAIA/AAAgPwAAgD8AACA/AABAPw=="),
+"format": 34359742487,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_e20u3"),
+"name": "Hood_chem",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("HHJ3vnD2zEDQTS0/PHJ3PiyWBEHQTS0/PHJ3PnD2zEDQTS0/HHJ3viyWBEHQTS0/PHJ3PiyWBEHnUkY+HHJ3viyWBEHQTS0/HHJ3viyWBEHnUkY+PHJ3PiyWBEHQTS0/PHJ3PnD2zEDnUkY+HHJ3viyWBEHnUkY+HHJ3vnD2zEDnUkY+PHJ3PiyWBEHnUkY+PHJ3PnD2zEDQTS0/PHJ3PiyWBEHnUkY+PHJ3PnD2zEDnUkY+PHJ3PiyWBEHQTS0/HHJ3vnD2zEDnUkY+HHJ3viyWBEHQTS0/HHJ3vnD2zEDQTS0/HHJ3viyWBEHnUkY+/3//f////z//f/9/////P/9//3////8//3//f////z//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/////////+//////////7//////////v/////////+/////f////7////9/////v////3////+/////f////78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vw==")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_cdaeu")
+
+[node name="House6" type="MeshInstance3D"]
+material_overlay = SubResource("ShaderMaterial_6oukc")
+mesh = SubResource("ArrayMesh_7lka0")
+skeleton = NodePath("")

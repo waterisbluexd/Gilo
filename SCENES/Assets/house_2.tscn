@@ -1,0 +1,146 @@
+[gd_scene load_steps=10 format=4 uid="uid://b4nkgpgq2mmrj"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_6lh6o"]
+[ext_resource type="Texture2D" uid="uid://bew6shvwpvx34" path="res://MODLES/assetsmodel/House_all_Hood_House2.png" id="2_racit"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6oukc"]
+render_priority = 0
+shader = ExtResource("1_6lh6o")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4499999899416
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dc02w"]
+resource_name = "Hood"
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.80612284, 0.41037467, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_453a1"]
+resource_name = "Hood_Window"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_33dfi"]
+resource_name = "Hood_Door"
+transparency = 4
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vbse1"]
+resource_name = "House_Body_House2"
+cull_mode = 2
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
+albedo_texture = ExtResource("2_racit")
+roughness = 0.5
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2gqka"]
+_surfaces = [{
+"aabb": AABB(-1.1874768, 1.9440722, -1.2717953, 2.3749528, 0.99113965, 2.4592717),
+"format": 34359742465,
+"index_count": 54,
+"index_data": PackedByteArray("AAABAAIAAgABAAMAAgADAAQAAAAFAAEABgAFAAAAAQAHAAMABAAIAAYABgAIAAUABAADAAgACAAJAAUABQAKAAEAAQAKAAcABQAJAAoAAwAHAAsAAwALAAgACwAHAAoACAALAAkACwAKAAkA"),
+"name": "Hood",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AgCAv////z8AAIC/Pf+Xv57DKUA6/5c/AgCAv0wvJkAAAIA/N/+XP57DKUA6/5c//P9/P0wvJkAAAIA/Pf+Xv1zX+D86/5e//P9/P////z8AAIC/N/+XP4PaO0BENI0/N/+XP1zX+D86/5e/Pf+Xv5OCDkAwyqK/Pf+Xv4PaO0BENI0/N/+XP5OCDkAwyqK/")
+}, {
+"aabb": AABB(-0.043127775, 1.243937, -1, 0.6136535, 0.49290955, 1e-05),
+"format": 34896613377,
+"index_count": 9,
+"index_data": PackedByteArray("AAABAAIAAQAAAAMAAQADAAQA"),
+"name": "Hood_Window",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 5,
+"vertex_data": PackedByteArray("AAD7/wAAAAD+//v/AAAAALP5//8AAAAAAAAAAAAAAAD//wMAAAAAAA==")
+}, {
+"aabb": AABB(-0.28305185, -1.1920929e-07, -1, 0.5331743, 0.9119856, 1e-05),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Hood_Door",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAAAAAAD///3/AAAAAAAA//8AAAAA//8AAAAAAAA=")
+}, {
+"aabb": AABB(-1.0000002, -1.1920929e-07, -1, 2, 2.5966368, 2),
+"format": 34896613377,
+"index_count": 69,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIAAwACAAQAAAAFAAEAAAAGAAUABgABAAUAAAAHAAYABwAAAAMACAABAAYACQADAAQABwADAAkACQAEAAoACwAHAAkACwAJAAoACwAMAAcADQAIAAwADQAMAAsAAQAIAA0ACgAOAAsAAQANAA8ACgAQAA4AEAABAA8ACgABABAA"),
+"name": "House_Body_House2",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 17,
+"vertex_data": PackedByteArray("AAAAAP//AAAAACzFAAAAAAAA/////wAA//8AAP//AAD///////8AAAAAAAAAAAAAxFsAAAAAAAADoAAAAAAAAMRb6VkAAAAA//8AAAAAAAD//yzFAAAAAAbJo3oAAAAAA6DoWQAAAAB6eqN6AAAAAAbJOqsAAAAAeno6qwAAAAAXxzurAAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_hpivf"]
+resource_name = "House_all_Cube"
+_surfaces = [{
+"aabb": AABB(-1.1874768, 1.9440722, -1.2717953, 2.3749528, 0.99113965, 2.4592717),
+"attribute_data": PackedByteArray("AAAgPwAAQD8AACA/AACAPwAAID8AAIA/AAAgPwAAQD8AACA/AAAAPwAAID8AAAA/AAAgPwAAgD4AACA/AACAPgAAID8AAAAAAAAgPwAAAAAAACA/AACAPgAAID8AAAA/AAAgPwAAAD8AACA/AACAPgAAID8AAAA/AABgPwAAgD4AAGA/AAAAPwAAID8AAIA+AAAgPwAAQD8AACA/AACAPwAAID8AAIA/AAAgPwAAQD8AACA/AAAAAAAAID8AAIA+AAAgPwAAgD4AACA/AAAAAAAAID8AAAA/AAAgPwAAQD8AACA/AABAPwAAID8AAAA/"),
+"format": 34359742487,
+"index_count": 54,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAADAAAABAAFAAMABgAFAAQABgAHAAUACAAHAAYACAAJAAcACgALAAwACgANAAsADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcAGgAbABwAGgAdABsA"),
+"material": SubResource("StandardMaterial3D_dc02w"),
+"name": "Hood",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 30,
+"vertex_data": PackedByteArray("AgCAv////z8AAIC/Pf+Xv57DKUA6/5c/AgCAv0wvJkAAAIA/Pf+Xv1zX+D86/5e//P9/P////z8AAIC/N/+XP1zX+D86/5e//P9/P0wvJkAAAIA/N/+XP57DKUA6/5c/AgCAv0wvJkAAAIA/Pf+Xv57DKUA6/5c/N/+XP57DKUA6/5c/N/+XP5OCDkAwyqK/N/+XP1zX+D86/5e/N/+XP4PaO0BENI0/N/+XP5OCDkAwyqK/Pf+Xv4PaO0BENI0/Pf+Xv5OCDkAwyqK/N/+XP4PaO0BENI0/Pf+Xv1zX+D86/5e/Pf+Xv4PaO0BENI0/Pf+Xv57DKUA6/5c/Pf+Xv5OCDkAwyqK/Pf+Xv57DKUA6/5c/N/+XP4PaO0BENI0/N/+XP57DKUA6/5c/Pf+Xv4PaO0BENI0/N/+XP1zX+D86/5e/Pf+Xv5OCDkAwyqK/Pf+Xv1zX+D86/5e/N/+XP5OCDkAwyqK//39pHf///z//f2kd////P/9/aR3///8//39pHf///z//f2kd////P/9/aR3///8//39pHf///z//f2kd////P/9/aR3///8//39pHf///z////9/////v////3////+/////f////7////9/////v2md//8AAP+/aZ3//wAA/79pnf//AAD/v2md//8AAP+/AAD/f////78AAP9/////vwAA/3////+/AAD/f////7//f2md////P/9/aZ3///8//39pnf///z//f2md////P5XiAAD///+/leIAAP///7+V4gAA////v5XiAAD///+/")
+}, {
+"aabb": AABB(-0.043127775, 1.243937, -1, 0.6136535, 0.49290955, 1e-05),
+"attribute_data": PackedByteArray("k5cHl5OXZIOTl9+DzYcHl86HZIM="),
+"format": 34896613399,
+"index_count": 9,
+"index_data": PackedByteArray("AAABAAIAAQAAAAMAAQADAAQA"),
+"material": SubResource("StandardMaterial3D_453a1"),
+"name": "Hood_Window",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 5,
+"vertex_data": PackedByteArray("AAD7/wAA///+//v/AAD//7P5//8AAP//AAAAAAAA/////wMAAAD///+//7//v/+/db+JwP+//7//v/+/")
+}, {
+"aabb": AABB(-0.28305185, -1.1920929e-07, -1, 0.5331743, 0.9119856, 1e-05),
+"attribute_data": PackedByteArray("/18OqS59/pcufQ6p/1/+lw=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_33dfi"),
+"name": "Hood_Door",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAAAA//////3/AAD//wAA//8AAP////8AAAAA////v/+//7//v/+//7//v/+/")
+}, {
+"aabb": AABB(-1.0000002, -1.1920929e-07, -1, 2, 2.5966368, 2),
+"attribute_data": PackedByteArray("/1////+f/7//n////1//v/9fDqn/n/+//1//vy59DqnNh4uhLn3+l5OXi6GTl2SO/5//f5OX6I3Oh+iN/1/+l/9f/3//X/9//5//P/+f/3//X/8//1//P/+fAAD/n/8//18AAP8f/z/xNv9//x//fwBI/3//X/8//1//fw=="),
+"format": 34896613399,
+"index_count": 69,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABwAFAAQABQAHAAgACAAHAAkABQAIAAoACwAFAAoADAAFAAsADAALAA0ACAAJAA4ADAANAA4ADgAJAA8ADgAQAAwADgAPABAAEQASABMAEQAUABIAFQAWABcAFQAYABYAGQAaABsAGQAcABoAHAAZAB0AHAAdAB4A"),
+"material": SubResource("StandardMaterial3D_vbse1"),
+"name": "House_Body_House2",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 31,
+"vertex_data": PackedByteArray("AAAAAP//VNUAACzFAABU1QAA/////1TVAAAAAAAAVNXEWwAAAAD//wAALMUAAP//AAAAAAAA///EW+lZAAD//3p6o3oAAP//A6DoWQAA//96ejqrAAD//xfHO6sAAP////8sxQAA//8GyTqrAAD//wbJo3oAAP//A6AAAAAA/////wAAAAD/////AAAAAFTV////////VNX//yzFAABU1f//AAD//1TV//8AAP///78AAP//////v/////////+/AAAAAP///78AAAAA////v8RbAAAAAP+/AAAAAAAA/78DoAAAAAD/v///AAD///+///8AAAAA/79U1VTVVNVU1VTVVNVU1VTV/7//v/C/DsD/v/+/KMDVv1DArr8/wL+/nL9iwF2/ocDGvzjApr9YwBnA5b8cwOK/GsDkv6oqqiqqKqoqqiqqKqoqqir/////////////////////AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_2gqka")
+
+[node name="House2" type="MeshInstance3D"]
+material_overlay = SubResource("ShaderMaterial_6oukc")
+lod_bias = 0.001
+mesh = SubResource("ArrayMesh_hpivf")
+skeleton = NodePath("")

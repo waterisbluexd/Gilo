@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="BuildingData" load_steps=5 format=3 uid="uid://h405nckjcs32"]
 
-[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/enviorment/Building_Data/NPCType.gd" id="1_lr4qx"]
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_hr7go"]
 [ext_resource type="Resource" uid="uid://bqoor3khx1nql" path="res://SCRIPTS/entite/Pesent.tres" id="2_24tjx"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_hbopo"]
 [ext_resource type="PackedScene" uid="uid://do8uqji4urspu" path="res://SCENES/Assets/castle.tscn" id="2_hr7go"]
@@ -9,8 +9,8 @@
 script = ExtResource("2_hbopo")
 name = "Castle"
 size = Vector2(10, 10)
-color = Color(0.9639146, 0.57746285, 0.60230285, 1)
 prefab = ExtResource("2_hr7go")
 building_type = 2
-peasant_types = Array[ExtResource("1_lr4qx")]([ExtResource("2_24tjx"), ExtResource("2_24tjx")])
+max_peasants = 50
+peasant_types = Array[ExtResource("1_hr7go")]([ExtResource("2_24tjx")])
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

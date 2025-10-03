@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://chcqddfxdiwwd"]
+
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_uj4co"]
+[ext_resource type="PackedScene" uid="uid://mk56eyv04l82" path="res://SCENES/Assets/house_3.tscn" id="2_mkkxr"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_y8t21"]
+
+[resource]
+script = ExtResource("2_y8t21")
+name = "House_3"
+size = Vector2(2, 2)
+prefab = ExtResource("2_mkkxr")
+cost = 8
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

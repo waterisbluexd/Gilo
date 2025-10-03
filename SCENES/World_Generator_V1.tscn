@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=16 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://cphxeqdqu78u7" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.gd" id="1_ucsy1"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_te0ef"]
@@ -7,7 +7,12 @@
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_jl6tj"]
 [ext_resource type="Resource" uid="uid://h405nckjcs32" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type1.tres" id="7_m1wsa"]
-[ext_resource type="Resource" uid="uid://bo88afessxe6" path="res://SCRIPTS/enviorment/Building_Data/House_All.tres" id="8_m1wsa"]
+[ext_resource type="Resource" uid="uid://bc68m4pnecavy" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_1.tres" id="8_m1wsa"]
+[ext_resource type="Resource" uid="uid://bo5pcnsjojcvf" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_2.tres" id="9_ndvok"]
+[ext_resource type="Resource" uid="uid://chcqddfxdiwwd" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_3.tres" id="10_xo5mt"]
+[ext_resource type="Resource" uid="uid://cprbky57x02uv" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_4.tres" id="11_d66sa"]
+[ext_resource type="Resource" uid="uid://bbdruok1ae4v1" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_5.tres" id="12_28e2f"]
+[ext_resource type="Resource" uid="uid://ljqwcgpm6kky" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_6.tres" id="13_gx6qx"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ab6ae"]
 noise_type = 3
@@ -51,4 +56,6 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="."]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_jl6tj")]([ExtResource("7_m1wsa"), ExtResource("8_m1wsa")])
+building_data = Array[ExtResource("6_jl6tj")]([ExtResource("7_m1wsa"), ExtResource("8_m1wsa"), ExtResource("9_ndvok"), ExtResource("10_xo5mt"), ExtResource("11_d66sa"), ExtResource("12_28e2f"), ExtResource("13_gx6qx")])
+click_cooldown = 0.0
+auto_select_next_building = true

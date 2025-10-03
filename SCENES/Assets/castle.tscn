@@ -158,10 +158,10 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825114, 0.30830812, 0)
 
 [node name="Idlezone" type="Marker3D" parent="CastleMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825114, 0.30830812, -3.4374745)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.649025, 0.30830812, -16.267498)
 
 [node name="BuildingSpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_marker", "idle_marker")]
 script = ExtResource("1_j7dqp")
-spawn_interval = 1.0
+spawn_interval = 0.1
 spawn_marker = NodePath("../CastleMesh/EntranceMarker")
 idle_marker = NodePath("../CastleMesh/Idlezone")

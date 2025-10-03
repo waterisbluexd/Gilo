@@ -240,10 +240,10 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cgd18")
 
 [node name="Human_Type_Ceviliean" type="Node3D"]
-transform = Transform3D(2.7, 0, 0, 0, 2.7, 0, 0, 0, 2.7, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 script = ExtResource("1_oauld")
-debug_movement = true
-debug_ai = true
+prefers_roads = false
+brave = true
 
 [node name="body" type="MeshInstance3D" parent="."]
 

@@ -56,15 +56,15 @@ func _ready():
 	if not navigation_grid:
 		push_warning("BuildingPlacer: No NavigationGrid found. Some features may not work properly.")
 	elif debug_placement:
-		print("NavigationGrid found: %s chunks loaded" % navigation_grid.get_chunk_count())
+		ConsoleCapture.console_log("NavigationGrid found: %s chunks loaded" % navigation_grid.get_chunk_count())
 
 	if debug_placement:
-		print("BuildingPlacer ready - %d buildings available" % building_data.size())
+		ConsoleCapture.console_log("BuildingPlacer ready - %d buildings available" % building_data.size())
 
 	if camera:
 		if camera.has_signal("mouse_world_position_changed"):
 			camera.mouse_world_position_changed.connect(_on_world_position_hovered)
-			print("Successfully connected to camera 'mouse_world_position_changed' signal.")
+			ConsoleCapture.console_log("Successfully connected to camera 'mouse_world_position_changed' signal.")
 		else:
 			push_warning("Camera script is missing the 'mouse_world_position_changed' signal!")
 
@@ -103,7 +103,7 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 	var current_time = Time.get_ticks_msec() / 1000.0
 	if current_time - last_click_time < click_cooldown:
 		if debug_placement:
-			print("Click ignored due to cooldown (%.2fs remaining)" % (click_cooldown - (current_time - last_click_time)))
+			ConsoleCapture.console_log("Click ignored due to cooldown (%.2fs remaining)" % (click_cooldown - (current_time - last_click_time)))
 		return
 
 	last_click_time = current_time
@@ -125,15 +125,15 @@ func _try_place_building(world_pos: Vector3):
 	var building = get_current_building()
 	if not building:
 		if debug_placement or always_show_placement_attempts:
-			print("❌ No building selected!")
+			ConsoleCapture.console_log("❌ No building selected!")
 		return
 
 	if debug_placement:
-		print("Attempting to place building at: %s" % world_pos)
+		ConsoleCapture.console_log("Attempting to place building at: %s" % world_pos)
 
 	if show_grid_coordinates:
 		var grid_pos = navigation_grid.world_to_grid(world_pos) if navigation_grid else Vector2i.ZERO
-		print("Grid coordinates: %s" % grid_pos)
+		ConsoleCapture.console_log("Grid coordinates: %s" % grid_pos)
 
 	if _can_place_at(world_pos):
 		_place_building_at(world_pos)
@@ -156,7 +156,7 @@ func _can_place_at(world_pos: Vector3) -> bool:
 
 	# For non-debug mode, also show basic info when trying to place on occupied grid
 	if not navigation_grid.debug_mode and not check_result.can_place:
-		print("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
+		ConsoleCapture.console_log("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
 			building_name,
 			world_pos,
 			check_result.grid_start,
@@ -175,16 +175,16 @@ func _place_building_at(world_pos: Vector3):
 	# Double-check before placing
 	if not _can_place_at(world_pos):
 		if debug_placement:
-			print("Cannot place building - area became blocked!")
+			ConsoleCapture.console_log("Cannot place building - area became blocked!")
 		return
 
 	navigation_grid.place_building(world_pos, building.size)
 	_create_building_visual(world_pos, building)
 
 	if debug_placement:
-		print("Building placed: %s at: %s" % [building.name, world_pos])
+		ConsoleCapture.console_log("Building placed: %s at: %s" % [building.name, world_pos])
 		if navigation_grid.has_method("get_memory_usage_estimate"):
-			print("Navigation grid memory: %s" % navigation_grid.get_memory_usage_estimate())
+			ConsoleCapture.console_log("Navigation grid memory: %s" % navigation_grid.get_memory_usage_estimate())
 
 
 func _create_preview_mesh():
@@ -229,9 +229,9 @@ func _toggle_placement_mode():
 	preview_mesh.visible = is_placing_mode
 
 	if debug_placement:
-		print("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
+		ConsoleCapture.console_log("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
 		if is_placing_mode and navigation_grid:
-			print("Current building: %s" % (get_current_building().name if get_current_building() else "None"))
+			ConsoleCapture.console_log("Current building: %s" % (get_current_building().name if get_current_building() else "None"))
 
 
 func _create_building_visual(world_pos: Vector3, building: BuildingData):
@@ -261,10 +261,10 @@ func _create_building_visual(world_pos: Vector3, building: BuildingData):
 		spawner.configure_building(building)
 		spawner.start_spawning()
 		if debug_placement:
-			print("Configured spawner for: %s" % building.name)
+			ConsoleCapture.console_log("Configured spawner for: %s" % building.name)
 	elif building.building_type == BuildingData.BuildingType.CASTLE:
 		if debug_placement:
-			print("Warning: Castle building has no BuildingSpawner component: %s" % building.name)
+			ConsoleCapture.console_log("Warning: Castle building has no BuildingSpawner component: %s" % building.name)
 
 
 func select_building(index: int):
@@ -272,4 +272,4 @@ func select_building(index: int):
 		current_building_index = index
 		_update_preview_mesh()
 		if debug_placement:
-			print("Selected: %s (Index: %d)" % [building_data[index].name, index])
+			ConsoleCapture.console_log("Selected: %s (Index: %d)" % [building_data[index].name, index])

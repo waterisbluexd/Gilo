@@ -31,7 +31,7 @@ func _ready():
 func _setup_systems():
 	navigation_grid = _find_in_scene("NavigationGrid") as NavigationGrid
 	if not navigation_grid and debug_mode:
-		print("Warning: No NavigationGrid found")
+		ConsoleCapture.console_log("Warning: No NavigationGrid found")
 
 func _setup_markers():
 	if not spawn_marker:
@@ -64,7 +64,7 @@ func _find_in_scene(node_name: String) -> Node:
 func configure_building(data: BuildingData):
 	building_data = data
 	if debug_mode:
-		print("Configured spawner for: %s" % data.name)
+		ConsoleCapture.console_log("Configured spawner for: %s" % data.name)
 
 func start_spawning():
 	if not building_data or not auto_spawn:
@@ -72,7 +72,7 @@ func start_spawning():
 	
 	spawn_timer.start()
 	if debug_mode:
-		print("Started spawning for: %s" % building_data.name)
+		ConsoleCapture.console_log("Started spawning for: %s" % building_data.name)
 
 func stop_spawning():
 	spawn_timer.stop()
@@ -97,7 +97,7 @@ func _can_spawn() -> bool:
 	
 	if current_count >= max_pop:
 		if debug_mode:
-			print("Population limit reached: %d/%d" % [current_count, max_pop])
+			ConsoleCapture.console_log("Population limit reached: %d/%d" % [current_count, max_pop])
 		return false
 	
 	var spawn_types = _get_spawnable_types()
@@ -152,7 +152,7 @@ func _spawn_npc_at(pos: Vector3):
 	npc_spawned.emit(npc_node)
 	
 	if debug_mode:
-		print("Spawned: %s at %s" % [npc_node.name, pos])
+		ConsoleCapture.console_log("Spawned: %s at %s" % [npc_node.name, pos])
 
 func _fade_in_npc(npc: RTSGridNPC):
 	_set_npc_opacity(npc, 0.0)
