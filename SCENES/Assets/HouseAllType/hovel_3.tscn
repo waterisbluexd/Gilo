@@ -1,0 +1,180 @@
+[gd_scene load_steps=15 format=4 uid="uid://clajvnhq26de1"]
+
+[ext_resource type="Texture2D" uid="uid://tcq34pycaici" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_roof_type_1.png" id="1_vanrq"]
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_p388d"]
+[ext_resource type="Texture2D" uid="uid://jhq7vexa2uq8" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_wall.png" id="3_80dxc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
+render_priority = 0
+shader = ExtResource("2_p388d")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.999999977648
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qpuao"]
+resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_ipdbf")
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.80784315, 0.4117647, 0, 1)
+albedo_texture = ExtResource("1_vanrq")
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_07fr2"]
+_surfaces = [{
+"aabb": AABB(0.625, -1.375, -1.5, 0.75, 0.75, 0.125),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
+"name": "Hovel_roof",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vf1d8"]
+resource_name = "Hovels_cube_005"
+_surfaces = [{
+"aabb": AABB(0.625, -1.375, -1.5, 0.75, 0.75, 0.125),
+"attribute_data": PackedByteArray("XHT/h+ii/4Poov+HXHT/g9FF/4dcdP+DXHT/h9FF/4Nz0f+H////g////4dz0f+D6KL/h3PR/4Nz0f+H6KL/g9H76r+Qf///kH/qv9H7//9z0f+D6KL+a+ii/4Nz0f5r"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_qpuao"),
+"name": "Hovel_roof",
+"primitive": 3,
+"uv_scale": Vector4(1.03125, 1.9996562, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//wAA////////AAD//wAA//8AAAAA/////wAA/3//P/9//z//f/8//3//P6qqVFWqqlRVqqpUVaqqVFX///9/////f////3////9/VNVU1VTVVNVU1VTVVNVU1f9/////f////3////9/////f/9//3//f/9//3//f/9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_07fr2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kkomw"]
+resource_name = "Hovel_wall"
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
+albedo_texture = ExtResource("3_80dxc")
+roughness = 0.5
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_3kffr"]
+_surfaces = [{
+"aabb": AABB(0.75, -1.25, -1.375, 0.5, 0.5, 1.375),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
+"name": "Hovel_wall",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_32okk"]
+resource_name = "Hovels_cube_006"
+_surfaces = [{
+"aabb": AABB(0.75, -1.25, -1.375, 0.5, 0.5, 1.375),
+"attribute_data": PackedByteArray("22z5wMaD84HGg/nA22zzgfBV///bbPnA22z///BV+cDbbP//xoP5wMaD///bbPnA22zzgfBV+cDwVfOB22z5wPT+KdIJ6BTpCegp0vT+FOn0/v//CegU6fT+FOkJ6P//"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_kkomw"),
+"name": "Hovel_wall",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD///+//////////7///wAA////vwAA//////+//3//P/9//z//f/8//3//P6qqVFWqqlRVqqpUVaqqVFX///9/////f////3////9/VFWqqlRVqqpUVaqqVFWqqv9/////f////3////9/////f/9//3//f/9//3//f/9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_3kffr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ouy3"]
+resource_name = "Hovel_chimne"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t8wu"]
+resource_name = "NON IN use"
+cull_mode = 2
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ql4cy"]
+_surfaces = [{
+"aabb": AABB(1.125, -1.0625, -1.75, 0.125, 0.125, 1e-05),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Hovel_chimne",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAD//wAAAAD//wAAAAAAAP////8AAAAAAAAAAAAAAAA=")
+}, {
+"aabb": AABB(1.125, -1.0625, -1.75, 0.125, 0.125, 0.25),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABQADAAAAAgAFAAAABQAGAAMAAgAEAAcAAgAHAAUABwAEAAYABwAGAAUA"),
+"name": "NON IN use",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAA/////wAAAAAAAP////8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_bjkce"]
+resource_name = "Hovels_cube_007"
+_surfaces = [{
+"aabb": AABB(1.125, -1.0625, -1.75, 0.125, 0.125, 1e-05),
+"attribute_data": PackedByteArray("/w8AAP8H/wf/BwAA/w//Bw=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_5ouy3"),
+"name": "Hovel_chimne",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAD//wAA/////wAAAAD///////8AAP//AAAAAAAA////f////3////9/////f///")
+}, {
+"aabb": AABB(1.125, -1.0625, -1.75, 0.125, 0.125, 0.25),
+"attribute_data": PackedByteArray("/wf/F/8P/wf/D/8X/wf/BwAA/xf/B/8H/wf/FwAA/wf/F/8X/x//B/8f/xf/F/8H/w//F/8X/wf/F/8X/w//B/8X/wf/DwAA/w//B/8XAAA="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_6t8wu"),
+"name": "NON IN use",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAAAA//8AAP///////wAA//8AAP//AAAAAP////8AAP9//z//f/8//3//P/9//z+qqlRVqqpUVaqqVFWqqlRV////f////3////9/////f1TVVNVU1VTVVNVU1VTVVNX/f/9//3//f/9//3//f/9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ql4cy")
+
+[node name="Hovel3" type="Node3D"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="cube_005" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -1, 0, 1)
+mesh = SubResource("ArrayMesh_vf1d8")
+skeleton = NodePath("")
+
+[node name="cube_006" type="MeshInstance3D" parent="cube_005"]
+mesh = SubResource("ArrayMesh_32okk")
+skeleton = NodePath("")
+
+[node name="cube_007" type="MeshInstance3D" parent="cube_005/cube_006"]
+mesh = SubResource("ArrayMesh_bjkce")
+skeleton = NodePath("")

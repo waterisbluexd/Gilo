@@ -1,0 +1,110 @@
+[gd_scene load_steps=11 format=4 uid="uid://k1oj8jfc6vbv"]
+
+[ext_resource type="Texture2D" uid="uid://jhq7vexa2uq8" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_wall.png" id="1_86r4r"]
+[ext_resource type="Texture2D" uid="uid://tcq34pycaici" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_roof_type_1.png" id="2_2410x"]
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="3_5ew48"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drktx"]
+resource_name = "Hovel_wall"
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
+albedo_texture = ExtResource("1_86r4r")
+roughness = 0.5
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fup2s"]
+_surfaces = [{
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
+"name": "Hovel_wall",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5wnek"]
+resource_name = "Hovels_cube_011"
+_surfaces = [{
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"attribute_data": PackedByteArray("zOoyPfz7HVTM6h1U/PsyPTARE08AALIsMBGyLAAAE08J6FOkOfk+uwnoPrs5+VOkqcXzgdnWU6SpxVOk2dbzgbGaU6SbsfOBm7FTpLGa84GxmvOBxoNTpMaD84GxmlOk"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_drktx"),
+"name": "Hovel_wall",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("//8AAP//VNUAAAAAAABU1QAAAAD//1TV//8AAAAAVNX/////////////AAAAAP////8AAP//////////AAD//wAA/////1TV/////wAAVNX///////9U1QAA//8AAFTVAAAAAP////8AAP//AAD//wAA////////AAAAAAAA//8AAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//////////////////wAA/////wAA////////VFVUVVRVVFVUVVRVVFVUVf+//3//v/9//7//f/+//39U1aoqVNWqKlTVqipU1aoq/z//f/8//3//P/9//z//f////3////9/////f////3//f/9//3//f/9//3//f/9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_fup2s")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
+render_priority = 0
+shader = ExtResource("3_5ew48")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.999999977648
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qpuao"]
+resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_ipdbf")
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.80784315, 0.4117647, 0, 1)
+albedo_texture = ExtResource("2_2410x")
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ikjyi"]
+_surfaces = [{
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 0.125),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
+"name": "Hovel_roof",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_u8pjp"]
+resource_name = "Hovels_cube_012"
+_surfaces = [{
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 0.125),
+"attribute_data": PackedByteArray("TD4eT0xmHkdMZh5PTD4eR0wGHk9MPh5HTD4eT0wGHkf/l/8//7//N/+//z//l/83R6jONZ6yVDSess41R6hUNJ5/4n9wAKr/cADif55/qv//h/83/18AAP9f/zf/hwAA"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_qpuao"),
+"name": "Hovel_roof",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//wAA////////AAD//wAA//8AAAAA/////wAA/3//P/9//z//f/8//3//P6qqVFWqqlRVqqpUVaqqVFX///9/////f////3////9/VNVU1VTVVNVU1VTVVNVU1f9/////f////3////9/////f/9//3//f/9//3//f/9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ikjyi")
+
+[node name="Hovel5" type="Node3D"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+
+[node name="cube_011" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, -0.040585518)
+mesh = SubResource("ArrayMesh_5wnek")
+skeleton = NodePath("")
+
+[node name="cube_012" type="MeshInstance3D" parent="cube_011"]
+mesh = SubResource("ArrayMesh_u8pjp")
+skeleton = NodePath("")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=28 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
@@ -12,7 +12,6 @@
 [ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
 [ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
-[ext_resource type="PackedScene" uid="uid://dqq2e5fbkvhvs" path="res://SCENES/Assets/HouseAllType/hovel_1.tscn" id="13_5vkv0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -155,14 +154,12 @@ mouse_filter = 2
 oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(0, 36)
-size = Vector2i(689, 1039)
+size = Vector2i(695, 1025)
 wrap_controls = true
 transient = true
 always_on_top = true
 sharp_corners = true
-min_size = Vector2i(689, 1039)
-max_size = Vector2i(689, 1039)
-keep_title_visible = true
+min_size = Vector2i(695, 1025)
 
 [node name="TabContainer" type="TabContainer" parent="UI/CanvasLayer/Control/panel/Control/Window"]
 anchors_preset = 15
@@ -202,24 +199,29 @@ layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel"]
 layout_mode = 0
-offset_left = 17.0
-offset_top = 17.0
-offset_right = 652.0
-offset_bottom = 977.0
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(0, 1145)
-layout_mode = 2
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 665.0
+offset_bottom = 968.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+draw_focus_border = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="version" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="version" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 text = "                  #x#x#x#x__Gilo Debugger__x#x#x#x#"
@@ -227,7 +229,7 @@ horizontal_alignment = 1
 script = ExtResource("3_ab6ae")
 effect_type = 9
 
-[node name="Performance_stats" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Performance_stats" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
@@ -235,11 +237,11 @@ text = "  ⯈  Performance Section
 "
 alignment = 0
 
-[node name="Performance_stats_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Performance_stats_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 181.978)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -247,18 +249,18 @@ offset_bottom = 82.0
 grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 82.165)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -268,29 +270,29 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Per Second [-FPS-]"
 
-[node name="Frame Time" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Frame Time" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Time [-ms-]"
 
-[node name="Physics Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Physics Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Physics Frame Per Second [-P_FPS-]"
 
-[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -299,25 +301,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Per Second [-FPS-]"
 
-[node name="Frame Time_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Frame Time_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Time [-ms-]"
 
-[node name="Physics Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Physics Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Physics Frame Per Second [-P_FPS-]"
 
-[node name="linegraph" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
+[node name="linegraph" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
@@ -326,7 +328,7 @@ graph = NodePath("linegraph_for_fps")
 show_memory = false
 show_video_memory = false
 
-[node name="linegraph_for_fps" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph"]
+[node name="linegraph_for_fps" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -337,18 +339,18 @@ size_flags_vertical = 3
 script = ExtResource("5_o4jo6")
 custom_font = ExtResource("5_ceyew")
 
-[node name="Memory Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Memory Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Memory Section"
 alignment = 0
 
-[node name="Memory Section_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Memory Section_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 181.978)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -357,18 +359,18 @@ grow_horizontal = 2
 theme_override_constants/separation = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 82.165)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -377,29 +379,29 @@ offset_right = 193.0
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="Allocated Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Allocated Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Allocated Memory [-MB-]"
 
-[node name="Free Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Free Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Free Memory [-MB-]"
 
-[node name="Video Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Video Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Video Memory [-MB-]"
 
-[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -408,25 +410,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="Allocated Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Allocated Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Per Second [-FPS-]"
 
-[node name="Free Memory_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Free Memory_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Frame Time [-ms-]"
 
-[node name="Video Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Video Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Physics Frame Per Second [-P_FPS-]"
 
-[node name="linegraph_for_memory" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
+[node name="linegraph_for_memory" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
@@ -438,7 +440,7 @@ show_physics_fps = false
 show_memory = false
 show_video_memory = false
 
-[node name="linegraph_for_memory2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory"]
+[node name="linegraph_for_memory2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -449,7 +451,7 @@ size_flags_vertical = 3
 script = ExtResource("5_o4jo6")
 custom_font = ExtResource("5_ceyew")
 
-[node name="System Info Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="System Info Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
@@ -457,11 +459,11 @@ text = "  ⯈  System Info Section
 "
 alignment = 0
 
-[node name="System Info Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="System Info Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -469,18 +471,18 @@ offset_bottom = 82.0
 grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 82.165)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 100)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -491,48 +493,48 @@ offset_bottom = 1.0
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="OS" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="OS" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Opertaing System"
 
-[node name="CPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="CPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "CPU"
 
-[node name="GPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="GPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "GPU"
 
-[node name="Resolution" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Resolution" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Resolution"
 
-[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 0
 offset_right = 30.0
 offset_bottom = 102.0
 theme_override_constants/separation = 10
 metadata/_edit_use_anchors_ = true
 
-[node name="OS_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="OS_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "N/A"
 
-[node name="CPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="CPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
@@ -540,19 +542,19 @@ text = "N/A"
 text_overrun_behavior = 6
 text_direction = 1
 
-[node name="GPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="GPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "N/A"
 
-[node name="Resolution_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Resolution_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "N/A"
 
-[node name="Scene Stats Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Scene Stats Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
@@ -560,11 +562,11 @@ text = "  ⯈  Scene Stats Section
 "
 alignment = 0
 
-[node name="Scene Stats Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Scene Stats Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 181.978)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -572,71 +574,71 @@ offset_bottom = 184.0
 grow_horizontal = 2
 theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 82.165)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 100)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel"]
 layout_mode = 1
 offset_left = 9.0
 offset_right = 187.0
 offset_bottom = 207.0
 theme_override_constants/separation = 10
 
-[node name="Objects" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Objects" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Objects"
 
-[node name="Resources" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Resources" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Resources"
 
-[node name="Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Nodes"
 
-[node name="Orphan Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Orphan Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Orphan Nodes"
 
-[node name="Total Objects Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Total Objects Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Objects Drawn"
 
-[node name="Total Primitives Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Total Primitives Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Primitives Drawn"
 
-[node name="Total Draw Cells" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+[node name="Total Draw Cells" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Draw Cells"
 
-[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -644,90 +646,85 @@ offset_bottom = 102.0
 grow_horizontal = 2
 theme_override_constants/separation = 10
 
-[node name="Objects_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Objects_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Objects"
 
-[node name="Resources_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Resources_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Resources"
 
-[node name="Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Nodes"
 
-[node name="Orphan Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Orphan Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Orphan Nodes"
 
-[node name="Total Objects Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Total Objects Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Objects Drawn"
 
-[node name="Total Primitives Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Total Primitives Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Primitives Drawn"
 
-[node name="Total Draw Cells_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+[node name="Total Draw Cells_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Draw Cells"
 
-[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Console"
 alignment = 0
 
-[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
+[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 script = ExtResource("4_df0lc")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel"]
+layout_direction = 1
+layout_mode = 0
 theme_override_constants/separation = -2
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
 layout_mode = 1
 offset_right = 629.0
 offset_bottom = 53.0
 theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 
-[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
+[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("5_ceyew")
 theme_override_font_sizes/normal_font_size = 14
 theme_override_font_sizes/bold_font_size = 14
@@ -737,18 +734,17 @@ theme_override_font_sizes/mono_font_size = 14
 bbcode_enabled = true
 text = "adawdadwad"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 
-[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "//Command here"
 
-[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(68.295, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
@@ -756,7 +752,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
 text = "Clear"
 
-[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(68.295, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
@@ -1342,8 +1338,6 @@ texture_filter = 1
 scale = Vector2(3.0000002, 3.0000002)
 texture = SubResource("ViewportTexture_df0lc")
 centered = false
-
-[node name="Hovel1" parent="." instance=ExtResource("13_5vkv0")]
 
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_toggle_functions_pressed"]
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_setter_functions_pressed"]

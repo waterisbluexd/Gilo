@@ -181,7 +181,6 @@ func create_mesh(chunk_size: int, pixel_size: float, use_geometry_material: bool
 	# Shadow and lighting settings
 	material.roughness = 0.8
 	material.metallic = 0.0
-	material.specular = 0.2
 	
 	# Keep pixelated look but allow lighting
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST

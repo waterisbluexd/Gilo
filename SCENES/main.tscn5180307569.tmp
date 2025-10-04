@@ -1,0 +1,1259 @@
+[gd_scene load_steps=28 format=3 uid="uid://hq2dn4st8e10"]
+
+[ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
+[ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
+[ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
+[ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
+[ext_resource type="Script" uid="uid://u3rg75cj5buo" path="res://SCRIPTS/debugger/⯆_info.gd" id="3_o4jo6"]
+[ext_resource type="Script" uid="uid://dktovmungqggl" path="res://SCRIPTS/debugger/⯆_camera_+_pivot_debugger.gd" id="3_ys6xq"]
+[ext_resource type="Script" uid="uid://bxogkj03xjpgk" path="res://SCRIPTS/debugger/console_panel.gd" id="4_df0lc"]
+[ext_resource type="PackedScene" uid="uid://dn7khush7j3" path="res://SCENES/World_Generator_V1.tscn" id="5_ab6ae"]
+[ext_resource type="FontFile" uid="uid://br1q3dhrr723w" path="res://RESOURCES/FONTS/PixeloidSans-mLxMm.ttf" id="5_ceyew"]
+[ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
+[ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
+[ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_v0l8b"]
+sky_material = SubResource("ProceduralSkyMaterial_itxqv")
+
+[sub_resource type="Environment" id="Environment_wp4xf"]
+background_mode = 2
+sky = SubResource("Sky_v0l8b")
+tonemap_mode = 2
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 4.38
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="Gradient" id="Gradient_ceyew"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o4jo6"]
+noise_type = 3
+frequency = 0.0412
+fractal_octaves = 2
+fractal_lacunarity = 1.285
+domain_warp_enabled = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l28hy"]
+width = 1000
+height = 1000
+noise = SubResource("FastNoiseLite_o4jo6")
+color_ramp = SubResource("Gradient_ceyew")
+seamless = true
+seamless_blend_skirt = 0.231
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vkv0"]
+render_priority = 0
+shader = ExtResource("5_h2jjw")
+shader_parameter/noiseTexture = SubResource("NoiseTexture2D_l28hy")
+shader_parameter/isSoft = false
+shader_parameter/speed = 0.002000000095
+shader_parameter/brightness = 0.6000000285
+shader_parameter/threshold = 1.250000059375
+shader_parameter/fluffiness = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.09985284, 0.09985284, 0.09985284, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o4jo6"]
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+border_width_right = 2
+border_color = Color(0.4392157, 0.34117648, 0.30980393, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys6xq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+border_color = Color(0.5010346, 0.38109186, 0.34409294, 0.79)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2jjw"]
+bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ab6ae"]
+bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceyew"]
+bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_df0lc"]
+viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
+
+[node name="Main" type="Node3D"]
+
+[node name="light" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="light"]
+transform = Transform3D(-0.025797226, -0.92186046, -0.38666248, -0.69963044, -0.25962663, 0.6656659, -0.7140389, 0.28769314, -0.63826394, 0, 0, 0)
+light_color = Color(0.77762455, 0.7145413, 0.44411469, 1)
+shadow_enabled = true
+shadow_opacity = 0.72
+shadow_blur = 0.538
+directional_shadow_split_1 = 0.096
+directional_shadow_split_2 = 0.096
+directional_shadow_split_3 = 0.096
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="light/DirectionalLight3D"]
+environment = SubResource("Environment_wp4xf")
+
+[node name="assets" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="assets"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0456696, 454.98288, -12.764636)
+visible = false
+mesh = SubResource("PlaneMesh_h2jjw")
+surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
+
+[node name="UI" type="Node" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
+follow_viewport_scale = 0.001
+
+[node name="Control" type="Control" parent="UI/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="panel" type="Panel" parent="UI/CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 934.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0u8pi")
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 190
+theme_override_constants/margin_bottom = 20
+
+[node name="TabContainer" type="TabContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+current_tab = 0
+
+[node name="⯆ Info" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer"]
+layout_mode = 2
+script = ExtResource("3_o4jo6")
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+follow_focus = true
+draw_focus_border = true
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="version" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+text = "                  #x#x#x#x__Gilo Debugger__x#x#x#x#"
+horizontal_alignment = 1
+script = ExtResource("3_ab6ae")
+effect_type = 9
+
+[node name="Performance_stats" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Performance Section
+"
+alignment = 0
+
+[node name="Performance_stats_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 181.978)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 82.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 82.165)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Per Second [-FPS-]"
+
+[node name="Frame Time" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Time [-ms-]"
+
+[node name="Physics Frame Per Second" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Physics Frame Per Second [-P_FPS-]"
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Per Second [-FPS-]"
+
+[node name="Frame Time_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Time [-ms-]"
+
+[node name="Physics Frame Per Second_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Physics Frame Per Second [-P_FPS-]"
+
+[node name="linegraph" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("7_l28hy")
+graph = NodePath("linegraph_for_fps")
+show_memory = false
+show_video_memory = false
+
+[node name="linegraph_for_fps" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+script = ExtResource("5_o4jo6")
+custom_font = ExtResource("5_ceyew")
+
+[node name="Memory Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Memory Section"
+alignment = 0
+
+[node name="Memory Section_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 181.978)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 82.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 82.165)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = 193.0
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Allocated Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Allocated Memory [-MB-]"
+
+[node name="Free Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Free Memory [-MB-]"
+
+[node name="Video Memory" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Video Memory [-MB-]"
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Allocated Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Per Second [-FPS-]"
+
+[node name="Free Memory_show value_lable" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Frame Time [-ms-]"
+
+[node name="Video Memory_show value_label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Physics Frame Per Second [-P_FPS-]"
+
+[node name="linegraph_for_memory" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer" node_paths=PackedStringArray("graph")]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("7_l28hy")
+graph = NodePath("linegraph_for_memory2")
+show_fps = false
+show_frame_time = false
+show_physics_fps = false
+show_memory = false
+show_video_memory = false
+
+[node name="linegraph_for_memory2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+script = ExtResource("5_o4jo6")
+custom_font = ExtResource("5_ceyew")
+
+[node name="System Info Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  System Info Section
+"
+alignment = 0
+
+[node name="System Info Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 82.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 82.165)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 100)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = -1.0
+offset_right = 147.0
+offset_bottom = 1.0
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="OS" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Opertaing System"
+
+[node name="CPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "CPU"
+
+[node name="GPU" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "GPU"
+
+[node name="Resolution" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Resolution"
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 102.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="OS_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "N/A"
+
+[node name="CPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "N/A"
+
+[node name="GPU_name" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "N/A"
+
+[node name="Resolution_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "N/A"
+
+[node name="Scene Stats Section" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Scene Stats Section
+"
+alignment = 0
+
+[node name="Scene Stats Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 181.978)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 184.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 82.165)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 100)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel"]
+layout_mode = 1
+offset_left = 9.0
+offset_right = 187.0
+offset_bottom = 207.0
+theme_override_constants/separation = 10
+
+[node name="Objects" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Objects"
+
+[node name="Resources" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Resources"
+
+[node name="Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Nodes"
+
+[node name="Orphan Nodes" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Orphan Nodes"
+
+[node name="Total Objects Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Objects Drawn"
+
+[node name="Total Primitives Drawn" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Primitives Drawn"
+
+[node name="Total Draw Cells" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Draw Cells"
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 102.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="Objects_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Objects"
+
+[node name="Resources_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Resources"
+
+[node name="Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Nodes"
+
+[node name="Orphan Nodes_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Orphan Nodes"
+
+[node name="Total Objects Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Objects Drawn"
+
+[node name="Total Primitives Drawn_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Primitives Drawn"
+
+[node name="Total Draw Cells_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "Total Draw Cells"
+
+[node name="⯆ Camera + Pivot" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+accessibility_description = "wadwadwa"
+theme = ExtResource("2_0u8pi")
+theme_override_fonts/font = ExtResource("5_ceyew")
+script = ExtResource("3_ys6xq")
+metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Toggle_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Toggle Functions"
+alignment = 0
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "toggle_visual_debug"
+
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "toggle_cursor_indicator"
+
+[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "toggle_snap"
+
+[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "toggle_continuous_raycast"
+
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="toggle_visual_debug" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+flat = true
+icon_alignment = 1
+
+[node name="toggle_cursor_indicator" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+flat = true
+icon_alignment = 1
+
+[node name="toggle_snap" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+flat = true
+icon_alignment = 1
+
+[node name="toggle_continuous_raycast" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+flat = true
+icon_alignment = 1
+
+[node name="Setter_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Setter Functions"
+alignment = 0
+
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "set_zoom_level_debug"
+
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "set_zoom_speed_debug"
+
+[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "set_raycast_length_debug"
+
+[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "set_hit_point_size_debug"
+
+[node name="Label5" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "set_cursor_size_debug"
+
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HSlider_set_zoom_level_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSlider_set_zoom_speed_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSlider_set_raycast_length_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSlider_set_hit_point_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSlider_set_cursor_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 84.0
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="set_zoom_level_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+alignment = 1
+
+[node name="set_zoom_speed_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+alignment = 1
+
+[node name="set_raycast_length_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+alignment = 1
+
+[node name="set_hit_point_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+alignment = 1
+
+[node name="set_cursor_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+alignment = 1
+
+[node name="Camera Manipulation" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Camera Manipulation"
+alignment = 0
+
+[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "teleport_to(Vector3)"
+
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+text = "reset_camera_position()"
+
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="teleport_to_x" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "x"
+alignment = 1
+
+[node name="teleport_to_y" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "y"
+alignment = 1
+
+[node name="teleport_to_z" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "z"
+alignment = 1
+
+[node name="reset_camera_position" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+flat = true
+icon_alignment = 1
+
+[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Console"
+alignment = 0
+
+[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+script = ExtResource("4_df0lc")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("5_ceyew")
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
+theme_override_font_sizes/bold_italics_font_size = 14
+theme_override_font_sizes/italics_font_size = 14
+theme_override_font_sizes/mono_font_size = 14
+bbcode_enabled = true
+text = "adawdadwad"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "//Command here"
+
+[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68.295, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
+text = "Clear"
+
+[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68.295, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
+text = "Copy"
+
+[node name="⯆ Mouse + Keyboard" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+metadata/_tab_index = 2
+
+[node name="Pixelated" type="Node" parent="."]
+
+[node name="Main" type="Control" parent="Pixelated"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Pixelated/Main"]
+clip_children = 1
+texture_filter = 1
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+anisotropic_filtering_level = 0
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+script = ExtResource("2_ac0l5")
+
+[node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.4999999, 0, -0.4999999, 0.86602545, 0, 173.43045, 300.39038)
+projection = 1
+current = true
+size = 100.0
+script = ExtResource("3_i3vxn")
+min_size = 80.0
+max_size = 220.0
+show_debug_print = false
+show_raycast_debug = false
+show_visual_debug = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
+
+[node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("player", "camera3D") instance=ExtResource("5_ab6ae")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+skeleton = NodePath("../../../../../..")
+render_distance = 1
+player = NodePath("../CameraPivot")
+camera3D = NodePath("../CameraPivot/Camera3D")
+
+[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
+transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
+active = false
+
+[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="1" node_paths=PackedStringArray("camera")]
+camera = NodePath("../../CameraPivot/Camera3D")
+
+[node name="Display" type="Control" parent="Pixelated"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Pixelated/Display"]
+texture_filter = 1
+scale = Vector2(3.0000002, 3.0000002)
+texture = SubResource("ViewportTexture_df0lc")
+centered = false
+
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot" method="_on_toggle_functions_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot" method="_on_setter_functions_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot" method="_on_camera_manipulation_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console" to="UI/CanvasLayer/Control/panel/Control/MarginContainer/TabContainer/⯆ Camera + Pivot" method="_on_console_pressed"]
+
+[editable path="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain"]

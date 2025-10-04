@@ -5,14 +5,14 @@
 [ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="3_orww8"]
 [ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
-[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_jl6tj"]
-[ext_resource type="Resource" uid="uid://h405nckjcs32" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type1.tres" id="7_m1wsa"]
-[ext_resource type="Resource" uid="uid://bc68m4pnecavy" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_1.tres" id="8_m1wsa"]
-[ext_resource type="Resource" uid="uid://bo5pcnsjojcvf" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_2.tres" id="9_ndvok"]
-[ext_resource type="Resource" uid="uid://chcqddfxdiwwd" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_3.tres" id="10_xo5mt"]
-[ext_resource type="Resource" uid="uid://cprbky57x02uv" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_4.tres" id="11_d66sa"]
-[ext_resource type="Resource" uid="uid://bbdruok1ae4v1" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_5.tres" id="12_28e2f"]
-[ext_resource type="Resource" uid="uid://ljqwcgpm6kky" path="res://SCRIPTS/enviorment/Building_Data/Houses/House_6.tres" id="13_gx6qx"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_xo5mt"]
+[ext_resource type="Resource" uid="uid://k822t4ved52n" path="res://RESOURCES/Building_Res/HouseAllType/Hovel_1.tres" id="7_d66sa"]
+[ext_resource type="Resource" uid="uid://6pnro5702iow" path="res://RESOURCES/Building_Res/HouseAllType/Hovel2.tres" id="8_28e2f"]
+[ext_resource type="Resource" uid="uid://dunmgs0i75dxk" path="res://RESOURCES/Building_Res/HouseAllType/Hovel3.tres" id="9_gx6qx"]
+[ext_resource type="Resource" uid="uid://b1gviv0q2nyi7" path="res://RESOURCES/Building_Res/HouseAllType/Hovel4.tres" id="10_ul5h0"]
+[ext_resource type="Resource" uid="uid://ci4bhs168d72y" path="res://RESOURCES/Building_Res/HouseAllType/Hovel5.tres" id="11_a4esh"]
+[ext_resource type="Resource" uid="uid://copygtnplvwrt" path="res://RESOURCES/Building_Res/HouseAllType/Hovel7.tres" id="13_v4jrb"]
+[ext_resource type="Resource" uid="uid://dqb1r457jj5vd" path="res://RESOURCES/Building_Res/HouseAllType/Hovel8.tres" id="14_n0uxr"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ab6ae"]
 noise_type = 3
@@ -56,6 +56,6 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="."]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_jl6tj")]([ExtResource("7_m1wsa"), ExtResource("8_m1wsa"), ExtResource("9_ndvok"), ExtResource("10_xo5mt"), ExtResource("11_d66sa"), ExtResource("12_28e2f"), ExtResource("13_gx6qx")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr")])
 click_cooldown = 0.0
 auto_select_next_building = true

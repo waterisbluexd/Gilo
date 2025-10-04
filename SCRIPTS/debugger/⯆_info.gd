@@ -1,68 +1,82 @@
 extends TabBar
 
-# Label references (titles)
-@onready var frame_per_second: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Frame Per Second"
-@onready var frame_time: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Frame Time"
-@onready var physics_frame_per_second: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Physics Frame Per Second"
+# ===============================
+# PERFORMANCE STATS SECTION
+# ===============================
 
 # Value labels (the actual numbers)
-@onready var frame_per_second_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Frame Per Second_show value_label"
-@onready var frame_time_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Frame Time_show value_lable"
-@onready var physics_frame_per_second_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Physics Frame Per Second_show value_label"
+@onready var frame_per_second_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Frame Per Second_show value_label"
+@onready var frame_time_show_value_lable: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Frame Time_show value_lable"
+@onready var physics_frame_per_second_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Physics Frame Per Second_show value_label"
 
 # Line graph reference for fps
-@onready var linegraph: Control = $MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph
-@onready var linegraph_for_fps_graph_node: Control = $MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph/linegraph_for_fps
+@onready var linegraph: Control = $MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph
+@onready var linegraph_for_fps_graph_node: Control = $MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/linegraph/linegraph_for_fps
+
+# ===============================
+# MEMORY STATS SECTION
+# ===============================
 
 # Line graph reference for memory
-@onready var linegraph_for_memory: Control = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory"
-@onready var linegraph_for_memory_graph_node: Control = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory/linegraph_for_memory2"
+@onready var linegraph_for_memory: Control = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory"
+@onready var linegraph_for_memory_graph_node: Control =$"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/linegraph_for_memory/linegraph_for_memory2"
 
 # Memory labels
-@onready var allocated_memory: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Allocated Memory"
-@onready var free_memory: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Free Memory"
-@onready var video_memory: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Video Memory_show value_label"
+@onready var allocated_memory_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Allocated Memory_show value_label"
+@onready var free_memory_show_value_lable: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Free Memory_show value_lable"
+@onready var video_memory_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Video Memory_show value_label"
 
-@onready var allocated_memory_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Allocated Memory_show value_label"
-@onready var free_memory_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Free Memory_show value_lable"
-@onready var video_memory_show_value_label: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Video Memory_show value_label"
+# ===============================
+# UPDATE SETTINGS
+# ===============================
 
-# Update settings
 var update_interval: float = 0.1  # Update every 0.1 seconds (10 times per second)
 var time_since_update: float = 0.0
 
-# System Info Section
-@onready var os: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/OS"
-@onready var cpu: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/CPU"
-@onready var gpu: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/GPU"
-@onready var resolution: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel/VBoxContainer/Resolution"
-@onready var os_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/OS_name"
-@onready var cpu_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/CPU_name"
-@onready var gpu_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/GPU_name"
-@onready var resolution_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Resolution_value"
+# ===============================
+# SYSTEM INFO SECTION
+# ===============================
 
+@onready var os_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/OS_name"
+@onready var cpu_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/CPU_name"
+@onready var gpu_name: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/GPU_name"
+@onready var resolution_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Resolution_value"
+
+# ===============================
+# SCENE STATS SECTION
+# ===============================
+
+@onready var objects_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Objects_value"
+@onready var resources_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Resources_value"
+@onready var nodes_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Nodes_value"
+@onready var orphan_nodes_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Orphan Nodes_value"
+@onready var total_objects_drawn_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Total Objects Drawn_value"
+@onready var total_primitives_drawn_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Total Primitives Drawn_value"
+@onready var total_draw_cells_value: Label = $"MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer/Total Draw Cells_value"
+
+# ===============================
+# READY
+# ===============================
 
 func _ready():
-	# Setup both graphs
 	setup_graphs()
-	
-	# Set initial label text for performance stats
-	frame_per_second.text = "Frame Per Second [-FPS-]"
-	frame_time.text = "Frame Time [-ms-]"
-	physics_frame_per_second.text = "Physics Frame Per Second [-P_FPS-]"
-	allocated_memory.text = "Allocated Memory (MB):"
-	free_memory.text = "Free Memory:"
-	video_memory.text = "Video Memory (MB):"
-	
-	# Set initial label text for system info
-	os.text = "OS:"
-	cpu.text = "CPU:"
-	gpu.text = "GPU:"
-	resolution.text = "Resolution:"
-	
-	# Populate system information from user's system
 	populate_system_info()
 
+# ===============================
+# PROCESS LOOP
+# ===============================
+
+func _process(delta):
+	# Update at fixed intervals instead of every frame for better readability
+	time_since_update += delta
+	
+	if time_since_update >= update_interval:
+		time_since_update = 0.0
+		update_performance_stats()
+
+# ===============================
+# GRAPH SETUP
+# ===============================
 
 func setup_graphs():
 	"""Initialize both graphs with their respective datasets"""
@@ -79,15 +93,9 @@ func setup_graphs():
 	linegraph_for_memory_graph_node.add_dataset("Video (MB)", Color("ff8c66"), false)
 	linegraph_for_memory_graph_node.auto_scale_y = true
 
-
-func _process(delta):
-	# Update at fixed intervals instead of every frame for better readability
-	time_since_update += delta
-	
-	if time_since_update >= update_interval:
-		time_since_update = 0.0
-		update_performance_stats()
-
+# ===============================
+# PERFORMANCE + MEMORY + SCENE UPDATE
+# ===============================
 
 func update_performance_stats():
 	"""Update all performance statistics"""
@@ -98,7 +106,7 @@ func update_performance_stats():
 	frame_per_second_show_value_label.text = str(fps)
 	
 	var frame_time_value = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
-	frame_time_show_value_label.text = "%.2f ms" % frame_time_value
+	frame_time_show_value_lable.text = "%.2f ms" % frame_time_value
 	
 	var physics_fps = Engine.physics_ticks_per_second
 	physics_frame_per_second_show_value_label.text = str(physics_fps)
@@ -109,7 +117,7 @@ func update_performance_stats():
 	var video_mem = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / bytes_to_mb
 	
 	allocated_memory_show_value_label.text = "%.2f MB" % static_mem
-	free_memory_show_value_label.text = "%.2f MB" % msg_mem
+	frame_time_show_value_lable.text = "%.2f MB" % msg_mem
 	video_memory_show_value_label.text = "%.2f MB" % video_mem
 	
 	# Color code FPS based on performance
@@ -124,7 +132,40 @@ func update_performance_stats():
 	linegraph_for_memory_graph_node.add_point("Static (MB)", static_mem)
 	linegraph_for_memory_graph_node.add_point("Msg-Q (MB)", msg_mem)
 	linegraph_for_memory_graph_node.add_point("Video (MB)", video_mem)
+	
+	# === UPDATE SCENE STATS ===
+	update_scene_stats()
 
+# ===============================
+# SCENE STATS SECTION
+# ===============================
+
+func update_scene_stats():
+	"""Update Scene Stats section with real-time values"""
+	
+	# Object counts
+	var objects = Performance.get_monitor(Performance.OBJECT_COUNT)
+	var resources = Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT)
+	var nodes = Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+	var orphan_nodes = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	
+	objects_value.text = str(objects)
+	resources_value.text = str(resources)
+	nodes_value.text = str(nodes)
+	orphan_nodes_value.text = str(orphan_nodes)
+	
+	# Rendering statistics
+	var total_objects_drawn = Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
+	var total_primitives_drawn = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
+	var total_draw_cells = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+	
+	total_objects_drawn_value.text = str(total_objects_drawn)
+	total_primitives_drawn_value.text = str(total_primitives_drawn)
+	total_draw_cells_value.text = str(total_draw_cells)
+
+# ===============================
+# HELPERS
+# ===============================
 
 func color_code_fps(fps: float):
 	"""Color the FPS value based on performance"""
@@ -136,7 +177,6 @@ func color_code_fps(fps: float):
 	else:
 		color = Color.RED
 	frame_per_second_show_value_label.add_theme_color_override("font_color", color)
-
 
 func populate_system_info():
 	"""Populate system information labels with actual hardware/OS details from user's system"""

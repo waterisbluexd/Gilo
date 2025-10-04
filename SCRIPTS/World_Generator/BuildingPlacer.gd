@@ -155,14 +155,14 @@ func _can_place_at(world_pos: Vector3) -> bool:
 	var check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
 
 	# For non-debug mode, also show basic info when trying to place on occupied grid
-	if not navigation_grid.debug_mode and not check_result.can_place:
-		ConsoleCapture.console_log("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
-			building_name,
-			world_pos,
-			check_result.grid_start,
-			check_result.grid_end,
-			check_result.blocked_cells.size()
-		])
+	#if not navigation_grid.debug_mode and not check_result.can_place:
+		#ConsoleCapture.console_log("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
+			#building_name,
+			#world_pos,
+			#check_result.grid_start,
+			#check_result.grid_end,
+			#check_result.blocked_cells.size()
+		#])
 
 	return check_result.can_place
 
