@@ -7,16 +7,17 @@ var current_angle := 0.0
 var mouse_sensitivity := -0.5
 var rotation_speed := 5.0
 var dragging := false
-var mouse_movement := 0.0
+var mouse_movement := 1
 
 # Panning settings - RTS style
 var panning := false  # Only active when middle mouse is held
-var pan_sensitivity := 0.2  # Base sensitivity
-var pan_speed_multiplier := 1.0  # Speed multiplier for panning
-var pan_acceleration := 1.0  # Acceleration factor for fast movements
+# MODIFIED: Exposed panning speed controls to the Godot Inspector with sliders.
+@export_range(0.001, 0.05, 0.001) var pan_sensitivity := 0.005  # Base sensitivity for mouse panning
+@export_range(0.1, 40.0, 0.1) var pan_speed_multiplier := 1.0  # Overall speed multiplier for panning
+@export_range(1.0, 5.0, 0.1) var pan_acceleration := 1.5      # Speed boost for fast mouse movements
 var last_mouse_position := Vector2.ZERO
 var middle_mouse_pressed := false
-var fast_pan_threshold := 50.0  # Pixel movement threshold for fast panning
+@export var fast_pan_threshold := 50.0  # Pixel movement threshold to trigger fast panning
 
 # Movement settings
 @export var movement_speed := 10.0  # Units per second

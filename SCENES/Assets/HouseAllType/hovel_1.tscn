@@ -1,7 +1,5 @@
-[gd_scene load_steps=11 format=4 uid="uid://dqq2e5fbkvhvs"]
+[gd_scene load_steps=9 format=4 uid="uid://dqq2e5fbkvhvs"]
 
-[ext_resource type="Texture2D" uid="uid://jhq7vexa2uq8" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_wall.png" id="1_0v6qf"]
-[ext_resource type="Texture2D" uid="uid://tcq34pycaici" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_roof_type_1.png" id="2_d3g4q"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="3_d3g4q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_peajt"]
@@ -9,7 +7,6 @@ resource_name = "Hovel_wall"
 diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
-albedo_texture = ExtResource("1_0v6qf")
 roughness = 0.5
 texture_filter = 2
 
@@ -62,7 +59,6 @@ next_pass = SubResource("ShaderMaterial_ipdbf")
 diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.80784315, 0.4117647, 0, 1)
-albedo_texture = ExtResource("2_d3g4q")
 texture_filter = 2
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_winig"]

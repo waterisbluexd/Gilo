@@ -1,0 +1,31 @@
+[gd_scene load_steps=10 format=3 uid="uid://dx7teip5u57d1"]
+
+[ext_resource type="PackedScene" uid="uid://d3uxaa8ikhrsv" path="res://SCENES/Assets/HouseAllType/hovel.tscn" id="1_sqejo"]
+[ext_resource type="PackedScene" uid="uid://blwwy66fk0xdr" path="res://SCENES/Assets/HouseAllType/hovel_2.tscn" id="2_6fl5g"]
+[ext_resource type="PackedScene" uid="uid://clajvnhq26de1" path="res://SCENES/Assets/HouseAllType/hovel_3.tscn" id="3_tbu4t"]
+[ext_resource type="PackedScene" uid="uid://dwren6h2yfexi" path="res://SCENES/Assets/HouseAllType/hovel_4.tscn" id="4_v0net"]
+[ext_resource type="PackedScene" uid="uid://k1oj8jfc6vbv" path="res://SCENES/Assets/HouseAllType/hovel_5.tscn" id="5_ahlr5"]
+[ext_resource type="PackedScene" uid="uid://bcn0uumcujjbc" path="res://SCENES/Assets/HouseAllType/hovel_6.tscn" id="6_wbc1o"]
+[ext_resource type="PackedScene" uid="uid://ywl6dq0x1wwo" path="res://SCENES/Assets/HouseAllType/hovel_7.tscn" id="7_qy0kj"]
+[ext_resource type="PackedScene" uid="uid://kcq1r6dkwvpa" path="res://SCENES/Assets/HouseAllType/hovel_8.tscn" id="8_725e1"]
+[ext_resource type="PackedScene" uid="uid://cnnsed4x1qiw7" path="res://SCENES/Assets/HouseAllType/hovel_9.tscn" id="9_wf71e"]
+
+[node name="Hovels_all" type="Node3D"]
+
+[node name="Hovel" parent="." instance=ExtResource("1_sqejo")]
+
+[node name="Hovel2" parent="." instance=ExtResource("2_6fl5g")]
+
+[node name="Hovel3" parent="." instance=ExtResource("3_tbu4t")]
+
+[node name="Hovel4" parent="." instance=ExtResource("4_v0net")]
+
+[node name="Hovel5" parent="." instance=ExtResource("5_ahlr5")]
+
+[node name="Hovel6" parent="." instance=ExtResource("6_wbc1o")]
+
+[node name="Hovel7" parent="." instance=ExtResource("7_qy0kj")]
+
+[node name="Hovel8" parent="." instance=ExtResource("8_725e1")]
+
+[node name="Hovel9" parent="." instance=ExtResource("9_wf71e")]

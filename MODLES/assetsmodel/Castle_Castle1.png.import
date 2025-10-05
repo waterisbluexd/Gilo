@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxo4o08u3csq3"
 path.s3tc="res://.godot/imported/Castle_Castle1.png-64140493cd243a3f415797dfa80e98ff.s3tc.ctex"
+path.etc2="res://.godot/imported/Castle_Castle1.png-64140493cd243a3f415797dfa80e98ff.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://MODLES/assetsmodel/Castle_Castle1.png"
-dest_files=["res://.godot/imported/Castle_Castle1.png-64140493cd243a3f415797dfa80e98ff.s3tc.ctex"]
+dest_files=["res://.godot/imported/Castle_Castle1.png-64140493cd243a3f415797dfa80e98ff.s3tc.ctex", "res://.godot/imported/Castle_Castle1.png-64140493cd243a3f415797dfa80e98ff.etc2.ctex"]
 
 [params]
 

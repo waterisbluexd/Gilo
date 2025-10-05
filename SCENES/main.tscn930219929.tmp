@@ -1,6 +1,5 @@
 [gd_scene load_steps=29 format=3 uid="uid://hq2dn4st8e10"]
 
-[ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
@@ -13,6 +12,7 @@
 [ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
 [ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
+[ext_resource type="PackedScene" uid="uid://dqq2e5fbkvhvs" path="res://SCENES/Assets/HouseAllType/hovel_1.tscn" id="13_5vkv0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -88,11 +88,10 @@ bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceyew"]
 bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_5vkv0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_df0lc"]
 viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
 
 [node name="Main" type="Node3D"]
-script = ExtResource("1_v5vvh")
 
 [node name="light" type="Node" parent="."]
 
@@ -1275,6 +1274,7 @@ metadata/_edit_use_anchors_ = true
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Pixelated/Main"]
 clip_children = 1
 texture_filter = 1
+custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1282,10 +1282,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
-stretch = true
 stretch_shrink = 3
 
 [node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
+transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
@@ -1297,10 +1297,6 @@ render_target_update_mode = 4
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
 script = ExtResource("2_ac0l5")
-pan_sensitivity = 0.05
-pan_speed_multiplier = 40.0
-pan_acceleration = 5.0
-fast_pan_threshold = 1000.0
 
 [node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.4999999, 0, -0.4999999, 0.86602545, 0, 173.43045, 300.39038)
@@ -1308,17 +1304,15 @@ projection = 1
 current = true
 size = 100.0
 script = ExtResource("3_i3vxn")
-max_size = 1000.0
-zoom_speed = 10.0
-show_debug_print = false
-show_raycast_debug = false
-show_visual_debug = false
+min_size = 80.0
+max_size = 220.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("player", "camera3D") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 skeleton = NodePath("../../../../../..")
+render_distance = 4
 player = NodePath("../CameraPivot")
 camera3D = NodePath("../CameraPivot/Camera3D")
 
@@ -1339,18 +1333,15 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="Pixelated/Display"]
+[node name="Sprite2D" type="Sprite2D" parent="Pixelated/Display"]
 texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("ViewportTexture_5vkv0")
-expand_mode = 1
+scale = Vector2(0.99895835, 1)
+texture = SubResource("ViewportTexture_df0lc")
+centered = false
+
+[node name="Hovel1" parent="." instance=ExtResource("13_5vkv0")]
 
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_toggle_functions_pressed"]
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_setter_functions_pressed"]

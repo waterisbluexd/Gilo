@@ -467,7 +467,7 @@ func get_height_at_position(world_pos: Vector3) -> float:
 func _configure_chunk_shadows(chunk: TerrainChunk):
 	"""Ensure chunk is properly configured for shadows"""
 	if not chunk.mesh_instance:
-		return
+		return	
 	
 	# Force shadow casting on
 	chunk.mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON

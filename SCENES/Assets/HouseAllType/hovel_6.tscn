@@ -1,198 +1,136 @@
-[gd_scene load_steps=17 format=4 uid="uid://bcn0uumcujjbc"]
+[gd_scene load_steps=7 format=4 uid="uid://bcn0uumcujjbc"]
 
-[ext_resource type="Texture2D" uid="uid://jhq7vexa2uq8" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_wall.png" id="1_qk0hu"]
-[ext_resource type="Texture2D" uid="uid://tcq34pycaici" path="res://MODLES/assetsmodel/Housealltype/Hovels_Hovel_roof_type_1.png" id="2_h4uuh"]
-[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="3_rg3bn"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8kiml"]
-resource_name = "Hovel_wall"
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
-albedo_texture = ExtResource("1_qk0hu")
-roughness = 0.5
-texture_filter = 2
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_72nxd"]
-_surfaces = [{
-"aabb": AABB(-1.125, -0.375, -0.75, 0.375, 0.375, 0.3125),
-"format": 34896613377,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
-"name": "Hovel_wall",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_xmxdc"]
-resource_name = "Hovels_cube_013"
-_surfaces = [{
-"aabb": AABB(-1.125, -0.375, -0.75, 0.375, 0.375, 0.3125),
-"attribute_data": PackedByteArray("/0f/S/9f/zf/X/9L/0f/N/8v/0v/R/83/0f/S/8v/zf/d/9L/4//N/+P/0v/d/83/1//S/93/zf/d/9L/1//N/9f/x//R/83/0f/H/9f/zf/d/83/1//H/9f/zf/d/8f"),
-"format": 34896613399,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_8kiml"),
-"name": "Hovel_wall",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//wAA////////AAD//wAA//8AAAAA/////wAA/3//P/9//z//f/8//3//P6qqVFWqqlRVqqpUVaqqVFX///9/////f////3////9/VNVU1VTVVNVU1VTVVNVU1f9/////f////3////9/////f/9//3//f/9//3//f/9/")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_72nxd")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ih2p"]
-resource_name = "Hovel_wall"
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
-albedo_texture = ExtResource("1_qk0hu")
-roughness = 0.5
-texture_filter = 2
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_pbj71"]
-_surfaces = [{
-"aabb": AABB(-1.375, -0.4375, -0.4375, 0.75, 0.875, 0.4375),
-"format": 34896613377,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
-"name": "Hovel_wall",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_yniga"]
-resource_name = "Hovels_cube_014"
-_surfaces = [{
-"aabb": AABB(-1.375, -0.4375, -0.4375, 0.75, 0.875, 0.4375),
-"attribute_data": PackedByteArray("BDkRWhFKoXsEOaF7EUoRWgk501ngSYN7CTmDe+BJ01n3OPVZBEqFe/c4hXsESvVZDjkYWiBKfHsOOXx7IEoYWh9aFSXDdAAGw3QVJR9aAAYFP8g2pRzjXqUcyDYFP+Ne"),
-"format": 34896613399,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_0ih2p"),
-"name": "Hovel_wall",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("//8AAP//VNUAAAAAAABU1QAAAAD//1TV//8AAAAAVNX/////////v///AAAAAP+///8AAP///7//////AAD/vwAA/////1TV/////wAAVNX///////9U1QAA//8AAFTVAAAAAP////8AAP//AAD//wAA////////AAAAAAAA//8AAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//////////////////wAA/////wAA////////VVVUVVVVVFVUVVRVVVVUVf9/AAD/fwAA/38AAP9/AABU1aoqVNWqKlTVqipU1aoq/z//f/8//3//P/9//z//f////3////9/////f////3//f/9//3//f/9//3//f/9/")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_pbj71")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
-render_priority = 0
-shader = ExtResource("3_rg3bn")
-shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
-shader_parameter/shadow_strength = 0.999999977648
-shader_parameter/highlight_strength = 0.0
-shader_parameter/highlight_color = Color(1, 1, 1, 1)
-shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
-shader_parameter/is_perspective_camera = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qpuao"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwx77"]
 resource_name = "Hovel_roof"
-next_pass = SubResource("ShaderMaterial_ipdbf")
 diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.80784315, 0.4117647, 0, 1)
-albedo_texture = ExtResource("2_h4uuh")
-texture_filter = 2
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_8e8lb"]
-_surfaces = [{
-"aabb": AABB(-1.1875, -0.4375, -0.8125, 0.5, 0.5, 0.0625),
-"format": 34896613377,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABAABAAMAAgAFAAAABQADAAAAAgAEAAYAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
-"name": "Hovel_roof",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAP//AAAAAP///////wAAAAD/////AAD/////AAAAAA==")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_yoq6q"]
-resource_name = "Hovels_cube_015"
-_surfaces = [{
-"aabb": AABB(-1.1875, -0.4375, -0.8125, 0.5, 0.5, 0.0625),
-"attribute_data": PackedByteArray("BGIPOMSEDzTEhA84BGIPNH9i3zc/hd8zP4XfN39i3zM/Yp83/4SfM/+Enzc/Yp8zi2LDN0qFwzNKhcM3i2LDM/9n/w//N/8//zf/D/9n/z//f/83/1//F/9f/zf/f/8X"),
-"format": 34896613399,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_qpuao"),
-"name": "Hovel_roof",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//////////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//////+//////wAA/7//////////vwAA//8AAP+/AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAP//AAD/////AAAAAP///////wAA//8AAAAAAAD//wAAAAD//wAA////////AAD//wAA//8AAAAA/////wAA/3//P/9//z//f/8//3//P6qqVFWqqlRVqqpUVaqqVFX///9/////f////3////9/VNVU1VTVVNVU1VTVVNVU1f9/////f////3////9/////f/9//3//f/9//3//f/9/")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_8e8lb")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fufal"]
-resource_name = "Hovel_wall"
-cull_mode = 2
-albedo_texture = ExtResource("1_qk0hu")
 roughness = 0.5
-texture_filter = 2
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_7qo5a"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xuioj"]
+resource_name = "Hovel_walls"
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oewl3"]
+resource_name = "Hovel_roof_outliner"
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.47044116, 0.3310739, 4.813075e-07, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wi7ty"]
+resource_name = "Hovel_walls_outliner"
+cull_mode = 2
+albedo_color = Color(0.39215687, 0.3372549, 0.27450982, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_sx6ka"]
 _surfaces = [{
-"aabb": AABB(-1.375, -0.4375, -0.5, 0.75, 0.875, 0.0625),
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 0.125),
 "format": 34896613377,
-"index_count": 144,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAADAAAAAgAEAAAABAAFAAMABgADAAUABgABAAMABwAFAAQABwAGAAUAAgAHAAQAAgABAAYAAgAGAAcACAABAAIABwAGAAkACAAKAAEAAgALAAgACwAKAAgACwAMAAoADQABAAoAAgABAA0ADQAKAAwAAgAOAAsADgAMAAsAAgANAA4ADgANAAwADwAGAAcADwANAA4ADgANABAADgAQABEAEQAPAA4AEgAQAA0AEQAQABIAEQASABMAEQATAA8AEgANABQAEwASABQADwAUAA0AEwAUAA8ADwAUAAYAFQAUAA8AFgAGABQAFQAWABQAFgAJAAYAFwAVAA8AFwAWABUAFwAJABYAFwAPAAcABwAJABcA"),
-"name": "Hovel_wall",
+"index_count": 552,
+"index_data": PackedByteArray("AAABAAIAAwABAAAAAgAEAAAABQABAAMAAgAGAAQABwABAAUAAgAIAAYACQABAAcAAgAKAAgAAQAJAAsAAgAMAAoAAQALAA0AAgAOAAwAAQANAA8ADgACABAAAQAPABEAEAACABIAEgACABMAEwACABQAAQARABUAAQAVABYAFAACABcAAQAXAAIAFwAYABQAFwAZABgAFwAaABkAFwAbABoAFwAcABsAFwAdABwAHQAXAB4AHgAXAB8AHwAXACAAIAAXACEAIQAXACIAAQAiABcAIgAjACEAFgAiAAEAIgAkACMAJQAiABYAIgAmACQAJwAiACUAIgAoACYAKQAiACcAIgAqACgAKwAiACkAIgArACoALAAtAC4ALAAvAC0AMAAvACwAMAAxAC8AMgAxADAAMgAzADEANAAzADIANAA1ADMANgA1ADQANgA3ADUAOAA3ADYAOAA5ADcAOgA5ADgAOwA6ADwAOwA5ADoAPQA5ADsAPgA5AD0APwA5AD4AQAA5AD8AQQA5AEAAOQBBAEIAQgBBAEMAQgBDAEQAOQBCAEUAOQBFAEYAOQBGAEcAOQBHAEgAOQBIAEkAOQBJAEoAOQBKAEsAagBdAFwAagBTAF0AawBqAFwAawBcAFoAbABTAGoAbABhAFMAbQBqAGsAbQBsAGoAbgBrAFoAbgBaAFgAbwBtAGsAbwBrAG4AcABhAGwAcABiAGEAcQBsAG0AcQBwAGwAcgBtAG8AcgBxAG0AcwBiAHAAcwBmAGIAdABwAHEAdABzAHAAdQBxAHIAdQB0AHEAdgBmAHMAdgBnAGYAaABnAHYAaABpAGcAZQBoAHYAdwB2AHMAZQB2AHcAdwBzAHQAZABlAHcAeAB3AHQAZAB3AHgAeAB0AHUAYwBkAHgAYwB4AHkAeQB4AHUAYABjAHkAeQB1AHoAYAB5AHsAewB5AHoAegB1AHIAXwBgAHsAegByAHwAfAByAG8AewB6AH0AfQB6AHwAXwB7AH4AfgB7AH0AXgBfAH4AfABvAH8AfwBvAG4AfQB8AIAAgAB8AH8AfgB9AIEAgQB9AIAAXgB+AIIAggB+AIEAWwBeAIIAfwBuAIMAgwBuAFgAgwBYAFYAhAB/AIMAgAB/AIQAhQCDAFYAhACDAIUAhQBWAFQAhgCAAIQAgQCAAIYAhwCEAIUAhgCEAIcAiACFAFQAhwCFAIgAiABUAFAAiQCBAIYAggCBAIkAigCGAIcAiQCGAIoAiwCHAIgAigCHAIsAjACIAFAAiwCIAIwAjABQAE8AjQCCAIkAWwCCAI0AWQBbAI0AWQCNAFcAjQCJAI4AVwCNAI4AjgCJAIoAVwCOAFUAjgCKAI8AVQCOAI8AjwCKAIsAVQCPAFIAjwCLAJAAUgCPAJAAkACLAIwAUgCQAFEAkACMAJEAUQCQAJEAkQCMAE8AUQCRAEwAkQBPAE0ATACRAE0ATABNAE4A"),
+"lods": [6.118398e-05, PackedByteArray("AAABAAIAAwABAAAAAgAEAAAABQABAAMAAgAGAAQABwABAAUAAgAIAAYACQABAAcAAgAKAAgAAQAJAAsAAgAMAAoAAQALAA0AAgAOAAwAAQANAA8ADgACABAAAQAPABEAEAACABIAEgACABMAEwACABQAAQARABUAAQAVABYAFAACABcAAQAXAAIAFwAYABQAFwAZABgAFwAaABkAFwAbABoAFwAcABsAFwAdABwAHQAXAB4AHgAXAB8AHwAXACAAIAAXACEAIQAXACIAAQAiABcAIgAjACEAFgAiAAEAIgAkACMAJQAiABYAIgAmACQAJwAiACUAIgAoACYAKQAiACcAIgAqACgAKwAiACkAIgArACoALAAtAC4ALAAvAC0AMAAvACwAMAAxAC8AMgAxADAAMgAzADEANAAzADIANAA1ADMANgA1ADQANgA3ADUAOAA3ADYAOAA5ADcAOgA5ADgAOwA6ADwAOwA5ADoAPQA5ADsAPgA5AD0APwA5AD4AQAA5AD8AQQA5AEAAOQBBAEIAQgBBAEMAQgBDAEQAOQBCAEUAOQBFAEYAOQBGAEcAOQBHAEgAOQBIAEkAOQBJAEoAOQBKAEsATABNAE4ATABPAE0AUABPAEwAUQBQAEwAUgBQAFEAUgBTAFAAUwBUAFAAVQBTAFIAVABTAFYAVwBTAFUAVgBTAFgAWQBTAFcAUwBaAFgAWQBbAFMAUwBcAFoAUwBdAFwAWwBeAFMAXgBfAFMAUwBfAGAAYABhAFMAYABiAGEAYABjAGIAYwBkAGIAZABlAGIAZQBmAGIAZQBnAGYAaABnAGUAaABpAGcA")],
+"name": "Hovel_roof",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 146,
+"vertex_data": PackedByteArray("//8AAAAAAAAAAAAA//8AAP//AAD//wAAZeYAAAAAAAD//5kZAAAAAMzMAAAAAAAA//8yMwAAAAAyswAAAAAAAP//zEwAAAAAmZkAAAAAAAD//2ZmAAAAAP9/AAAAAAAA////fwAAAABmZgAAAAAAAP//mJkAAAAAzEwAAAAAAAD//zKzAAAAADMzAAAAAAAA///MzAAAAAD//2XmAAAAAP////8AAAAAmRkAAAAAAAAAAAAAAAAAAP///////wAAZeb//wAAAADMzP//AAAAADKz//8AAAAAmZn//wAAAAD/f///AAAAAGZm//8AAAAAzEz//wAAAAAzM///AAAAAJkZ//8AAAAAAAD//wAAAAAAAP////8AAAAAZeYAAAAAAADMzAAAAAAAAJkZAAAAAAAAMrMAAAAAAAAzMwAAAAAAAJmZAAAAAAAAzEwAAAAAAAD/fwAAAAAAAGZmAAAAAJkZzMwAAAAAMzNl5gAAAACZGWXmAAAAAMxMZeYAAAAAmRkyswAAAABmZmXmAAAAAJkZmJkAAAAA/39l5gAAAACZGf9/AAAAAJmZZeYAAAAAmRlmZgAAAAAys2XmAAAAAJkZzEwAAAAAzMxl5gAAAACZGTIzAAAAADMzmRkAAAAAmRmZGQAAAADMTJkZAAAAAGZmmRkAAAAA/3+ZGQAAAACZmZkZAAAAADKzmRkAAAAAZeYyMwAAAADMzJkZAAAAAGXmmRkAAAAAZebMTAAAAABl5mZmAAAAAGXm/38AAAAAZeaYmQAAAABl5jKzAAAAAGXmzMwAAAAAZeZl5gAAAABDxLXt//8AAGXmVNX//wAAZea17f//AABl5vO8//8AAGXmkaT//wAAIaK17f//AAD/f7Xt//8AAEPESRL//wAAZeYwjP//AADdXbXt//8AAGXmznP//wAAuzu17f//AABl5m1b//8AAJkZte3//wAAZeYLQ///AACZGVTV//8AAGXmqir//wAAZeZJEv//AACZGfO8//8AAJkZkaT//wAAmRkwjP//AAAhokkS//8AAP9/SRL//wAAmRnOc///AACZGW1b//8AAJkZC0P//wAA3V1JEv//AAC7O0kS//8AAJkZqir//wAAmRlJEv//AABDxKoq//8AAEPEC0P//wAAIaKqKv//AAAhogtD//8AAEPEbVv//wAAIaJtW///AAD/f6oq//8AAP9/C0P//wAA/39tW///AADdXaoq//8AAN1dC0P//wAA3V1tW///AAC7O6oq//8AALs7C0P//wAAuzttW///AAC7O85z//8AAN1dznP//wAAuzswjP//AAD/f85z//8AAN1dMIz//wAAuzuRpP//AAAhos5z//8AAP9/MIz//wAA3V2RpP//AAC7O/O8//8AAEPEznP//wAAIaIwjP//AABDxDCM//8AAP9/kaT//wAAIaKRpP//AABDxJGk//8AAN1d87z//wAA/3/zvP//AAAhovO8//8AAEPE87z//wAAuztU1f//AADdXVTV//8AAP9/VNX//wAAIaJU1f//AABDxFTV//8AAA==")
+}, {
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"format": 34896613377,
+"index_count": 216,
+"index_data": PackedByteArray("AgAmAAEAAgAnACYAAAAnAAIAJgAHAAEAJwAHACYAAQAHAAgAAAAoACcAKAAHACcABAAoAAAAKAAEAAUAKAAFAAYAKAAGAAMAAwAHACgACQADAAoACQAHAAMABwAJACkADAApAAkADAAqACkABwApACoACwAqAAwACwArACoABwAqACsADQArAAsADQAsACsADwAsAA0ABwArABQAFAArACwADwAtACwAFAAsAC0AEAAtAA8AEAAuAC0AFAAtAC4AEQAuABAALgARABIALgASABMALgATAA4AFAAuAA4AFAAOABUABwAUAC8ALwAXAAcALwAYABcALwAZABgAGQAvABoAGgAvADAALwAUADAAGgAwABsAGwAwADEAMAAUADEAGwAxABwAHAAxADIAMQAUADIAHAAyAB0AMgAUADMAIQAzABQAHQAyADQAMgAzADQAHQA0AB4AIQA1ADMANAAzADUAIgA1ACEAHgA0ADYANAA1ADYAHgA2ABYAIgA3ADUANgA1ADcANgA3ABYAIwA3ACIANwAjACQANwAkACUANwAlAB8AFgA3AB8AFgAfACAA"),
+"lods": [0.00016595218, PackedByteArray("AAABAAIAAAADAAEABAADAAAAAwAEAAUAAwAFAAYAAwAHAAEAAQAHAAgACQAHAAMACQADAAoACwAJAAwADQAJAAsADQAOAAkADwAOAA0AEAAOAA8AEQAOABAADgARABIADgASABMAFAAJAA4ABwAJABQAFAAOABUABwAUABYAFgAXAAcAFgAYABcAFgAZABgAGQAWABoAGgAWABsAGwAWABwAHAAWAB0AHQAWAB4AFgAUAB8AFgAfACAAIQAfABQAIgAfACEAIwAfACIAHwAjACQAHwAkACUA")],
+"name": "Hovel_walls",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 56,
+"vertex_data": PackedByteArray("qaoAAAAAAABU1QAA//8AAFTVAAAAAAAAqioAAP//AAD/fwAAAAAAAFRVAAAAAAAAqioAAAAAAAD//3Ec//8AAP//AAD//wAAAABxHP//AAAAAAAA//8AAAAA4zgAAAAAAABxHAAAAAAAAFVVAAAAAAAAjeP//wAAAADGcQAAAAAAADiOAAAAAAAAqqoAAAAAAAAbxwAAAAAAAI3jAAAAAKoq/////wAAAAD/////AAD//43j//8AAP//cRwAAAAA///jOAAAAAD//1VVAAAAAP//xnEAAAAA//84jgAAAAD//6qqAAAAAP//G8cAAAAA//+N4wAAAABU1f////8AAP///////wAAqir//wAAAABUVf//AAAAAP9///8AAAAAqar//wAAAABU1f//AAAAAKmqAAD//wAA/38AAP//AABUVQAA//8AAAAA4zj//wAAAABVVf//AAAAAMZx//8AAAAAOI7//wAAAACqqv//AAAAABvH//8AAP//4zj//wAA//9VVf//AAD//8Zx//8AAP//OI7//wAAVFX/////AAD//6qq//8AAP9//////wAA//8bx///AACpqv////8AAA==")
+}, {
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 1e-05),
+"format": 34896613377,
+"index_count": 216,
+"index_data": PackedByteArray("AAABAAIAAQADAAIAAAAEAAEABQADAAEABgADAAUABwADAAYACAADAAcACQADAAgACgADAAkACwADAAoADAAEAAAADAAAAA0ADAAOAAQADAAPAA4ADAAQAA8ADAARABAADAASABEADAATABIADAAUABMADAAVABQAFgAVAAwAFgAXABUAFgAMABgAFwAWABkAFgAYABoAGQAWABsAFgAaABwAGwAWAB0AFgAcAB4AHQAWAB8AFgAeACAAHwAWACEAFgAgACIAIQAWACMAFgAiACQAFgAkACUAFgAlACYAIwAWACcAJwAWACgAKAAWACkAKAApACoAKAAqACsAKAArACwAKAAsAC0AKAAtAC4AKAAuAC8AKAAvADAAKAAwADEAJwAoADIAJwAyADMAMwAyADQAMwA0ADUANQA0ADYANQA2ADcANwA2ADgANwA4ADkAOQA4ADoAOQA6ADsAOwA6ADwAOwA8AD0APQA8AD4APQA+AD8APwA+AEAAPwBAAAsACwBAAAMAAwBAAEEAQQBAAEIAQgBAAEMAQwBAAEQARABAAEUARQBAAEYARgBAAEcA"),
+"name": "Hovel_roof_outliner",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 72,
+"vertex_data": PackedByteArray("mRn//wAAAAAzM2XmAAAAADMz//8AAAAAzEz//wAAAACZGWXmAAAAAMxMZeYAAAAAZmZl5gAAAAD/f2XmAAAAAJmZZeYAAAAAMrNl5gAAAADMzGXmAAAAAGXmZeYAAAAAAABl5gAAAAAAAP//AAAAAJkZzMwAAAAAmRkyswAAAACZGZiZAAAAAJkZ/38AAAAAmRlmZgAAAACZGcxMAAAAAJkZMjMAAAAAmRmZGQAAAACZGQAAAAAAADMzmRkAAAAAAADMzAAAAADMTJkZAAAAAAAAMrMAAAAAZmaZGQAAAAAAAJmZAAAAAP9/mRkAAAAAAAD/fwAAAACZmZkZAAAAAAAAZmYAAAAAMrOZGQAAAAAAAMxMAAAAAMzMmRkAAAAAAAAzMwAAAAAAAJkZAAAAAAAAAAAAAAAAZeaZGQAAAAD//5kZAAAAADMzAAAAAAAAzEwAAAAAAABmZgAAAAAAAP9/AAAAAAAAmZkAAAAAAAAyswAAAAAAAMzMAAAAAAAAZeYAAAAAAAD//wAAAAAAAP//MjMAAAAAZeYyMwAAAAD//8xMAAAAAGXmzEwAAAAA//9mZgAAAABl5mZmAAAAAP///38AAAAAZeb/fwAAAAD//5iZAAAAAGXmmJkAAAAA//8yswAAAABl5jKzAAAAAP//zMwAAAAAZebMzAAAAAD//2XmAAAAAGZm//8AAAAA/3///wAAAACZmf//AAAAADKz//8AAAAAzMz//wAAAABl5v//AAAAAP////8AAAAA")
+}, {
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"format": 34896613377,
+"index_count": 48,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQAAgAEAAUABgAHAAgABgAJAAcACAAHAAoACAAKAAsADAANAA4ADAAPAA0ADgANABAADgAQABEAEgATABQAEgAVABMAFAATABYAFAAWABcA"),
+"name": "Hovel_walls_outliner",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 24,
-"vertex_data": PackedByteArray("VRVJEv//AAAAAEkSAAAAAAAASRL//wAAVRVJEgAAAABVFbXt//8AAFUVte0AAAAAAAC17QAAAAAAALXt//8AAAAAAAD//wAAAAD//wAAAAAAAAAAAAAAAP//AAD//wAA//8AAAAAAAD//0kSAAAAAP//SRL//wAA//+17f//AACp6kkSAAAAAKnqSRL//wAAqeq17QAAAACp6rXt//8AAP//te0AAAAA////////AAD/////AAAAAAAA/////wAA")
+"vertex_data": PackedByteArray("qioAAP//AAAAAAAAAAAAAAAAAAD//wAAqioAAAAAAAAAAHEcAAAAAAAAcRz//wAA//9xHP//AAD//wAAAAAAAP//AAD//wAA//9xHAAAAABU1QAAAAAAAFTVAAD//wAAVNX/////AAD/////AAAAAP///////wAAVNX//wAAAAD//43jAAAAAP//jeP//wAAAACN4///AAAAAP//AAAAAAAA/////wAAAACN4wAAAACqKv//AAAAAKoq/////wAA")
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_cdc7y"]
-resource_name = "Hovels_cube_019"
+[sub_resource type="ArrayMesh" id="ArrayMesh_6ijqy"]
+resource_name = "Hovels_all_cube_012"
 _surfaces = [{
-"aabb": AABB(-1.375, -0.4375, -0.5, 0.75, 0.875, 0.0625),
-"attribute_data": PackedByteArray("F0fmWv9G/lr/RuZaF0f+WjFI5loXR/5aF0fmWjFI/lrlReZazkX+Ws5F5lrlRf5a/0bmWuVF/lrlReZa/0b+Wv9GGFwXR/5aF0cYXP9G/lroRv5a/0YYXP9G/lroRhhcF0fmWv9G/lr/RuZaF0f+WjFI5loXR/5aF0fmWjFI/lrlReZazkX+Ws5F5lrlRf5a/0bmWuVF/lrlReZa/0b+Wv9GGFwXR/5aF0cYXP9G/lroRv5a/0YYXP9G/lroRhhcF0fmWv9G/lr/RuZaF0f+WjFI5loXR/5aF0fmWjFI/lrlReZazkX+Ws5F5lrlRf5a/0bmWuVF/lrlReZa/0b+Wv9GGFwXR/5aF0cYXP9G/lroRv5a/0YYXP9G/lroRhhcF0fmWv9G/lr/RuZaF0f+WjFI5loXR/5aF0fmWjFI/lrlReZazkX+Ws5F5lrlRf5a/0bmWuVF/lrlReZa/0b+Wv9GGFwXR/5aF0cYXP9G/lroRv5a/0YYXP9G/lroRhhc"),
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 0.125),
+"attribute_data": PackedByteArray("TD4eR0xmHk9MPh5PTEIeR0xGHkdMSh5HTE4eR0xSHkdMVh5HTFoeR0xeHkdMYh5HTGYeR0wGHkdMPh5PTAYeT+YLHkd/ER5HGRceR7IcHkdMIh5H5iceR38tHkcZMx5HsjgeR0w+Hkf/l/83/7//P/+X/z//m/83/5//N/+j/zf/p/83/6v/N/+v/zf/s/83/7f/N/+7/zf/v/83R6hUNJ6yzjVHqM41UKlUNFiqVDRhq1Q0aqxUNHOtVDR7rlQ0hK9UNI2wVDSVsVQ0nrJUNP+H/zf/XwAA/1//N/+HAADmcnGZLmaqjOZyqox3WaqM5nI4pr9Mqozmcv+yB0CqjOZyxr9PM6qM5nKOzJgmqozmclXZ4BmqjOZyHOYuZuPy5nLj8ndZ4/K/TOPyB0Dj8k8z4/KYJuPyKA0c5uAZ4/IoDePyKA1V2SgNjswoDca/KA3/sigNOKYoDXGZKA2qjMqtU6SbsYGgm7FTpJuxsJybsd6Y+KlTpCamU6TKrfOBm7EMlVSiU6SbsTqRgp5TpJuxaI2xmlOkm7GXibGagaCbscWFm7HzgbGasJyxmt6YsZoMlfip84EmpvOBsZo6kbGaaI2xmpeJVKLzgYKe84GxmsWFsZrzgcqtxYXKrZeJ+KnFhfipl4nKrWiN+KlojSamxYUmppeJJqZojVSixYVUopeJVKJojYKexYWCnpeJgp5ojYKeOpFUojqRgp4MlSamOpFUogyVgp7emPipOpEmpgyVVKLemIKesJzKrTqR+KkMlcqtDJUmpt6Y+KnemMqt3phUorCcJqawnPipsJzKrbCcgp6BoFSigaAmpoGg+KmBoMqtgaA="),
 "format": 34896613399,
-"index_count": 144,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUASABJAEoASABLAEkATABNAE4ATABPAE0AUABRAFIAUABTAFEAVABVAFYAVABXAFUAWABZAFoAWABbAFkAXABdAF4AXABfAF0A"),
-"material": SubResource("StandardMaterial3D_fufal"),
-"name": "Hovel_wall",
+"index_count": 552,
+"index_data": PackedByteArray("AAABAAIAAwABAAAABAABAAMABQABAAQABgABAAUAAQAGAAcAAQAHAAgAAQAIAAkAAQAJAAoAAQAKAAsAAQALAAwADQAOAA8AEAAOAA0AEQAOABAAEgAOABEAEwAOABIADgATABQADgAUABUADgAVABYADgAWABcADgAXABgADgAYABkAGgAbABwAHQAbABoAHgAbAB0AHwAbAB4AIAAbAB8AGwAgACEAGwAhACIAGwAiACMAGwAjACQAGwAkACUAGwAlACYAJwAoACkAKgAoACcAKwAoACoALAAoACsALQAoACwAKAAtAC4AKAAuAC8AKAAvADAAKAAwADEAKAAxADIAKAAyADMANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA7ADgAPAA9ADsAPgA9ADwAPgA/AD0AQAA/AD4AQABBAD8AQgBBAEAAQgBDAEEARABDAEIARABFAEMARgBFAEQARwBGAEgARwBFAEYASQBFAEcASgBFAEkASwBFAEoATABFAEsATQBFAEwARQBNAE4ATgBNAE8ATgBPAFAARQBOAFEARQBRAFIARQBSAFMARQBTAFQARQBUAFUARQBVAFYARQBWAFcAdgBpAGgAdgBfAGkAdwB2AGgAdwBoAGYAeABfAHYAeABtAF8AeQB2AHcAeQB4AHYAegB3AGYAegBmAGQAewB5AHcAewB3AHoAfABtAHgAfABuAG0AfQB4AHkAfQB8AHgAfgB5AHsAfgB9AHkAfwBuAHwAfwByAG4AgAB8AH0AgAB/AHwAgQB9AH4AgQCAAH0AggByAH8AggBzAHIAdABzAIIAdAB1AHMAcQB0AIIAgwCCAH8AcQCCAIMAgwB/AIAAcABxAIMAhACDAIAAcACDAIQAhACAAIEAbwBwAIQAbwCEAIUAhQCEAIEAbABvAIUAhQCBAIYAbACFAIcAhwCFAIYAhgCBAH4AawBsAIcAhgB+AIgAiAB+AHsAhwCGAIkAiQCGAIgAawCHAIoAigCHAIkAagBrAIoAiAB7AIsAiwB7AHoAiQCIAIwAjACIAIsAigCJAI0AjQCJAIwAagCKAI4AjgCKAI0AZwBqAI4AiwB6AI8AjwB6AGQAjwBkAGIAkACLAI8AjACLAJAAkQCPAGIAkACPAJEAkQBiAGAAkgCMAJAAjQCMAJIAkwCQAJEAkgCQAJMAlACRAGAAkwCRAJQAlABgAFwAlQCNAJIAjgCNAJUAlgCSAJMAlQCSAJYAlwCTAJQAlgCTAJcAmACUAFwAlwCUAJgAmABcAFsAmQCOAJUAZwCOAJkAZQBnAJkAZQCZAGMAmQCVAJoAYwCZAJoAmgCVAJYAYwCaAGEAmgCWAJsAYQCaAJsAmwCWAJcAYQCbAF4AmwCXAJwAXgCbAJwAnACXAJgAXgCcAF0AnACYAJ0AXQCcAJ0AnQCYAFsAXQCdAFgAnQBbAFkAWACdAFkAWABZAFoA"),
+"lods": [6.118398e-05, PackedByteArray("AAABAAIAAwABAAAABAABAAMABQABAAQABgABAAUAAQAGAAcAAQAHAAgAAQAIAAkAAQAJAAoAAQAKAAsAAQALAAwADQAOAA8AEAAOAA0AEQAOABAAEgAOABEAEwAOABIADgATABQADgAUABUADgAVABYADgAWABcADgAXABgADgAYABkAGgAbABwAHQAbABoAHgAbAB0AHwAbAB4AIAAbAB8AGwAgACEAGwAhACIAGwAiACMAGwAjACQAGwAkACUAGwAlACYAJwAoACkAKgAoACcAKwAoACoALAAoACsALQAoACwAKAAtAC4AKAAuAC8AKAAvADAAKAAwADEAKAAxADIAKAAyADMANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA7ADgAPAA9ADsAPgA9ADwAPgA/AD0AQAA/AD4AQABBAD8AQgBBAEAAQgBDAEEARABDAEIARABFAEMARgBFAEQARwBGAEgARwBFAEYASQBFAEcASgBFAEkASwBFAEoATABFAEsATQBFAEwARQBNAE4ATgBNAE8ATgBPAFAARQBOAFEARQBRAFIARQBSAFMARQBTAFQARQBUAFUARQBVAFYARQBWAFcAWABZAFoAWABbAFkAXABbAFgAXQBcAFgAXgBcAF0AXgBfAFwAXwBgAFwAYQBfAF4AYABfAGIAYwBfAGEAYgBfAGQAZQBfAGMAXwBmAGQAZQBnAF8AXwBoAGYAXwBpAGgAZwBqAF8AagBrAF8AXwBrAGwAbABtAF8AbABuAG0AbABvAG4AbwBwAG4AcABxAG4AcQByAG4AcQBzAHIAdABzAHEAdAB1AHMA")],
+"material": SubResource("StandardMaterial3D_fwx77"),
+"name": "Hovel_roof",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 96,
-"vertex_data": PackedByteArray("VRVJEv///78AAEkSAAD/vwAASRL///+/VRVJEgAA/79VFbXt//9U1VUVSRIAAFTVVRVJEv//VNVVFbXtAABU1QAAte3/////VRW17QAA//9VFbXt/////wAAte0AAP//AABJEv//VNUAALXtAABU1QAAte3//1TVAABJEgAAVNUAALXtAAD//1UVSRIAAP//VRW17QAA//8AAEkSAAD//wAASRL///5/VRW17f///n9VFUkS///+fwAAte3///5/AAAAAP//VNUAAEkSAABU1QAASRL//1TVAAAAAAAAVNX//wAA////vwAAAAAAAP+/AAAAAP///7///wAAAAD/v///SRL//1TV//8AAAAAVNX//wAA//9U1f//SRIAAFTVAABJEv///////0kSAAD/////SRL/////AABJEgAA/////0kSAAD//wAAAAAAAP////8AAAAA//8AAEkSAAD//wAASRL///8///8AAP///z8AAAAA////P///SRL///8/AAC17f//VNUAAP//AABU1QAA/////1TVAAC17QAAVNX//7Xt////vwAAte0AAP+/AAC17f///7///7XtAAD/v////////1TV//+17QAAVNX//7Xt//9U1f////8AAFTVAAD/////////////AAD/////////////AAD//wAA////////AAD//wAAte0AAP////+17QAA//8AAP//AAD//wAA//////8///+17f///z8AALXt////P/////////8///9JEv///7+p6kkSAAD/v6nqSRL///+///9JEgAA/7///7Xt//9U1f//SRIAAFTV//9JEv//VNX//7XtAABU1anqte3///////+17QAA/////7Xt/////6nqte0AAP//qepJEv//VNWp6rXtAABU1anqte3//1TVqepJEgAAVNWp6rXtAAD/////SRIAAP////+17QAA//+p6kkSAAD//6nqSRL///5///+17f///n///0kS///+f6nqte3///5/AAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/f/+//3//v/9//7//f/+/VFWqqlRVqqpUVaqqVFWqqv///3////9/////f////3//f////3////9/////f///VFWqqlRVqqpUVaqqVFWqqgAA/38AAP9/AAD/fwAA/3+qKqoqqiqqKqoqqiqqKqoq/3//v/9//7//f/+//3//v/8//7//P/+//z//v/8//7//f/9//3//f/9//3//f/9/VFWqqlRVqqpUVaqqVFWqqgAA/38AAP9/AAD/fwAA/3+qKqoqqiqqKqoqqiqqKqoq/3//v/9//7//f/+//3//v/8//7//P/+//z//v/8//7//f/9//3//f/9//3//f/9/AAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/f/+//3//v/9//7//f/+/VFWqqlRVqqpUVaqqVFWqqv///3////9/////f////3//f////3////9/////f///")
+"vertex_count": 158,
+"vertex_data": PackedByteArray("//8AAAAA//8AAAAA////////AAD/////ZeYAAAAA///MzAAAAAD//zKzAAAAAP//mZkAAAAA////fwAAAAD//2ZmAAAAAP//zEwAAAAA//8zMwAAAAD//5kZAAAAAP//AAAAAAAA////////AABU1f//AAD//1TV////////VNX//2XmAABU1f//zMwAAFTV//8yswAAVNX//5iZAABU1f///38AAFTV//9mZgAAVNX//8xMAABU1f//MjMAAFTV//+ZGQAAVNX//wAAAABU1QAA//8AAP+//////////78AAP//////v5kZ//8AAP+/MzP//wAA/7/MTP//AAD/v2Zm//8AAP+//3///wAA/7+Zmf//AAD/vzKz//8AAP+/zMz//wAA/79l5v//AAD/v/////8AAP+/AAAAAAAAVNUAAP////9U1QAAAAD//1TVAACZGQAAVNUAADMzAABU1QAAzEwAAFTVAABmZgAAVNUAAP9/AABU1QAAmZkAAFTVAAAyswAAVNUAAMzMAABU1QAAZeYAAFTVAAD//wAAVNUAAAAA//8AAP///////wAA//8AAP//AAAAAP////8AAJkZzMwAAP//MzNl5gAA//+ZGWXmAAD//8xMZeYAAP//mRkyswAA//9mZmXmAAD//5kZmJkAAP///39l5gAA//+ZGf9/AAD//5mZZeYAAP//mRlmZgAA//8ys2XmAAD//5kZzEwAAP//zMxl5gAA//+ZGTIzAAD//zMzmRkAAP//mRmZGQAA///MTJkZAAD//2ZmmRkAAP///3+ZGQAA//+ZmZkZAAD//zKzmRkAAP//ZeYyMwAA///MzJkZAAD//2XmmRkAAP//ZebMTAAA//9l5mZmAAD//2Xm/38AAP//ZeaYmQAA//9l5jKzAAD//2XmzMwAAP//ZeZl5gAA//9DxLXt/////2XmVNX/////Zea17f////9l5vO8/////2XmkaT/////IaK17f//////f7Xt/////0PESRL/////ZeYwjP/////dXbXt/////2XmznP/////uzu17f////9l5m1b/////5kZte3/////ZeYLQ/////+ZGVTV/////2Xmqir/////ZeZJEv////+ZGfO8/////5kZkaT/////mRkwjP////8hokkS//////9/SRL/////mRnOc/////+ZGW1b/////5kZC0P/////3V1JEv////+7O0kS/////5kZqir/////mRlJEv////9DxKoq/////0PEC0P/////IaKqKv////8hogtD/////0PEbVv/////IaJtW///////f6oq//////9/C0P//////39tW//////dXaoq/////91dC0P/////3V1tW/////+7O6oq/////7s7C0P/////uzttW/////+7O85z/////91dznP/////uzswjP//////f85z/////91dMIz/////uzuRpP////8hos5z//////9/MIz/////3V2RpP////+7O/O8/////0PEznP/////IaIwjP////9DxDCM//////9/kaT/////IaKRpP////9DxJGk/////91d87z//////3/zvP////8hovO8/////0PE87z/////uztU1f/////dXVTV//////9/VNX/////IaJU1f////9DxFTV//////9//z//f/8//3//P/9//z//f/8//3//P/9//z//f/8//3//P/9//z//f/8//3//P/9//z+qqlRVqqpUVaqqVFWqqlRVqqpUVaqqVFWqqlRVqqpVVaqqVVWpqlRVqqpUVaqqVFWqqlRV////f/7//3////9/////f////3////9/////f/7//3/+//9/////f/7//3/+//9/////f1TVVNVU1VTVVNVU1VTVVNVU1VTVVNVU1VTVVNVU1VTVVNVU1VTVVNVU1VTVVNVU1VTVVNX/f/9//3//f/9//3//f/9//3////9/////f////3////9/////f////3/+//9/////f////3////9//v//f////3////9//v//f/7//3////9/////f////3////9/////f////3////9//v//f////3////9//v//f/7//3/+//9//v//f////3////9///////9/////f////3////9//v//f////3////9/////f/7//3////9//v//f////3////9/////f////3////9/////f////3////9/////f////3////9/////f/7//3/+//9//v//f/7//3/+//9//v//f////3/+//9//v//f////3/+//9/////f/7//3////9/////f/7//3/+//9/////f////3/+//9/////f/7//3////9//v//f////3/+//9//v//f////3////9//v//f/7//3////9//v//f/7//3////9/////f/7//3/+//9/////f////3////9//v//f/7//3/+//9/////f////3////9/")
+}, {
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"attribute_data": PackedByteArray("/PvWRMzqBEH8+wRBzOpLUPz7qEj8+3pM/PtLUDn5JagJ6Gy3CeglqDn596s5+cmvOfmaszn5bLfZ1peJqcXFhdnWxYXZ1miNqcWBoNnWOpHZ1gyV2dbemNnWsJzZ1oGgAABvRzARQUsAAEFLAACdQwAAyz8AAPk7AAAoOAAAVjQAAIQwMBGEMMaDgaCYh1OkxoNTpN+WU6TGg8WFsZqBoLGaU6SxmsWF35bzgbGa84GYh/OBxoPzgczq1kTM6qhIzOp6TAno96sJ6MmvCeias6nFl4mpxWiNqcU6kanFDJWpxd6YqcWwnDARb0cwEZ1DMBHLPzAR+TswESg4MBFWNGmLU6TGg7CcO49TpMaD3pgNk1OkxoMMlcaDOpHGg2iNxoOXibGasJyxmt6YsZoMlbGaOpGxmmiNsZqXiQ2T84E7j/OBaYvzgQ=="),
+"format": 34896613399,
+"index_count": 216,
+"index_data": PackedByteArray("AgAuAAEAAgAvAC4AAAAvAAIAAAAwAC8ABAAwAAAAMAAEAAUAMAAFAAYAMAAGAAMABwAxAAkABwAyADEACgAyAAcACgAzADIACwAzAAoAMwALAAwAMwAMAA0AMwANAAgAEAA0AA8AEAA1ADQADgA1ABAADgA2ADUAEQA2AA4AEQA3ADYAEwA3ABEAEwA4ADcAFAA4ABMAFAA5ADgAFQA5ABQAOQAVABYAOQAWABcAOQAXABIAGgA6ABkAGgA7ADoAGAA7ABoAGAA8ADsAGwA8ABgAGwA9ADwAHAA9ABsAHAA+AD0AHQA+ABwAHQA/AD4AHgA/AB0APwAeAB8APwAfACAAPwAgACEAIgAjACQAIgBAACMAQQBAACIAQQBCAEAAQwBCAEEAQwBEAEIARQBEAEMARQAlAEQARgAlAEUARwAlAEYASAAlAEcAJgAlAEgAJQAnACgAJQBJACcAJQBKAEkAJQBLAEoAJQBMAEsAJgBMACUAJgBNAEwAJgBOAE0AJgApAE4AKQAqACsAKQAmACoAKgAmAE8ATwAmAFAAUAAmAFEAUQAmACwALAAmAC0A"),
+"lods": [0.00016595218, PackedByteArray("AAABAAIAAAADAAEABAADAAAAAwAEAAUAAwAFAAYABwAIAAkACgAIAAcACwAIAAoACAALAAwACAAMAA0ADgAPABAAEQAPAA4AEQASAA8AEwASABEAFAASABMAFQASABQAEgAVABYAEgAWABcAGAAZABoAGwAZABgAHAAZABsAHQAZABwAHgAZAB0AGQAeAB8AGQAfACAAGQAgACEAIgAjACQAIgAlACMAJgAlACIAJQAnACgAJQApACcAJgApACUAKQAmACoAKQAqACsAKgAmACwALAAmAC0A")],
+"material": SubResource("StandardMaterial3D_xuioj"),
+"name": "Hovel_walls",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 82,
+"vertex_data": PackedByteArray("qaoAAAAAVNVU1QAA//9U1VTVAAAAAFTVqioAAP//VNX/fwAAAABU1VRVAAAAAFTVqioAAAAAVNWqKv//AABU1VTV/////1TVqir/////VNVUVf//AABU1f9///8AAFTVqar//wAAVNVU1f//AABU1QAA4zgAAP//AABxHP////8AAHEcAAD//wAAVVUAAP//AACN4/////8AAMZxAAD//wAAOI4AAP//AACqqgAA//8AABvHAAD//wAAjeMAAP////8bxwAA/////43j////////jeMAAP////+qqgAA/////ziOAAD/////xnEAAP////9VVQAA/////+M4AAD/////cRwAAP////9xHP///////43j/////1TV//////////////////+qKv//////////cRz/////AACN4/////8AAP///////wAAcRz/////qioAAP////8AAAAA/////1TVAAD///////8AAP////+pqgAA//9U1f9/AAD//1TVVFUAAP//VNVUVf////9U1f9//////1TVqar/////VNUAAOM4/////wAAVVX/////AADGcf////8AADiO/////wAAqqr/////AAAbx////////xvH////////qqr///////84jv///////8Zx////////VVX////////jOP////+pqv//////////G8f//////3///////////6qq/////1RV//////////84jv///////8Zx////////VVX////////jOP////8AABvH/////wAAqqr/////AAA4jv////8AAMZx/////wAAVVX/////AADjOP////9UVQAA//////9/AAD/////qaoAAP////9VVVRVVFVUVVRVVFVUVVRVVVVUVVRVVFVUVVRVVNWqKlTVqipU1aoqVNWqKlTVqipU1aoqVNWqKv8//3//P/9//z//f/8//3//P/9//z//f/8//3//P/9//z//f/8//3//v/9//7//f/+//3//v/9//7//f/+//3//v/9//7//f/+//3//v/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/VFVUVVRVVVVUVVVVVNWqKlTVqipU1aoq/z//f/8//3//P/9//z//f/8//3//P/9//7//f/+//3//v/9//7//f/+//3//v/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/")
+}, {
+"aabb": AABB(-0.3125, -0.4375, -0.5, 0.625, 0.875, 1e-05),
+"attribute_data": PackedByteArray("5nLify5mqowuZuJ/d1nif+Zyqox3WaqMv0yqjAdAqoxPM6qMmCaqjOAZqowoDaqMnn+qjJ5/4n/mcnGZ5nI4puZy/7Lmcsa/5nKOzOZyVdnmchzm5nLj8uZyqv8uZuPynn9xmXdZ4/Kefzimv0zj8p5//7IHQOPynn/Gv08z4/Kef47MmCbj8p5/VdngGePynn8c5p5/4/Kef6r/KA3j8nAA4/IuZqr/d1mq/79Mqv8HQKr/TzOq/5gmqv/gGar/KA2q/3AAqv9wABzmKA0c5nAAVdkoDVXZcACOzCgNjsxwAMa/KA3Gv3AA/7IoDf+ycAA4pigNOKZwAHGZKA1xmXAAqoy/TOJ/B0Dif08z4n+YJuJ/4BnifygN4n9wAOJ/"),
+"format": 34896613399,
+"index_count": 216,
+"index_data": PackedByteArray("AAABAAIAAQADAAIAAAAEAAEABQADAAEABgADAAUABwADAAYACAADAAcACQADAAgACgADAAkACwADAAoADAAEAAAADAAAAA0ADAAOAAQADAAPAA4ADAAQAA8ADAARABAADAASABEADAATABIADAAUABMADAAVABQAFgAVAAwAFgAXABUAFgAMABgAFwAWABkAFgAYABoAGQAWABsAFgAaABwAGwAWAB0AFgAcAB4AHQAWAB8AFgAeACAAHwAWACEAFgAgACIAIQAWACMAFgAiACQAFgAkACUAFgAlACYAIwAWACcAJwAWACgAKAAWACkAKAApACoAKAAqACsAKAArACwAKAAsAC0AKAAtAC4AKAAuAC8AKAAvADAAKAAwADEAJwAoADIAJwAyADMAMwAyADQAMwA0ADUANQA0ADYANQA2ADcANwA2ADgANwA4ADkAOQA4ADoAOQA6ADsAOwA6ADwAOwA8AD0APQA8AD4APQA+AD8APwA+AEAAPwBAAAsACwBAAAMAAwBAAEEAQQBAAEIAQgBAAEMAQwBAAEQARABAAEUARQBAAEYARgBAAEcA"),
+"material": SubResource("StandardMaterial3D_oewl3"),
+"name": "Hovel_roof_outliner",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 72,
+"vertex_data": PackedByteArray("mRn//wAA//8zM2XmAAD//zMz//8AAP//zEz//wAA//+ZGWXmAAD//8xMZeYAAP//ZmZl5gAA////f2XmAAD//5mZZeYAAP//MrNl5gAA///MzGXmAAD//2XmZeYAAP//AABl5gAA//8AAP//AAD//5kZzMwAAP//mRkyswAA//+ZGZiZAAD//5kZ/38AAP//mRlmZgAA//+ZGcxMAAD//5kZMjMAAP//mRmZGQAA//+ZGQAAAAD//zMzmRkAAP//AADMzAAA///MTJkZAAD//wAAMrMAAP//ZmaZGQAA//8AAJmZAAD///9/mRkAAP//AAD/fwAA//+ZmZkZAAD//wAAZmYAAP//MrOZGQAA//8AAMxMAAD//8zMmRkAAP//AAAzMwAA//8AAJkZAAD//wAAAAAAAP//ZeaZGQAA/////5kZAAD//zMzAAAAAP//zEwAAAAA//9mZgAAAAD///9/AAAAAP//mZkAAAAA//8yswAAAAD//8zMAAAAAP//ZeYAAAAA/////wAAAAD/////MjMAAP//ZeYyMwAA/////8xMAAD//2XmzEwAAP////9mZgAA//9l5mZmAAD//////38AAP//Zeb/fwAA/////5iZAAD//2XmmJkAAP////8yswAA//9l5jKzAAD/////zMwAAP//ZebMzAAA/////2XmAAD//2Zm//8AAP///3///wAA//+Zmf//AAD//zKz//8AAP//zMz//wAA//9l5v//AAD///////8AAP///3////9/////f////3////9//v//f////3////9/////f////3////9/////f////3/+//9/////f/7//3////9//v//f/7//3/+//9//v//f/7//3/+//9/////f////3/+//9/////f/7//3////9//v//f////3/+//9/////f/7//3////9/////f////3////9/////f////3////9//v//f////3/+//9//v//f/7//3/+//9/////f/7//3/+//9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f///")
+}, {
+"aabb": AABB(-0.25, -0.375, -0.375, 0.5, 0.75, 0.375),
+"attribute_data": PackedByteArray("zOpLUPz7HVTM6h1U/PtLUDARhDAAALIsMBGyLAAAhDAJ6Gy3Ofk+uwnoPrs5+Wy3qcWBoNnWU6SpxVOk2daBoKnF84HZ1sWFqcXFhdnW84EwERNPAABBSzARQUsAABNPCehTpDn5JagJ6CWoOflTpMzqMj38+wRBzOoEQfz7Mj0="),
+"format": 34896613399,
+"index_count": 48,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0A"),
+"material": SubResource("StandardMaterial3D_wi7ty"),
+"name": "Hovel_walls_outliner",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 32,
+"vertex_data": PackedByteArray("qioAAP//VNUAAAAAAABU1QAAAAD//1TVqioAAAAAVNX//3Ec////////AAAAAP////8AAP///////3EcAAD//1TV/////1TV/////wAAVNX///////9U1VTV//8AAFTVAACN4/////8AAP//AAD//wAA////////AACN4wAA//8AAAAA/////wAAcRwAAP//AABxHP////8AAAAAAAD///////////////+N4wAA/////43j//////////8AAP//AAD/////VNWqKv//AABU1aoq/////1TVAAD//wAAVNX//wAA//9U1VTVAAAAAFTVVNUAAP//VNX//wAAAABU1VRVVFVUVVRVVFVUVVRVVFX/v/9//7//f/+//3//v/9/VNWqKlTVqipU1aoqVNWqKv8//3//P/9//z//f/8//3//P/9//z//f/8//3//P/9//7//f/+//3//v/9//7//f1TVqipU1aoqVNWqKlTVqipUVVRVVFVUVVRVVFVUVVRV")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_7qo5a")
+shadow_mesh = SubResource("ArrayMesh_sx6ka")
 
 [node name="Hovel6" type="Node3D"]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 
-[node name="cube_013" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0)
-mesh = SubResource("ArrayMesh_xmxdc")
-skeleton = NodePath("")
-
-[node name="cube_014" type="MeshInstance3D" parent="cube_013"]
-mesh = SubResource("ArrayMesh_yniga")
-skeleton = NodePath("")
-
-[node name="cube_015" type="MeshInstance3D" parent="cube_013/cube_014"]
-mesh = SubResource("ArrayMesh_yoq6q")
-skeleton = NodePath("")
-
-[node name="cube_019" type="MeshInstance3D" parent="cube_013/cube_014/cube_015"]
-mesh = SubResource("ArrayMesh_cdc7y")
+[node name="Hovel2" type="MeshInstance3D" parent="."]
+transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, 0, 0, 0)
+mesh = SubResource("ArrayMesh_6ijqy")
 skeleton = NodePath("")
