@@ -1,4 +1,6 @@
-[gd_scene load_steps=7 format=4 uid="uid://ywl6dq0x1wwo"]
+[gd_scene load_steps=9 format=4 uid="uid://ywl6dq0x1wwo"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_phofn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwx77"]
 resource_name = "Hovel_roof"
@@ -20,11 +22,24 @@ cull_mode = 2
 albedo_color = Color(0.39215687, 0.3372549, 0.27450982, 1)
 roughness = 0.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_78x8h"]
-resource_name = "Hovel_roof_outliner"
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u533l"]
+render_priority = 0
+shader = ExtResource("1_phofn")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_asgn2"]
+resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_u533l")
 diffuse_mode = 3
 specular_mode = 1
-albedo_color = Color(0.47044116, 0.3310739, 4.813075e-07, 1)
+albedo_color = Color(0.80784315, 0.4117647, 0, 1)
+roughness = 0.5
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_erqj5"]
 _surfaces = [{
@@ -116,7 +131,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 240,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAjACAAJAAlACMAJgAlACQAJgAnACUAKAAnACYAKAApACcAKgApACgAKgArACkALAArACoAKwAsAC0AKwAtAC4AKwAuAC8AMAAuAC0AMAAxAC4AMgAxADAAMgAzADEANAAzADIANAA1ADMANgA1ADQANgA3ADUAOAA3ADYAOAA5ADcAOgA5ADgAOgA7ADkAOgA8ADsAOwA8AD0AOgA+ADwAPwA+ADoAPwBAAD4AQQBAAD8AQQBCAEAAQwBCAEEAQwBEAEIARQBEAEMARQBGAEQARwBGAEUARwBIAEYASQBIAEcASABKAEsASABMAEoASABNAEwASQBNAEgASQBOAE0ATwBOAEkATwBQAE4AUQBQAE8AUQBSAFAAUwBSAFEAUwBUAFIAVQBUAFMAVgBUAFUAVABWACAAVAAgACIAVAAiAFcAWABZAFoAWABbAFkAXABdAF4AXABfAF0AYABhAGIAYABjAGEAZABlAGYAZABnAGUA"),
-"material": SubResource("StandardMaterial3D_78x8h"),
+"material": SubResource("StandardMaterial3D_asgn2"),
 "name": "Hovel_roof_outliner",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),

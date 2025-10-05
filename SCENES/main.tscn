@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=30 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -13,6 +13,7 @@
 [ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
 [ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
+[ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -155,15 +156,12 @@ mouse_filter = 2
 [node name="Window" type="Window" parent="UI/CanvasLayer/Control/panel/Control"]
 oversampling_override = 1.0
 title = "Debugger"
-position = Vector2i(0, 36)
+position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
 visible = false
-wrap_controls = true
-transient = true
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
-max_size = Vector2i(689, 1039)
 keep_title_visible = true
 
 [node name="TabContainer" type="TabContainer" parent="UI/CanvasLayer/Control/panel/Control/Window"]
@@ -175,10 +173,11 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
-current_tab = 0
+current_tab = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="⯆ Info" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
+visible = false
 layout_mode = 2
 script = ExtResource("3_o4jo6")
 metadata/_tab_index = 0
@@ -240,13 +239,15 @@ alignment = 0
 [node name="Performance_stats_panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 181.978)
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 82.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer"]
@@ -258,6 +259,7 @@ theme_override_constants/separation = 12
 [node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Performance_stats_panel/VBoxContainer/HBoxContainer/Panel"]
@@ -352,10 +354,11 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 82.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 0
 metadata/_edit_use_anchors_ = true
 
@@ -368,6 +371,7 @@ theme_override_constants/separation = 12
 [node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Memory Section_panel/VBoxContainer/HBoxContainer/Panel"]
@@ -465,10 +469,11 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 82.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer"]
@@ -480,16 +485,15 @@ theme_override_constants/separation = 12
 [node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 100)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/System Info Section panel/VBoxContainer/HBoxContainer/Panel"]
 layout_mode = 1
-anchors_preset = 9
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = -1.0
-offset_right = 147.0
-offset_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
@@ -565,13 +569,15 @@ alignment = 0
 [node name="Scene Stats Section panel" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 181.978)
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 184.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer"]
@@ -583,6 +589,7 @@ theme_override_constants/separation = 12
 [node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(250, 100)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_o4jo6")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Panel"]
@@ -640,10 +647,11 @@ size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 102.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 10
 
 [node name="Objects_value" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Scene Stats Section panel/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
@@ -717,8 +725,13 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
 layout_mode = 1
-offset_right = 629.0
-offset_bottom = 53.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -19.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
@@ -766,7 +779,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
 text = "Copy"
 
-[node name="⯆ Camera + Pivot" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
+[node name="⯆ Camera" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
 visible = false
 layout_mode = 2
 accessibility_description = "wadwadwa"
@@ -775,7 +788,7 @@ theme_override_fonts/font = ExtResource("5_ceyew")
 script = ExtResource("3_ys6xq")
 metadata/_tab_index = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -787,23 +800,23 @@ theme_override_constants/margin_top = 13
 theme_override_constants/margin_right = 13
 theme_override_constants/margin_bottom = 13
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="Toggle_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Toggle_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Toggle Functions"
 alignment = 0
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -812,12 +825,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = -2
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -829,40 +842,40 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "toggle_visual_debug"
 
-[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "toggle_cursor_indicator"
 
-[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "toggle_snap"
 
-[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "toggle_continuous_raycast"
 
-[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -874,43 +887,43 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="toggle_visual_debug" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="toggle_visual_debug" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 flat = true
 icon_alignment = 1
 
-[node name="toggle_cursor_indicator" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="toggle_cursor_indicator" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 flat = true
 icon_alignment = 1
 
-[node name="toggle_snap" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="toggle_snap" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 flat = true
 icon_alignment = 1
 
-[node name="toggle_continuous_raycast" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="toggle_continuous_raycast" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 flat = true
 icon_alignment = 1
 
-[node name="Setter_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Setter_Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Setter Functions"
 alignment = 0
 
-[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -918,12 +931,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -935,46 +948,46 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "set_zoom_level_debug"
 
-[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "set_zoom_speed_debug"
 
-[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label3" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "set_raycast_length_debug"
 
-[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label4" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "set_hit_point_size_debug"
 
-[node name="Label5" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label5" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "set_cursor_size_debug"
 
-[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -986,31 +999,31 @@ theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="HSlider_set_zoom_level_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HSlider_set_zoom_level_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSlider_set_zoom_speed_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HSlider_set_zoom_speed_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSlider_set_raycast_length_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HSlider_set_raycast_length_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSlider_set_hit_point_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HSlider_set_hit_point_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSlider_set_cursor_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HSlider_set_cursor_size_debug" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
+[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -1021,53 +1034,53 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="set_zoom_level_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+[node name="set_zoom_level_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 alignment = 1
 
-[node name="set_zoom_speed_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+[node name="set_zoom_speed_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 alignment = 1
 
-[node name="set_raycast_length_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+[node name="set_raycast_length_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 alignment = 1
 
-[node name="set_hit_point_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+[node name="set_hit_point_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 alignment = 1
 
-[node name="set_cursor_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
+[node name="set_cursor_size_debug" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel2/HBoxContainer/Panel3/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 alignment = 1
 
-[node name="Camera Manipulation" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Camera Manipulation" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Camera Manipulation"
 alignment = 0
 
-[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Panel3" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1076,12 +1089,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = -2
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1093,28 +1106,28 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "teleport_to(Vector3)"
 
-[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Label2" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "reset_camera_position()"
 
-[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
+[node name="Panel2" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1126,54 +1139,54 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="teleport_to_x" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="teleport_to_x" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "x"
 alignment = 1
 
-[node name="teleport_to_y" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="teleport_to_y" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "y"
 alignment = 1
 
-[node name="teleport_to_z" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="teleport_to_z" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "z"
 alignment = 1
 
-[node name="reset_camera_position" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
+[node name="reset_camera_position" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Panel3/HBoxContainer/Panel2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 flat = true
 icon_alignment = 1
 
-[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 theme_override_font_sizes/font_size = 14
 text = "  ⯈  Console"
 alignment = 0
 
-[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer"]
+[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
 script = ExtResource("4_df0lc")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1182,12 +1195,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = -2
 
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer"]
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1199,10 +1212,10 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
 layout_mode = 2
 
-[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("5_ceyew")
@@ -1214,17 +1227,17 @@ theme_override_font_sizes/mono_font_size = 14
 bbcode_enabled = true
 text = "adawdadwad"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "//Command here"
 
-[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(68.295, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
@@ -1232,7 +1245,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
 text = "Clear"
 
-[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(68.295, 0)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
@@ -1240,24 +1253,418 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
 text = "Copy"
 
-[node name="⯆ Mouse + Keyboard" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
-visible = false
+[node name="⯆ Pivot" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
+script = ExtResource("11_v5vvh")
 metadata/_tab_index = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 190
-theme_override_constants/margin_bottom = 20
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(630, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Pivot:-
+Defines the base point of the camera3D such as Player or Characterbody3D"
+vertical_alignment = 3
+autowrap_mode = 3
+
+[node name="Debug Functions" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Debug Functions"
+alignment = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="Enable_Debug" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Enable_Debug"
+
+[node name="Show_Debug_Print" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Show_Debug_Print"
+
+[node name="Control2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="Enable_Debug_checkbox" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control2/VBoxContainer"]
+layout_mode = 2
+flat = true
+
+[node name="Show_Debug_Print_checkbox" type="CheckBox" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer/Control2/VBoxContainer"]
+layout_mode = 2
+flat = true
+
+[node name="Editable_" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Editable_"
+alignment = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 315)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 14
+
+[node name="target_angle" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "target_angle "
+
+[node name="current_angle" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "current_angle "
+
+[node name="mouse_sensitivity" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "mouse_sensitivity"
+
+[node name="rotation_speed" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "rotation_speed "
+
+[node name="mouse_movement" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "mouse_movement "
+
+[node name="movement_speed" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "movement_speed "
+
+[node name="sprint_multiplier" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "sprint_multiplier "
+
+[node name="smooth_movement" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "smooth_movement "
+
+[node name="movement_smoothness" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "movement_smoothness "
+
+[node name="chunk_update_distance" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "chunk_update_distance "
+
+[node name="Control2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2"]
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 40.0
+theme_override_constants/separation = 5
+
+[node name="target_angle" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "target_angle "
+
+[node name="current_angle" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "current_angle "
+
+[node name="mouse_sensitivity" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "mouse_sensitivity"
+
+[node name="rotation_speed" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "rotation_speed "
+
+[node name="mouse_movement" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "mouse_movement "
+
+[node name="movement_speed" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "movement_speed "
+
+[node name="sprint_multiplier" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "sprint_multiplier "
+
+[node name="smooth_movement" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "smooth_movement "
+
+[node name="movement_smoothness" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "movement_smoothness "
+
+[node name="chunk_update_distance" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer2/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "chunk_update_distance "
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 125)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 114.0
+grow_horizontal = 2
+theme_override_constants/separation = 14
+
+[node name="pan_sensitivity" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "pan_sensitivity "
+
+[node name="pan_speed_multiplier" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "pan_speed_multiplier "
+
+[node name="pan_acceleration" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "pan_acceleration "
+
+[node name="fast_pan_threshold" type="Label" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "fast_pan_threshold "
+
+[node name="Control2" type="Control" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 119.0
+grow_horizontal = 2
+theme_override_constants/separation = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="HSlider" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="pan_sensitivity" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "target_angle "
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="HSlider" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="pan_speed_multiplier" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "target_angle "
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="HSlider" type="HSlider" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="pan_acceleration" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "target_angle "
+
+[node name="fast_pan_threshold_value" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer3/Control2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "fast_pan_threshold "
+
+[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_0u8pi")
+theme_override_font_sizes/font_size = 14
+text = "  ⯈  Console"
+alignment = 0
+
+[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0u8pi")
+script = ExtResource("4_df0lc")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+
+[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("5_ceyew")
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
+theme_override_font_sizes/bold_italics_font_size = 14
+theme_override_font_sizes/italics_font_size = 14
+theme_override_font_sizes/mono_font_size = 14
+bbcode_enabled = true
+text = "adawdadwad"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("5_ceyew")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "//Command here"
+
+[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68.295, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
+text = "Clear"
+
+[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Pivot/ScrollContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(68.295, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
+text = "Copy"
 
 [node name="Pixelated" type="Node" parent="."]
 
@@ -1286,6 +1693,7 @@ stretch = true
 stretch_shrink = 3
 
 [node name="SubViewport" type="SubViewport" parent="Pixelated/Main/SubViewportContainer"]
+transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
@@ -1297,10 +1705,8 @@ render_target_update_mode = 4
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
 script = ExtResource("2_ac0l5")
-pan_sensitivity = 0.05
-pan_speed_multiplier = 40.0
-pan_acceleration = 5.0
 fast_pan_threshold = 1000.0
+enable_debug = true
 
 [node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.4999999, 0, -0.4999999, 0.86602545, 0, 173.43045, 300.39038)
@@ -1308,7 +1714,7 @@ projection = 1
 current = true
 size = 100.0
 script = ExtResource("3_i3vxn")
-max_size = 1000.0
+max_size = 210.0
 zoom_speed = 10.0
 show_debug_print = false
 show_raycast_debug = false
@@ -1352,9 +1758,9 @@ mouse_filter = 2
 texture = SubResource("ViewportTexture_5vkv0")
 expand_mode = 1
 
-[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_toggle_functions_pressed"]
-[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_setter_functions_pressed"]
-[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_camera_manipulation_pressed"]
-[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot/MarginContainer/VBoxContainer/Console" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera + Pivot" method="_on_console_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_toggle_functions_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_camera_manipulation_pressed"]
+[connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_console_pressed"]
 
 [editable path="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain"]

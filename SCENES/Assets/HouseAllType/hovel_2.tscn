@@ -1,17 +1,25 @@
-[gd_scene load_steps=8 format=4 uid="uid://blwwy66fk0xdr"]
+[gd_scene load_steps=9 format=4 uid="uid://blwwy66fk0xdr"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_m6o7l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xiiai"]
+render_priority = 0
+shader = ExtResource("1_m6o7l")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwx77"]
 resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_xiiai")
 diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.80784315, 0.4117647, 0, 1)
 roughness = 0.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m2fhs"]
-resource_name = "Hovel_roof_outliner"
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.47044116, 0.3310739, 4.813075e-07, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xuioj"]
 resource_name = "Hovel_walls"
@@ -108,7 +116,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 462,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAADAAAABAAFAAMABAAGAAUABAAHAAYABAAIAAcABAAJAAgABAAKAAkABAALAAoABAAMAAsABAANAAwABAAOAA0ABAAPAA4ABAAQAA8ABAARABAABAASABEAEQASABMAFAASAAQAFAAEABUAFQAEABYAFQAWABcAFwAWABgAFwAYABkAGQAYABoAGQAaABsAGwAaABwAGwAcAB0AHQAcAB4AHQAeAB8AHwAeACAAHwAgACEAIQAgACIAIQAiACMAIwAiACQAIwAkACUAJQAkACYAJQAmACcAJwAmACgAJwAoACkAKQAoACoAKQAqACsAKwAqACwAKwAsAC0ALQAsAC4ALQAuAC8ALwAuADAAMQAyADMAMQA0ADIANQA0ADEANQA2ADQANQA3ADYANQA4ADcANQA5ADgANQA6ADkAOQA6ADsAOgA8ADsANQA9ADoAPgA9ADUAPwA9AD4APQA/AEAAQAA/AEEAQABBAEIAQgBBAEMAQgBDAEQARABDAEUARABFAEYARgBFAEcARgBHAEgASABHAEkASABJAEoASgBJAEsASgBLAEwATABLAE0ATABNAE4ATgBNAE8ATgBPAFAAUABPAFEAUABRAFIAUgBRAFMAUgBTAFQAVABTABIAVAASAFUAVQASAFYAVgASAFcAVwASAFgAWAASAFkAWQASAFoAWgASAFsAWwASAFwAXAASAF0AXQASAF4AXgASAF8AXwASAGAAYAASAGEAYQASAGIAYgASABQAOgBjAGQAOgBlAGMAOgBmAGUAOgBnAGYAOgBoAGcAOgA9AGgAaQA6AGQAOgBpADwAaQBqADwAaQBkAGsAaQBsAGoAbABpAGsAbABrAG0AbgBvAHAAbgBxAG8AcgBvAHEAcgBzAG8AcgB0AHMAcgB1AHQAcgB2AHUAcgB3AHYAdgB3AHgAeQB3AHIAeQByAHoAeQB6AHsAeQB7AHwAeQB8AH0AeQB9AH4AeQB+AH8AgAB3AHkAdwCAAIEAgQCAAIIAggCAAIMAgwCAAIQAgwCEAIUAhQCEAIYAhQCGAIcAhwCGAIgAhwCIAIkAiQCIAIoAiQCKAIsAiQCLAIwAjACLAI0AiwCKAI4AjgCKAI8AjgCPAJAAjQCLAJEAjQCRAJIAkgCRAJMAkgCTAJQAlACTAJUAlACVAJYAlgCVAJcAlgCXAJgAmACXAJkAmACZAJoAmgCZAJsA"),
-"material": SubResource("StandardMaterial3D_m2fhs"),
+"material": SubResource("StandardMaterial3D_fwx77"),
 "name": "Hovel_roof_outliner",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),

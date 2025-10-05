@@ -55,16 +55,13 @@ signal mouse_world_position_clicked(world_pos: Vector3, hit_object: Node3D)
 
 
 func _ready():
-	print("Camera starting! max_size is officially: ", max_size)
 	DebugManager.register_camera(self)
 	
 	# --- FIX: Initialize and clamp zoom level correctly on startup ---
 	zoom_level = clamp(size, min_size, max_size)
 	size = zoom_level
 	# --- END FIX ---
-	
 	world_3d = get_world_3d()
-	
 	find_viewport_components()
 	setup_visual_debug()
 	

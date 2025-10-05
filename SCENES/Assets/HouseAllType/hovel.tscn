@@ -1,7 +1,21 @@
-[gd_scene load_steps=7 format=4 uid="uid://d3uxaa8ikhrsv"]
+[gd_scene load_steps=8 format=4 uid="uid://d3uxaa8ikhrsv"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_1ndhk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u533l"]
+render_priority = 0
+shader = ExtResource("1_1ndhk")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwx77"]
 resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_u533l")
 diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.80784315, 0.4117647, 0, 1)
@@ -13,12 +27,6 @@ diffuse_mode = 3
 specular_mode = 1
 albedo_color = Color(0.88235295, 0.7294118, 0.54901963, 1)
 roughness = 0.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1erqg"]
-resource_name = "Hovel_roof_outliner"
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.47044116, 0.3310739, 4.813075e-07, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nv3aw"]
 resource_name = "Hovel_walls_outliner"
@@ -102,7 +110,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 144,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAAAAIABAACAAUABgAAAAQABwADAAAABgAIAAAABwAJAAMACgAIAAYACwAJAAcACgAMAAgADQAMAAoADQAOAAwACwAPAAkAEAAPAAsADwAQABEADwARABIAEwAOAA0ADwASABQAEwAVAA4AEwAWABUAEgAXABQAFAAXABgAEgAZABcAGgAZABIAGgAbABkAHAAbABoAHAAdABsAHgAdABwAHgAfAB0AIAAfAB4AIQAfACAAIQAiAB8AHwAiACMAIwAiACQAIwAkACUAIQAmACIAJwAmACEAJwAoACYAKQAoACcAKQAqACgAKwAqACkALAAqACsAKgAsABYAKgAWABMAKgATAC0ALQATAC4ALQAuAC8A"),
-"material": SubResource("StandardMaterial3D_1erqg"),
+"material": SubResource("StandardMaterial3D_fwx77"),
 "name": "Hovel_roof_outliner",
 "primitive": 3,
 "uv_scale": Vector4(1.0003091, 2.0010533, 0, 0),
