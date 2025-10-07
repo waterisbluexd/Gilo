@@ -19,17 +19,32 @@ class_name NavigationGrid
 # --- INTERNAL VARIABLES ---
 var nav_chunks: Dictionary = {}
 var chunk_access_times: Dictionary = {}  # For LRU cache management
-var terrain_system: ChunkPixelTerrain
+var chunk_terrain
 
 # Cell states
 enum CellState { WALKABLE = 0, BLOCKED = 1 }
 
 # --- INITIALIZATION ---
 func _ready():
-	terrain_system = get_parent() if get_parent() is ChunkPixelTerrain else null
+	# Try to find the terrain system
+	var parent = get_parent()
+	
+	# Check if parent has the methods we need
+	if parent and parent.has_method("world_to_chunk") and parent.has_method("chunk_to_world"):
+		chunk_terrain = parent
+	else:
+		# Search in siblings
+		for sibling in parent.get_children():
+			if sibling.has_method("world_to_chunk") and sibling.has_method("chunk_to_world"):
+				chunk_terrain = sibling
+				break
+	
 	if debug_mode:
-		print("NavigationGrid initialized - Cell size: %s, Chunk size: %s" % [grid_cell_size, chunk_size])
-
+		if chunk_terrain:
+			print("NavigationGrid initialized - Connected to terrain system")
+		else:
+			print("NavigationGrid initialized - No terrain system found")
+		print("Cell size: %s, Chunk size: %s" % [grid_cell_size, chunk_size])
 # --- OPTIMIZED CHUNK MANAGEMENT ---
 func ensure_chunk_loaded(chunk_coord: Vector2i):
 	if not nav_chunks.has(chunk_coord):

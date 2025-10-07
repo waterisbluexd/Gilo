@@ -37,66 +37,65 @@ var target_position := Vector3.ZERO
 var is_sprinting := false
 
 # Chunk system integration
-var chunk_terrain: ChunkPixelTerrain
+var chunk_terrain 
 var last_chunk_position: Vector2i
 @export var chunk_update_distance := 2.0
 
 # Debug settings
-@export var enable_debug: bool = false  # Master toggle for all debug features
-@export var show_debug_print: bool = true  # Only works if enable_debug is true
-@export var debug_log_interval: int = 120  # Log every 2 seconds (at 60 FPS)
+@export var enable_debug: bool = false
+@export var show_debug_print: bool = true
+@export var debug_log_interval: int = 120
 
 func _ready():
 	player = get_node("..")
 	target_position = global_position
 	_setup_chunk_integration()
 	
-	# Always register with DebugManager (debug features still controlled by enable_debug)
 	DebugManager.register_camera_pivot(self)
 	
-	# Only log and print debug info if debug is enabled
 	if enable_debug:
 		ConsoleCapture.console_log("CameraPivot initialized and registered")
 		
 		if show_debug_print:
 			await get_tree().process_frame
-			print_initialization_debug()
+			#print_initialization_debug()
 
-func print_initialization_debug():
-	if not enable_debug:
-		return
-	ConsoleCapture.console_log("=== CAMERA PIVOT INITIALIZATION ===")
-	ConsoleCapture.console_log("Position: " + str(global_position))
-	ConsoleCapture.console_log("Rotation: " + str(rad_to_deg(rotation.y)) + "°")
-	ConsoleCapture.console_log("Movement Speed: " + str(movement_speed))
-	ConsoleCapture.console_log("Sprint Multiplier: " + str(sprint_multiplier))
-	ConsoleCapture.console_log("Smooth Movement: " + str(smooth_movement))
-	ConsoleCapture.console_log("Pan Sensitivity: " + str(pan_sensitivity))
-	ConsoleCapture.console_log("Grid Size: " + str(grid_size))
-	ConsoleCapture.console_log("===================================")
+#func print_initialization_debug():
+	#if not enable_debug:
+		#return
+	#ConsoleCapture.console_log("=== CAMERA PIVOT INITIALIZATION ===")
+	#ConsoleCapture.console_log("Position: " + str(global_position))
+	#ConsoleCapture.console_log("Rotation: " + str(rad_to_deg(rotation.y)) + "°")
+	#ConsoleCapture.console_log("Movement Speed: " + str(movement_speed))
+	#ConsoleCapture.console_log("Sprint Multiplier: " + str(sprint_multiplier))
+	#ConsoleCapture.console_log("Smooth Movement: " + str(smooth_movement))
+	#ConsoleCapture.console_log("Pan Sensitivity: " + str(pan_sensitivity))
+	#ConsoleCapture.console_log("Grid Size: " + str(grid_size))
+	#ConsoleCapture.console_log("===================================")
 
 func _setup_chunk_integration():
 	chunk_terrain = get_node_or_null("../ChunkPixelTerrain")
+	
 	if not chunk_terrain:
 		var parent = get_parent()
 		for child in parent.get_children():
-			if child is ChunkPixelTerrain or child.get_script() and child.get_script().get_global_name() == "ChunkPixelTerrain":
+			if child.has_method("WorldToChunk") and child.has_method("ChunkToWorld"):
 				chunk_terrain = child
 				break
-		
-		if not chunk_terrain:
-			var scene_root = get_tree().current_scene
-			chunk_terrain = _find_chunk_terrain_recursive(scene_root)
+	
+	if not chunk_terrain:
+		var scene_root = get_tree().current_scene
+		chunk_terrain = _find_chunk_terrain_recursive(scene_root)
 	
 	if chunk_terrain:
 		ConsoleCapture.console_log("CameraPivot connected to chunk terrain system")
-		last_chunk_position = chunk_terrain.world_to_chunk(global_position)
-	else:
-		if enable_debug:
-			ConsoleCapture.console_log("Warning: ChunkPixelTerrain not found in scene!")
+		last_chunk_position = chunk_terrain.WorldToChunk(global_position)
+	#else:
+		#if enable_debug:
+			#ConsoleCapture.console_log("Warning: ChunkPixelTerrain not found in scene!")
 
-func _find_chunk_terrain_recursive(node: Node) -> ChunkPixelTerrain:
-	if node is ChunkPixelTerrain or (node.get_script() and node.get_script().get_global_name() == "ChunkPixelTerrain"):
+func _find_chunk_terrain_recursive(node: Node):
+	if node.has_method("WorldToChunk") and node.has_method("ChunkToWorld"):
 		return node
 	
 	for child in node.get_children():
@@ -113,7 +112,6 @@ func _process(delta):
 	apply_snap_effects()
 	update_chunk_system()
 	
-	# Periodic debug logging
 	if enable_debug and show_debug_print:
 		var frame = Engine.get_frames_drawn()
 		if frame % debug_log_interval == 0:
@@ -121,13 +119,13 @@ func _process(delta):
 
 func log_periodic_status():
 	if not enable_debug or not is_moving() and not panning:
-		return  # Don't spam logs when idle or debug disabled
-	
-	ConsoleCapture.console_log("🎮 CAMERA STATUS:")
-	ConsoleCapture.console_log("  Position: %s" % global_position)
-	ConsoleCapture.console_log("  Moving: %s | Panning: %s | Sprinting: %s" % [is_moving(), panning, is_sprinting])
-	if chunk_terrain:
-		ConsoleCapture.console_log("  Chunk: %s" % get_chunk_position())
+		return
+	#
+	#ConsoleCapture.console_log("🎮 CAMERA STATUS:")
+	#ConsoleCapture.console_log("  Position: %s" % global_position)
+	#ConsoleCapture.console_log("  Moving: %s | Panning: %s | Sprinting: %s" % [is_moving(), panning, is_sprinting])
+	#if chunk_terrain:
+		#ConsoleCapture.console_log("  Chunk: %s" % get_chunk_position())
 
 func handle_movement_input():
 	movement_input = Vector3.ZERO
@@ -176,7 +174,7 @@ func update_chunk_system():
 	if not chunk_terrain:
 		return
 	
-	var current_chunk = chunk_terrain.world_to_chunk(global_position)
+	var current_chunk = chunk_terrain.WorldToChunk(global_position)
 	
 	if current_chunk != last_chunk_position:
 		if enable_debug and show_debug_print:
@@ -211,63 +209,55 @@ func handle_keyboard_input(event):
 		match event.keycode:
 			KEY_E:
 				target_angle -= 45.0
-				ConsoleCapture.console_log("Rotated CCW to %s°" % target_angle)
+				#ConsoleCapture.console_log("Rotated CCW to %s°" % target_angle)
 			KEY_Q:
 				target_angle += 45.0
-				ConsoleCapture.console_log("Rotated CW to %s°" % target_angle)
+				#ConsoleCapture.console_log("Rotated CW to %s°" % target_angle)
 			KEY_ESCAPE:
 				get_tree().quit()
 			KEY_R:
 				reset_camera()
 			KEY_T:
 				smooth_movement = not smooth_movement
-				ConsoleCapture.console_log("Smooth movement: " + str(smooth_movement))
-			KEY_P:
-				print_panning_status()
+				#ConsoleCapture.console_log("Smooth movement: " + str(smooth_movement))
+			#KEY_P:
+				#print_panning_status()
 			KEY_BRACKETLEFT:
 				pan_sensitivity = max(0.001, pan_sensitivity - 0.001)
-				ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
+				#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
 			KEY_BRACKETRIGHT:
 				pan_sensitivity = min(0.02, pan_sensitivity + 0.001)
-				ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
+				#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
 			KEY_MINUS:
 				pan_speed_multiplier = max(0.1, pan_speed_multiplier - 0.1)
-				ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
+				#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
 			KEY_EQUAL:
 				pan_speed_multiplier = min(5.0, pan_speed_multiplier + 0.1)
-				ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
+				#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
 			KEY_COMMA:
 				pan_acceleration = max(0.5, pan_acceleration - 0.1)
-				ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
+				#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
 			KEY_PERIOD:
 				pan_acceleration = min(3.0, pan_acceleration + 0.1)
-				ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
+				#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
 			KEY_SLASH:
 				reset_pan_settings()
-			KEY_F5:
-				if chunk_terrain:
-					chunk_terrain.force_save_all_chunks()
-					ConsoleCapture.console_log("Forced save of all chunks")
-			KEY_F6:
-				if chunk_terrain:
-					chunk_terrain.clear_all_chunks()
-					ConsoleCapture.console_log("Cleared all chunks")
-			KEY_F9:
-				if chunk_terrain:
-					chunk_terrain.debug_test_coordinates()
-					chunk_terrain.debug_print_chunk_loading(global_position)
 			KEY_F12:
 				print_detailed_status()
+			KEY_F7:
+				if chunk_terrain and chunk_terrain.has_method("ClearChunkCache"):
+					chunk_terrain.ClearChunkCache()
+					ConsoleCapture.console_log("Cleared chunk cache - restart to regenerate")
 
-func print_panning_status():
-	ConsoleCapture.console_log("=== PANNING STATUS ===")
-	ConsoleCapture.console_log("Panning active: " + str(panning))
-	ConsoleCapture.console_log("Middle mouse pressed: " + str(middle_mouse_pressed))
-	ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
-	ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
-	ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
-	ConsoleCapture.console_log("Effective speed: %.4f" % get_effective_pan_speed())
-	ConsoleCapture.console_log("=====================")
+#func print_panning_status():
+	#ConsoleCapture.console_log("=== PANNING STATUS ===")
+	#ConsoleCapture.console_log("Panning active: " + str(panning))
+	#ConsoleCapture.console_log("Middle mouse pressed: " + str(middle_mouse_pressed))
+	#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
+	#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
+	#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
+	#ConsoleCapture.console_log("Effective speed: %.4f" % get_effective_pan_speed())
+	#ConsoleCapture.console_log("=====================")
 
 func reset_pan_settings():
 	pan_sensitivity = 0.005
@@ -329,7 +319,6 @@ func handle_mouse_input(event):
 			mouse_movement += event.relative.x
 
 func reset_camera():
-	"""Reset camera to origin with 45 degree angle"""
 	target_position = Vector3.ZERO
 	global_position = Vector3.ZERO
 	target_angle = 45.0
@@ -337,9 +326,7 @@ func reset_camera():
 	if enable_debug:
 		ConsoleCapture.console_log("Camera reset to origin")
 
-# ========================================
 # PUBLIC UTILITY FUNCTIONS
-# ========================================
 
 func get_movement_direction() -> Vector3:
 	if movement_input.length() > 0:
@@ -363,16 +350,16 @@ func get_current_speed() -> float:
 
 func get_chunk_position() -> Vector2i:
 	if chunk_terrain:
-		return chunk_terrain.world_to_chunk(global_position)
+		return chunk_terrain.WorldToChunk(global_position)
 	return Vector2i.ZERO
 
 func teleport_to_chunk(chunk_coord: Vector2i):
 	if chunk_terrain:
-		var world_pos = chunk_terrain.chunk_to_world(chunk_coord)
+		var world_pos = chunk_terrain.ChunkToWorld(chunk_coord)
 		var chunk_center = Vector3(
-			world_pos.x + (chunk_terrain.chunk_size * chunk_terrain.pixel_size * 0.5),
+			world_pos.x + (chunk_terrain.ChunkSize * chunk_terrain.PixelSize * 0.5),
 			global_position.y,
-			world_pos.y + (chunk_terrain.chunk_size * chunk_terrain.pixel_size * 0.5)
+			world_pos.y + (chunk_terrain.ChunkSize * chunk_terrain.PixelSize * 0.5)
 		)
 		global_position = chunk_center
 		target_position = chunk_center
@@ -397,12 +384,9 @@ func set_pan_acceleration(acceleration: float):
 func get_effective_pan_speed() -> float:
 	return pan_sensitivity * pan_speed_multiplier
 
-# ========================================
-# DEBUG INTERFACE (for DebugManager)
-# ========================================
+# DEBUG INTERFACE
 
 func toggle_debug():
-	"""Toggle the master debug switch"""
 	enable_debug = !enable_debug
 	if enable_debug:
 		ConsoleCapture.console_log("Debug system ENABLED")
@@ -410,7 +394,6 @@ func toggle_debug():
 		ConsoleCapture.console_log("Debug system DISABLED")
 
 func toggle_debug_logging():
-	"""Toggle debug logging (only works if enable_debug is true)"""
 	if not enable_debug:
 		return
 	show_debug_print = !show_debug_print
@@ -443,6 +426,10 @@ func teleport_to(pos: Vector3):
 		ConsoleCapture.console_log("Teleported to: " + str(pos))
 
 func get_debug_info() -> Dictionary:
+	var loaded_chunks = 0
+	if chunk_terrain and chunk_terrain.has_method("GetLoadedChunkCount"):
+		loaded_chunks = chunk_terrain.GetLoadedChunkCount()
+	
 	return {
 		"position": global_position,
 		"target_position": target_position,
@@ -460,7 +447,7 @@ func get_debug_info() -> Dictionary:
 		"pan_acceleration": pan_acceleration,
 		"effective_pan_speed": get_effective_pan_speed(),
 		"chunk_position": get_chunk_position() if chunk_terrain else "N/A",
-		"loaded_chunks": chunk_terrain.get_loaded_chunk_count() if chunk_terrain else 0,
+		"loaded_chunks": loaded_chunks,
 		"debug_logging": show_debug_print
 	}
 
@@ -492,7 +479,9 @@ func print_detailed_status():
 		ConsoleCapture.console_log("")
 		ConsoleCapture.console_log("=== CHUNK SYSTEM ===")
 		ConsoleCapture.console_log("Current Chunk: " + str(get_chunk_position()))
-		ConsoleCapture.console_log("Loaded Chunks: " + str(chunk_terrain.get_loaded_chunk_count()))
-		ConsoleCapture.console_log("Loading Chunks: " + str(chunk_terrain.get_loading_chunk_count()))
+		if chunk_terrain.has_method("GetLoadedChunkCount"):
+			ConsoleCapture.console_log("Loaded Chunks: " + str(chunk_terrain.GetLoadedChunkCount()))
+		if chunk_terrain.has_method("GetLoadingChunkCount"):
+			ConsoleCapture.console_log("Loading Chunks: " + str(chunk_terrain.GetLoadingChunkCount()))
 	
 	ConsoleCapture.console_log("=========================")

@@ -1,6 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=12 format=3 uid="uid://dn7khush7j3"]
 
-[ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
+[ext_resource type="Script" path="res://SCRIPTS/World_Generator/ChunkPixelTerrainCsharp.cs" id="1_bsi5x"]
 [ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_xo5mt"]
@@ -12,36 +12,10 @@
 [ext_resource type="Resource" uid="uid://copygtnplvwrt" path="res://RESOURCES/Building_Res/HouseAllType/Hovel7.tres" id="13_v4jrb"]
 [ext_resource type="Resource" uid="uid://dqb1r457jj5vd" path="res://RESOURCES/Building_Res/HouseAllType/Hovel8.tres" id="14_n0uxr"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_bsi5x"]
-noise_type = 3
-seed = 1941146016
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_v2yxi"]
-noise_type = 3
-seed = 981898081
-frequency = 0.05
-fractal_octaves = 1
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
-noise_type = 3
-seed = 144119703
-frequency = 0.08
-fractal_octaves = 2
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_xo5mt"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_d66sa"]
-transform_format = 1
-mesh = SubResource("PlaneMesh_xo5mt")
-
-[node name="ChunkPixelTerrain" type="Node3D"]
+[node name="ChunkPixelTerrain" type="MeshInstance3D"]
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
+skeleton = NodePath("../../..")
 script = ExtResource("1_bsi5x")
-PrimaryBiomeNoise = SubResource("FastNoiseLite_bsi5x")
-SecondaryBiomeNoise = SubResource("FastNoiseLite_v2yxi")
-HeightNoise = SubResource("FastNoiseLite_ndvok")
 
 [node name="NavigationGrid" type="Node3D" parent="."]
 script = ExtResource("4_jl6tj")
@@ -51,6 +25,3 @@ script = ExtResource("5_te0ef")
 building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr")])
 click_cooldown = 0.0
 auto_select_next_building = true
-
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
-multimesh = SubResource("MultiMesh_d66sa")

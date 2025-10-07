@@ -4,7 +4,7 @@ extends Camera3D
 # --- User-tweakable ---
 @export var snap : bool = true
 @export var min_size: float = 80.0
-@export var max_size: float = 200# Example of a larger value
+@export var max_size: float = 200.0
 @export var zoom_speed: float = 5.0
 @export var tile_world_size: float = 1.0
 @export var target_pixels_per_tile: int = 1
@@ -65,10 +65,10 @@ func _ready():
 	find_viewport_components()
 	setup_visual_debug()
 	
-	# Debug viewport setup
-	if show_debug_print:
-		await get_tree().process_frame
-		print_viewport_debug_info()
+	## Debug viewport setup
+	#if show_debug_print:
+		#await get_tree().process_frame
+		#print_viewport_debug_info()
 
 func find_viewport_components():
 	var current_node = get_parent()
@@ -79,31 +79,31 @@ func find_viewport_components():
 			sub_viewport_container = current_node
 		current_node = current_node.get_parent()
 	
-	if show_debug_print:
-		ConsoleCapture.console_log("SubViewport found: " + str(sub_viewport != null))
-		ConsoleCapture.console_log("SubViewportContainer found: " + str(sub_viewport_container != null))
+	#if show_debug_print:
+		#ConsoleCapture.console_log("SubViewport found: " + str(sub_viewport != null))
+		#ConsoleCapture.console_log("SubViewportContainer found: " + str(sub_viewport_container != null))
 
-func print_viewport_debug_info():
-	if not show_debug_print:
-		return
-		
-	ConsoleCapture.console_log("=== VIEWPORT DEBUG INFO ===")
-	if sub_viewport:
-		ConsoleCapture.console_log("SubViewport size: " + str(sub_viewport.size))
-	if sub_viewport_container:
-		ConsoleCapture.console_log("Container size: " + str(sub_viewport_container.size))
-		ConsoleCapture.console_log("Container global rect: " + str(sub_viewport_container.get_global_rect()))
-		ConsoleCapture.console_log("Container stretch: " + str(sub_viewport_container.stretch))
-		ConsoleCapture.console_log("Container stretch_shrink: " + str(sub_viewport_container.stretch_shrink))
-		
-		var vp_aspect = float(sub_viewport.size.x) / float(sub_viewport.size.y)
-		var cont_aspect = float(sub_viewport_container.size.x) / float(sub_viewport_container.size.y)
-		ConsoleCapture.console_log("SubViewport aspect: %.3f" % vp_aspect)
-		ConsoleCapture.console_log("Container aspect: %.3f" % cont_aspect)
-		
-	ConsoleCapture.console_log("Window size: " + str(get_window().size))
-	ConsoleCapture.console_log("Root viewport size: " + str(get_tree().root.size))
-	ConsoleCapture.console_log("===========================")
+#func print_viewport_debug_info():
+	#if not show_debug_print:
+		#return
+		#
+	#ConsoleCapture.console_log("=== VIEWPORT DEBUG INFO ===")
+	#if sub_viewport:
+		#ConsoleCapture.console_log("SubViewport size: " + str(sub_viewport.size))
+	#if sub_viewport_container:
+		#ConsoleCapture.console_log("Container size: " + str(sub_viewport_container.size))
+		#ConsoleCapture.console_log("Container global rect: " + str(sub_viewport_container.get_global_rect()))
+		#ConsoleCapture.console_log("Container stretch: " + str(sub_viewport_container.stretch))
+		#ConsoleCapture.console_log("Container stretch_shrink: " + str(sub_viewport_container.stretch_shrink))
+		#
+		#var vp_aspect = float(sub_viewport.size.x) / float(sub_viewport.size.y)
+		#var cont_aspect = float(sub_viewport_container.size.x) / float(sub_viewport_container.size.y)
+		#ConsoleCapture.console_log("SubViewport aspect: %.3f" % vp_aspect)
+		#ConsoleCapture.console_log("Container aspect: %.3f" % cont_aspect)
+		#
+	#ConsoleCapture.console_log("Window size: " + str(get_window().size))
+	#ConsoleCapture.console_log("Root viewport size: " + str(get_tree().root.size))
+	#ConsoleCapture.console_log("===========================")
 
 func setup_visual_debug():
 	ray_material = StandardMaterial3D.new()
@@ -192,8 +192,6 @@ func _input(event):
 		if zoom_changed:
 			zoom_level = clamp(zoom_level, min_size, max_size)
 			size = zoom_level
-			# --- ADDED: Print statement for current zoom level ---
-			print("Camera Zoom Level: ", size)
 
 func update_mouse_world_position(screen_mouse_pos: Vector2):
 	if not world_3d:
@@ -423,19 +421,19 @@ func reset_camera_position():
 	global_position = Vector3.ZERO
 	global_rotation = Vector3.ZERO
 
-func get_debug_info() -> Dictionary:
-	return {
-		"position": global_position,
-		"rotation": global_rotation,
-		"zoom_level": zoom_level,
-		"size": size,
-		"pixels_per_tile": pixels_per_tile(),
-		"mouse_world_pos": current_mouse_world_pos,
-		"mouse_hit_object": current_hit_object.name if current_hit_object else "None",
-		"mouse_tile_pos": get_mouse_tile_position(),
-		"fov": fov,
-		"snap_enabled": snap,
-		"visual_debug": show_visual_debug,
-		"cursor_indicator": show_cursor_indicator,
-		"continuous_raycast": continuous_raycast_update
-	}
+#func get_debug_info() -> Dictionary:
+	#return {
+		#"position": global_position,
+		#"rotation": global_rotation,
+		#"zoom_level": zoom_level,
+		#"size": size,
+		#"pixels_per_tile": pixels_per_tile(),
+		#"mouse_world_pos": current_mouse_world_pos,
+		#"mouse_hit_object": current_hit_object.name if current_hit_object else "None",
+		#"mouse_tile_pos": get_mouse_tile_position(),
+		#"fov": fov,
+		#"snap_enabled": snap,
+		#"visual_debug": show_visual_debug,
+		#"cursor_indicator": show_cursor_indicator,
+		#"continuous_raycast": continuous_raycast_update
+	#}

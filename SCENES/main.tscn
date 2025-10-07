@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=35 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -14,6 +14,9 @@
 [ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
 [ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
+[ext_resource type="Script" uid="uid://cusryiilxiyn7" path="res://SCRIPTS/sub_viewport.gd" id="12_11g8y"]
+[ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="15_dtswy"]
+[ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="16_11g8y"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -88,6 +91,10 @@ bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceyew"]
 bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dtswy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11g8y"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_5vkv0"]
 viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
@@ -173,11 +180,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_0u8pi")
-current_tab = 2
+current_tab = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="⯆ Info" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
-visible = false
 layout_mode = 2
 script = ExtResource("3_o4jo6")
 metadata/_tab_index = 0
@@ -696,89 +702,6 @@ theme_override_fonts/font = ExtResource("5_ceyew")
 theme_override_font_sizes/font_size = 14
 text = "Total Draw Cells"
 
-[node name="Console" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("2_0u8pi")
-theme_override_font_sizes/font_size = 14
-text = "  ⯈  Console"
-alignment = 0
-
-[node name="Console_Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("2_0u8pi")
-script = ExtResource("4_df0lc")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = -2
-
-[node name="Panel" type="Panel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_ys6xq")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -19.0
-offset_bottom = 19.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer"]
-layout_mode = 2
-
-[node name="Console_box" type="RichTextLabel" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_fonts/normal_font = ExtResource("5_ceyew")
-theme_override_font_sizes/normal_font_size = 14
-theme_override_font_sizes/bold_font_size = 14
-theme_override_font_sizes/bold_italics_font_size = 14
-theme_override_font_sizes/italics_font_size = 14
-theme_override_font_sizes/mono_font_size = 14
-bbcode_enabled = true
-text = "adawdadwad"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Consle_command_box" type="LineEdit" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("5_ceyew")
-theme_override_font_sizes/font_size = 14
-placeholder_text = "//Command here"
-
-[node name="Clear" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(68.295, 0)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
-text = "Clear"
-
-[node name="Copy" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Console_Panel/HBoxContainer/Panel/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(68.295, 0)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_h2jjw")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ab6ae")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
-text = "Copy"
-
 [node name="⯆ Camera" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
 visible = false
 layout_mode = 2
@@ -1254,6 +1177,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_ceyew")
 text = "Copy"
 
 [node name="⯆ Pivot" type="TabBar" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer"]
+visible = false
 layout_mode = 2
 theme = ExtResource("2_0u8pi")
 script = ExtResource("11_v5vvh")
@@ -1701,9 +1625,10 @@ anisotropic_filtering_level = 0
 canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
 render_target_update_mode = 4
+script = ExtResource("12_11g8y")
 
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, -312.99997)
 script = ExtResource("2_ac0l5")
 fast_pan_threshold = 1000.0
 enable_debug = true
@@ -1713,26 +1638,45 @@ transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.4999999, 0, -0.4999999, 0.8660
 projection = 1
 current = true
 size = 100.0
+near = 0.001
 script = ExtResource("3_i3vxn")
-max_size = 210.0
 zoom_speed = 10.0
 show_debug_print = false
 show_raycast_debug = false
 show_visual_debug = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
+transform = Transform3D(11.63, 0, 0, 0, 11.63, 0, 0, 0, 11.63, 0, 0, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_dtswy")
 
-[node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("player", "camera3D") instance=ExtResource("5_ab6ae")]
+[node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-skeleton = NodePath("../../../../../..")
-player = NodePath("../CameraPivot")
-camera3D = NodePath("../CameraPivot/Camera3D")
+ChunkSize = 64
+RenderDistance = 6
+PrimaryBiomeNoise = ExtResource("15_dtswy")
+SecondaryBiomeNoise = ExtResource("16_11g8y")
+PrimaryNoiseWeight = 0.85
+SecondaryNoiseWeight = 0.585
+NoiseContrast = 0.8
+EnableHeightVariation = false
+Threshold1 = -0.942
+Threshold2 = -0.779
+Threshold3 = -0.716
+Threshold4 = -0.667
+Threshold5 = -0.604
+Threshold6 = -0.383
+Threshold7 = -0.343
+CustomMaterial = SubResource("StandardMaterial3D_11g8y")
+MaxConcurrentThreads = 16
+EnableFrustumCulling = false
+Player = NodePath("../CameraPivot")
 
-[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="9"]
+[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
 active = false
 
-[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="10" node_paths=PackedStringArray("camera")]
+[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="1" node_paths=PackedStringArray("camera")]
 camera = NodePath("../../CameraPivot/Camera3D")
 
 [node name="Display" type="Control" parent="Pixelated"]
