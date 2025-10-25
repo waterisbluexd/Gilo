@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=3 format=3 uid="uid://dapn6fuee5y6k"]
+
+[ext_resource type="PackedScene" uid="uid://cu5s8w2kbiv6j" path="res://SCENES/Assets/plants/tree.tscn" id="1_l4hsf"]
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_x0scu"]
+
+[resource]
+script = ExtResource("1_x0scu")
+Name = "Oak_Tree"
+SourceType = 1
+PropScene = ExtResource("1_l4hsf")
+AllowedBiomes = 64
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

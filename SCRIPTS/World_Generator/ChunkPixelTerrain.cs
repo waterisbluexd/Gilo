@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 [Tool]
 public partial class ChunkPixelTerrain : Node3D
 {
-    #region Exports
     [ExportGroup("Chunk Settings")]
     [Export] public int ChunkSize { get; set; } = 32;
     [Export] public int RenderDistance { get; set; } = 4;
@@ -20,12 +19,7 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public float TerrainHeightVariation { get; set; } = 16.0f;
 
     [ExportGroup("Generation Control")]
-    [Export]
-    public bool WorldActive
-    {
-        get => _worldActive;
-        set => SetWorldActive(value);
-    }
+    [Export] public bool WorldActive { get => _worldActive; set => SetWorldActive(value); }
     [Export] public bool AutoGenerateOnReady { get; set; } = true;
 
     [ExportGroup("Noise Settings")]
@@ -33,8 +27,6 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public FastNoiseLite SecondaryBiomeNoise { get; set; }
     [Export] public FastNoiseLite HeightNoise { get; set; }
     [Export] public bool AutoCreateDefaultNoise { get; set; } = true;
-
-    [ExportSubgroup("Noise Mixing")]
     [Export(PropertyHint.Range, "0.0,1.0")] public float PrimaryNoiseWeight { get; set; } = 0.75f;
     [Export(PropertyHint.Range, "0.0,1.0")] public float SecondaryNoiseWeight { get; set; } = 0.25f;
     [Export(PropertyHint.Range, "0.0,2.0")] public float NoiseContrast { get; set; } = 1.0f;
@@ -69,54 +61,40 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public bool EnableFrustumCulling { get; set; } = true;
     [Export] public int MaxChunksPerFrame { get; set; } = 2;
     [Export] public bool CacheEnabled { get; set; } = true;
-
     [Export] public Node3D Player { get; set; }
-    #endregion
 
-    #region Private Fields
     private bool _worldActive;
     private Dictionary<Vector2I, TerrainChunk> _loadedChunks = new();
     private HashSet<Vector2I> _loadingChunks = new();
     private Queue<Vector2I> _generationQueue = new();
     private ConcurrentQueue<ChunkData> _meshCreationQueue = new();
-    
     private SemaphoreSlim _threadSemaphore;
     private CancellationTokenSource _cancellationTokenSource;
-    
     private Color[] _biomeColors;
     private float[] _biomeThresholds;
     private Vector2I _lastPlayerChunk = new Vector2I(99999, 99999);
     private Camera3D _camera;
-    #endregion
 
     public override void _Ready()
     {
-        // Enable processing in editor
         SetProcess(true);
         SetPhysicsProcess(false);
         
-        SetupBiomes();
-        SetupNoise();
-        CreateSaveDirectory();
-
-        _camera = GetViewport()?.GetCamera3D();
+        _biomeColors = new[] { Color1, Color2, Color3, Color4, Color5, Color6, Color7, Color8 };
+        _biomeThresholds = new[] { Threshold1, Threshold2, Threshold3, Threshold4, Threshold5, Threshold6, Threshold7 };
         
-        if (Engine.IsEditorHint())
+        if (AutoCreateDefaultNoise)
         {
-            FindPlayerOrCamera();
+            PrimaryBiomeNoise ??= CreateNoise(0.02f, 2);
+            SecondaryBiomeNoise ??= CreateNoise(0.05f, 1);
+            if (EnableHeightVariation && HeightNoise == null) HeightNoise = CreateNoise(0.08f, 2);
         }
-        else
-        {
-            if (Player == null)
-                FindPlayerOrCamera();
-            
-            if (Player == null && _camera != null)
-            {
-                Player = _camera;
-                GD.Print("Using camera as player for terrain generation");
-            }
-        }
-
+        
+        DirAccess.MakeDirRecursiveAbsolute($"user://{SavePath.Replace("res://", "")}");
+        
+        _camera = GetViewport()?.GetCamera3D();
+        Player ??= FindPlayer() ?? _camera;
+        
         _threadSemaphore = new SemaphoreSlim(MaxConcurrentThreads, MaxConcurrentThreads);
         _cancellationTokenSource = new CancellationTokenSource();
 
@@ -126,10 +104,6 @@ public partial class ChunkPixelTerrain : Node3D
             WorldActive = true;
             UpdateChunks();
         }
-        else if (AutoGenerateOnReady)
-        {
-            GD.PushWarning("AutoGenerateOnReady is true but no Player/Camera found!");
-        }
     }
 
     public override void _ExitTree()
@@ -137,20 +111,16 @@ public partial class ChunkPixelTerrain : Node3D
         WorldActive = false;
         _cancellationTokenSource?.Cancel();
         _threadSemaphore?.Dispose();
-        SaveAllDirtyChunks();
+        foreach (var chunk in _loadedChunks.Values)
+            if (chunk.IsDirty) chunk.SaveToFile(SavePath);
     }
 
     public override void _Process(double delta)
     {
         if (!_worldActive) return;
 
-        if (Player == null)
-        {
-            _camera = GetViewport()?.GetCamera3D();
-            if (_camera != null)
-                Player = _camera;
-        }
-
+        Player ??= _camera ?? GetViewport()?.GetCamera3D();
+        
         if (Player != null)
         {
             var playerChunk = WorldToChunk(Player.GlobalPosition);
@@ -160,15 +130,12 @@ public partial class ChunkPixelTerrain : Node3D
                 UpdateChunks();
             }
         }
-        else
-        {
-            GD.PushWarning("No Player or Camera found for terrain generation!");
-        }
 
-        ProcessMeshCreationQueue();
+        int processed = 0;
+        while (processed++ < MaxChunksPerFrame && _meshCreationQueue.TryDequeue(out var data))
+            CreateChunkObject(data);
 
-        if (EnableFrustumCulling && _camera != null)
-            UpdateChunkVisibility();
+        if (EnableFrustumCulling && _camera != null) UpdateChunkVisibility();
     }
 
     private void SetWorldActive(bool value)
@@ -178,446 +145,228 @@ public partial class ChunkPixelTerrain : Node3D
 
         if (_worldActive)
         {
-            // Ensure we have a player/camera before activating
-            if (Player == null)
-            {
-                FindPlayerOrCamera();
-            }
-            
-            if (Player == null)
-            {
-                _camera = GetViewport()?.GetCamera3D();
-                if (_camera != null)
-                {
-                    Player = _camera;
-                    GD.Print("Using camera as player for terrain generation");
-                }
-            }
-            
+            Player ??= FindPlayer() ?? GetViewport()?.GetCamera3D();
             if (Player != null)
             {
                 _lastPlayerChunk = WorldToChunk(Player.GlobalPosition);
                 UpdateChunks();
             }
-            else
-            {
-                GD.PushWarning("Cannot activate world: No Player or Camera found!");
-                _worldActive = false; // Revert activation
-            }
+            else _worldActive = false;
         }
-        else
-        {
-            ClearWorld();
-        }
+        else ClearWorld();
     }
 
-    private void SetupBiomes()
+    private FastNoiseLite CreateNoise(float freq, int octaves) => new()
     {
-        _biomeColors = new[] { Color1, Color2, Color3, Color4, Color5, Color6, Color7, Color8 };
-        _biomeThresholds = new[] { Threshold1, Threshold2, Threshold3, Threshold4, Threshold5, Threshold6, Threshold7 };
-    }
+        NoiseType = FastNoiseLite.NoiseTypeEnum.Perlin,
+        Frequency = freq,
+        FractalType = FastNoiseLite.FractalTypeEnum.Fbm,
+        FractalOctaves = octaves,
+        Seed = (int)GD.Randi()
+    };
 
-    private void SetupNoise()
+    private Node3D FindPlayer()
     {
-        if (!AutoCreateDefaultNoise) return;
-
-        PrimaryBiomeNoise ??= CreateDefaultNoise(0.02f, 2);
-        SecondaryBiomeNoise ??= CreateDefaultNoise(0.05f, 1);
-        if (EnableHeightVariation && HeightNoise == null)
-            HeightNoise = CreateDefaultNoise(0.08f, 2);
-    }
-
-    private FastNoiseLite CreateDefaultNoise(float frequency, int octaves)
-    {
-        var noise = new FastNoiseLite
-        {
-            NoiseType = FastNoiseLite.NoiseTypeEnum.Perlin,
-            Frequency = frequency,
-            FractalType = FastNoiseLite.FractalTypeEnum.Fbm,
-            FractalOctaves = octaves,
-            Seed = (int)GD.Randi()
-        };
-        return noise;
-    }
-
-    private void CreateSaveDirectory()
-    {
-        var dir = DirAccess.Open("user://");
-        if (dir == null)
-        {
-            GD.PushError("Failed to open user:// directory for saving.");
-            return;
-        }
-
-        var pathToCreate = SavePath.Replace("res://", "");
-        if (!dir.DirExists(pathToCreate))
-        {
-            var err = dir.MakeDirRecursive(pathToCreate);
-            if (err != Error.Ok)
-                GD.PushError($"Could not create directory: user://{pathToCreate}");
-        }
-    }
-
-    private void FindPlayerOrCamera()
-    {
-        if (Player != null) return;
+        var root = GetTree().CurrentScene ?? this;
+        var found = root.FindChildren("Player*", "Node3D");
+        if (found.Count > 0 && found[0] is Node3D p) return p;
         
-        var sceneRoot = GetTree().CurrentScene ?? this;
-        var potentialPlayers = sceneRoot.FindChildren("Player*", "Node3D");
-        
-        if (potentialPlayers.Count > 0 && potentialPlayers[0] is Node3D playerNode)
-        {
-            Player = playerNode;
-            GD.Print("Found player by name pattern");
-            return;
-        }
-        
-        var playersInGroup = GetTree().GetNodesInGroup("player");
-        if (playersInGroup.Count > 0 && playersInGroup[0] is Node3D groupPlayer)
-        {
-            Player = groupPlayer;
-            GD.Print("Found player in 'player' group");
-            return;
-        }
-        
-        if (_camera != null)
-        {
-            Player = _camera;
-            GD.Print("Using camera as player for terrain generation");
-        }
-        else
-        {
-            GD.PushWarning("No Player or Camera found for terrain generation!");
-        }
+        var group = GetTree().GetNodesInGroup("player");
+        return group.Count > 0 && group[0] is Node3D g ? g : null;
     }
 
     private void UpdateChunks()
     {
-        if (Player == null)
-        {
-            GD.PushWarning("UpdateChunks called but Player is null!");
-            return;
-        }
+        if (Player == null) return;
 
-        var playerChunkPos = WorldToChunk(Player.GlobalPosition);
+        var playerChunk = WorldToChunk(Player.GlobalPosition);
         var chunksToLoad = new Dictionary<Vector2I, float>();
 
-        for (int x = playerChunkPos.X - RenderDistance; x <= playerChunkPos.X + RenderDistance; x++)
-        {
-            for (int z = playerChunkPos.Y - RenderDistance; z <= playerChunkPos.Y + RenderDistance; z++)
+        for (int x = playerChunk.X - RenderDistance; x <= playerChunk.X + RenderDistance; x++)
+            for (int z = playerChunk.Y - RenderDistance; z <= playerChunk.Y + RenderDistance; z++)
             {
-                var chunkCoord = new Vector2I(x, z);
-                if (!_loadedChunks.ContainsKey(chunkCoord) && !_loadingChunks.Contains(chunkCoord))
-                {
-                    float distSq = playerChunkPos.DistanceSquaredTo(chunkCoord);
-                    chunksToLoad[chunkCoord] = distSq;
-                }
+                var coord = new Vector2I(x, z);
+                if (!_loadedChunks.ContainsKey(coord) && !_loadingChunks.Contains(coord))
+                    chunksToLoad[coord] = playerChunk.DistanceSquaredTo(coord);
             }
-        }
 
-        if (chunksToLoad.Count > 0)
-        {
-            GD.Print($"Player at chunk {playerChunkPos}, loading {chunksToLoad.Count} new chunks");
-        }
-
-        var sortedChunks = new List<Vector2I>(chunksToLoad.Keys);
-        sortedChunks.Sort((a, b) => chunksToLoad[a].CompareTo(chunksToLoad[b]));
-
+        var sorted = new List<Vector2I>(chunksToLoad.Keys);
+        sorted.Sort((a, b) => chunksToLoad[a].CompareTo(chunksToLoad[b]));
+        
         _generationQueue.Clear();
-        foreach (var chunk in sortedChunks)
+        foreach (var chunk in sorted)
+        {
             _generationQueue.Enqueue(chunk);
-
-        ProcessGenerationQueue();
-
-        var chunksToUnload = new List<Vector2I>();
-        foreach (var chunkCoord in _loadedChunks.Keys)
-        {
-            int dist = Math.Max(Math.Abs(chunkCoord.X - playerChunkPos.X), Math.Abs(chunkCoord.Y - playerChunkPos.Y));
-            if (dist > UnloadDistance)
-                chunksToUnload.Add(chunkCoord);
+            if (!_loadedChunks.ContainsKey(chunk) && !_loadingChunks.Contains(chunk))
+                LoadChunkAsync(chunk);
         }
 
-        foreach (var coord in chunksToUnload)
-            UnloadChunk(coord);
-    }
-
-    private void ProcessGenerationQueue()
-    {
-        while (_generationQueue.Count > 0)
+        foreach (var coord in new List<Vector2I>(_loadedChunks.Keys))
         {
-            var chunkCoord = _generationQueue.Dequeue();
-            if (!_loadedChunks.ContainsKey(chunkCoord) && !_loadingChunks.Contains(chunkCoord))
-            {
-                LoadChunkAsync(chunkCoord);
-            }
-        }
-    }
-
-    private void ProcessMeshCreationQueue()
-    {
-        int processed = 0;
-        while (processed < MaxChunksPerFrame && _meshCreationQueue.TryDequeue(out var chunkData))
-        {
-            CreateChunkObject(chunkData);
-            processed++;
+            int dist = Math.Max(Math.Abs(coord.X - playerChunk.X), Math.Abs(coord.Y - playerChunk.Y));
+            if (dist > UnloadDistance) UnloadChunk(coord);
         }
     }
 
     private void UpdateChunkVisibility()
     {
-        if (_camera == null) return;
-
-        var frustumPlanes = _camera.GetFrustum();
-        float chunkWorldSize = ChunkSize * PixelSize;
+        var frustum = _camera.GetFrustum();
+        float size = ChunkSize * PixelSize;
 
         foreach (var chunk in _loadedChunks.Values)
         {
-            var chunkWorldPos = ChunkToWorld(chunk.ChunkCoord);
-            var bounds = new Aabb(
-                new Vector3(chunkWorldPos.X, -TerrainHeightVariation, chunkWorldPos.Y),
-                new Vector3(chunkWorldSize, TerrainHeightVariation * 2, chunkWorldSize)
-            );
-
-            chunk.MultiMeshInstance.Visible = IsAabbInFrustum(bounds, frustumPlanes);
+            var pos = ChunkToWorld(chunk.ChunkCoord);
+            var aabb = new Aabb(new Vector3(pos.X, -TerrainHeightVariation, pos.Y),
+                               new Vector3(size, TerrainHeightVariation * 2, size));
+            chunk.MultiMeshInstance.Visible = IsInFrustum(aabb, frustum);
         }
     }
 
-    private bool IsAabbInFrustum(in Aabb aabb, Godot.Collections.Array<Plane> frustumPlanes)
+    private bool IsInFrustum(in Aabb aabb, Godot.Collections.Array<Plane> planes)
     {
-        foreach (var plane in frustumPlanes)
+        foreach (var plane in planes)
         {
-            Vector3 p = aabb.Position;
-            Vector3 n = plane.Normal;
-
+            var p = aabb.Position;
+            var n = plane.Normal;
             if (n.X > 0) p.X += aabb.Size.X;
             if (n.Y > 0) p.Y += aabb.Size.Y;
             if (n.Z > 0) p.Z += aabb.Size.Z;
-
-            if (plane.IsPointOver(p))
-            {
-                return false;
-            }
+            if (plane.IsPointOver(p)) return false;
         }
-        
         return true;
     }
 
-    private async void LoadChunkAsync(Vector2I chunkCoord)
+    private async void LoadChunkAsync(Vector2I coord)
     {
-        // Check if we've been disposed or not initialized
-        if (_cancellationTokenSource == null || _threadSemaphore == null)
-        {
-            _loadingChunks.Remove(chunkCoord);
-            return;
-        }
-
-        _loadingChunks.Add(chunkCoord);
+        if (_cancellationTokenSource == null || _threadSemaphore == null) return;
+        _loadingChunks.Add(coord);
 
         if (UseMultithreading)
         {
             try
             {
                 await _threadSemaphore.WaitAsync(_cancellationTokenSource.Token);
-            
                 try
                 {
-                    // Double-check after await
-                    if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
-                    {
-                        _loadingChunks.Remove(chunkCoord);
-                        return;
-                    }
-                    
-                    var chunkData = await Task.Run(() => GenerateChunkThreaded(chunkCoord), _cancellationTokenSource.Token);
-                    
-                    // Check if still active before processing
+                    if (_cancellationTokenSource?.IsCancellationRequested ?? true) return;
+                    var data = await Task.Run(() => GenerateChunk(coord), _cancellationTokenSource.Token);
                     if (_worldActive && !_cancellationTokenSource.IsCancellationRequested)
-                    {
-                        CallDeferred(nameof(OnChunkGenerated), chunkData);
-                    }
-                    else
-                    {
-                        _loadingChunks.Remove(chunkCoord);
-                    }
+                        CallDeferred(nameof(OnChunkGenerated), data);
                 }
-                finally
-                {
-                    _threadSemaphore?.Release();
-                }
+                finally { _threadSemaphore?.Release(); }
             }
-            catch (OperationCanceledException) 
-            { 
-                _loadingChunks.Remove(chunkCoord);
-            }
-            catch (ObjectDisposedException)
-            {
-                _loadingChunks.Remove(chunkCoord);
-            }
+            catch { _loadingChunks.Remove(coord); }
         }
+        else if (!(_cancellationTokenSource?.IsCancellationRequested ?? true))
+            OnChunkGenerated(GenerateChunk(coord));
         else
-        {
-            if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
-            {
-                var chunkData = GenerateChunkThreaded(chunkCoord);
-                OnChunkGenerated(chunkData);
-            }
-            else
-            {
-                _loadingChunks.Remove(chunkCoord);
-            }
-        }
+            _loadingChunks.Remove(coord);
     }
 
-    private ChunkData GenerateChunkThreaded(Vector2I chunkCoord)
+    private ChunkData GenerateChunk(Vector2I coord)
     {
-        ChunkData chunkData = null;
-
-        if (CacheEnabled)
-            chunkData = TerrainChunk.LoadFromFile(chunkCoord, SavePath);
-
-        if (chunkData == null)
+        var data = CacheEnabled ? TerrainChunk.LoadFromFile(coord, SavePath) : null;
+        if (data == null)
         {
-            chunkData = TerrainChunk.Generate(
-                chunkCoord, ChunkSize, PixelSize,
-                PrimaryBiomeNoise, SecondaryBiomeNoise, HeightNoise,
-                _biomeColors, _biomeThresholds,
+            data = TerrainChunk.Generate(coord, ChunkSize, PixelSize, PrimaryBiomeNoise, 
+                SecondaryBiomeNoise, HeightNoise, _biomeColors, _biomeThresholds, 
                 EnableHeightVariation, HeightInfluence, TerrainHeightVariation,
-                PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast
-            );
-            chunkData.IsDirty = true;
+                PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast);
+            data.IsDirty = true;
         }
-
-        return chunkData;
+        return data;
     }
 
-    private void OnChunkGenerated(ChunkData chunkData)
+    private void OnChunkGenerated(ChunkData data)
     {
         if (!_worldActive) return;
-        
-        // In editor, process immediately instead of queuing
-        if (Engine.IsEditorHint())
-        {
-            CreateChunkObject(chunkData);
-        }
-        else
-        {
-            _meshCreationQueue.Enqueue(chunkData);
-        }
+        if (Engine.IsEditorHint()) CreateChunkObject(data);
+        else _meshCreationQueue.Enqueue(data);
     }
 
-    private void CreateChunkObject(ChunkData chunkData)
+    private void CreateChunkObject(ChunkData data)
     {
-        var chunkCoord = chunkData.ChunkCoord;
-        _loadingChunks.Remove(chunkCoord);
+        _loadingChunks.Remove(data.ChunkCoord);
+        if (_loadedChunks.ContainsKey(data.ChunkCoord) || !_worldActive) return;
 
-        if (_loadedChunks.ContainsKey(chunkCoord) || !_worldActive)
-            return;
-
-        var chunk = new TerrainChunk(chunkCoord, chunkData);
+        var chunk = new TerrainChunk(data.ChunkCoord, data);
         chunk.CreateMesh(ChunkSize, PixelSize, CustomMaterial);
-
-        var worldPos = ChunkToWorld(chunkCoord);
-        float halfChunkSize = (ChunkSize * PixelSize) * 0.5f;
-        chunk.MultiMeshInstance.Position = new Vector3(
-            worldPos.X + halfChunkSize, 
-            0, 
-            worldPos.Y + halfChunkSize
-        );
-
+        
+        var pos = ChunkToWorld(data.ChunkCoord);
+        chunk.MultiMeshInstance.Position = new Vector3(pos.X + ChunkSize * PixelSize * 0.5f, 0, pos.Y + ChunkSize * PixelSize * 0.5f);
+        
         AddChild(chunk.MultiMeshInstance);
-        _loadedChunks[chunkCoord] = chunk;
+        _loadedChunks[data.ChunkCoord] = chunk;
     }
 
-    private void UnloadChunk(Vector2I chunkCoord)
+    private void UnloadChunk(Vector2I coord)
     {
-        if (_loadedChunks.TryGetValue(chunkCoord, out var chunk))
+        if (_loadedChunks.TryGetValue(coord, out var chunk))
         {
-            if (chunk.IsDirty && CacheEnabled)
-                chunk.SaveToFile(SavePath);
-            
+            if (chunk.IsDirty && CacheEnabled) chunk.SaveToFile(SavePath);
             chunk.MultiMeshInstance.QueueFree();
-            _loadedChunks.Remove(chunkCoord);
+            _loadedChunks.Remove(coord);
         }
     }
 
     private void ClearWorld()
     {
-        foreach (var chunkCoord in new List<Vector2I>(_loadedChunks.Keys))
-            UnloadChunk(chunkCoord);
-
+        foreach (var coord in new List<Vector2I>(_loadedChunks.Keys)) UnloadChunk(coord);
         _loadedChunks.Clear();
         _loadingChunks.Clear();
         _generationQueue.Clear();
         _meshCreationQueue = new ConcurrentQueue<ChunkData>();
     }
 
-    private void SaveAllDirtyChunks()
-    {
-        foreach (var chunk in _loadedChunks.Values)
-        {
-            if (chunk.IsDirty)
-                chunk.SaveToFile(SavePath);
-        }
-    }
+    private Vector2I WorldToChunk(Vector3 pos) => new(
+        Mathf.FloorToInt(pos.X / (ChunkSize * PixelSize)),
+        Mathf.FloorToInt(pos.Z / (ChunkSize * PixelSize))
+    );
 
-    private Vector2I WorldToChunk(Vector3 worldPos)
-    {
-        float chunkWorldSize = ChunkSize * PixelSize;
-        return new Vector2I(
-            Mathf.FloorToInt(worldPos.X / chunkWorldSize),
-            Mathf.FloorToInt(worldPos.Z / chunkWorldSize)
-        );
-    }
+    private Vector2 ChunkToWorld(Vector2I coord) => new(
+        coord.X * ChunkSize * PixelSize,
+        coord.Y * ChunkSize * PixelSize
+    );
 
-    private Vector2 ChunkToWorld(Vector2I chunkCoord)
-    {
-        float chunkWorldSize = ChunkSize * PixelSize;
-        return new Vector2(chunkCoord.X * chunkWorldSize, chunkCoord.Y * chunkWorldSize);
-    }
+    public int GetLoadedChunkCount() => _loadedChunks.Count;
+    public int GetLoadingChunkCount() => _loadingChunks.Count;
 
-    #region Public Utility Methods
-    public int GetLoadedChunkCount() 
-    {
-        return _loadedChunks.Count;
-    }
-
-    public int GetLoadingChunkCount() 
-    {
-        return _loadingChunks.Count;
-    }
-    
     public void ClearChunkCache()
     {
-        try
+        var path = $"user://{SavePath.Replace("res://", "")}";
+        var dir = DirAccess.Open(path);
+        if (dir != null)
         {
-            var resolvedPath = SavePath.Replace("res://", "");
-            var fullPath = $"user://{resolvedPath}";
-
-            var dir = DirAccess.Open(fullPath);
-            if (dir != null)
-            {
-                dir.ListDirBegin();
-                string fileName = dir.GetNext();
-                int deletedCount = 0;
-
-                while (fileName != "")
-                {
-                    if (!dir.CurrentIsDir() && fileName.EndsWith(".chunk"))
-                    {
-                        dir.Remove(fileName);
-                        deletedCount++;
-                    }
-                    fileName = dir.GetNext();
-                }
-                dir.ListDirEnd();
-
-                GD.Print($"Cleared {deletedCount} cached chunk files");
-            }
-        }
-        catch (Exception ex)
-        {
-            GD.PushError($"Failed to clear chunk cache: {ex.Message}");
+            dir.ListDirBegin();
+            int count = 0;
+            for (var file = dir.GetNext(); file != ""; file = dir.GetNext())
+                if (!dir.CurrentIsDir() && file.EndsWith(".chunk")) { dir.Remove(file); count++; }
+            dir.ListDirEnd();
+            GD.Print($"Cleared {count} cached chunks");
         }
     }
-    #endregion
+    
+    public int GetBiomeIndexAt(float worldX, float worldZ)
+{
+    // This calculation must be IDENTICAL to GetBiomeValueAt in EnvironmentManager
+    //
+    float primaryValue = PrimaryBiomeNoise.GetNoise2D(worldX, worldZ);
+    float secondaryValue = SecondaryBiomeNoise.GetNoise2D(worldX, worldZ);
+    
+    float combined = (primaryValue * PrimaryNoiseWeight + 
+                     secondaryValue * SecondaryNoiseWeight) * NoiseContrast;
+    
+    float noiseValue = Mathf.Clamp(combined, -1.0f, 1.0f);
+
+    // Now, we check against the same thresholds the terrain uses
+    if (noiseValue < _biomeThresholds[0]) return 0; // Color 1
+    if (noiseValue < _biomeThresholds[1]) return 1; // Color 2
+    if (noiseValue < _biomeThresholds[2]) return 2; // Color 3
+    if (noiseValue < _biomeThresholds[3]) return 3; // Color 4
+    if (noiseValue < _biomeThresholds[4]) return 4; // Color 5
+    if (noiseValue < _biomeThresholds[5]) return 5; // Color 6
+    if (noiseValue < _biomeThresholds[6]) return 6; // Color 7
+    
+    return 7; // Default to Color 8
+}
 }

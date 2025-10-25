@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=3 format=3 uid="uid://cvy3pchun6hv4"]
+
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_5t0h1"]
+[ext_resource type="PackedScene" uid="uid://c8mqtaa8dso0m" path="res://SCENES/Assets/plants/Type_Tree_2.tscn" id="1_dmb4t"]
+
+[resource]
+script = ExtResource("1_5t0h1")
+Name = "Aciac_Tree"
+SourceType = 1
+PropScene = ExtResource("1_dmb4t")
+AllowedBiomes = 16
+Probability = 0.03
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

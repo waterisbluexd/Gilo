@@ -165,7 +165,6 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
-visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
@@ -1652,8 +1651,6 @@ mesh = SubResource("CapsuleMesh_dtswy")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-ChunkSize = 64
-RenderDistance = 6
 PrimaryBiomeNoise = ExtResource("15_dtswy")
 SecondaryBiomeNoise = ExtResource("16_11g8y")
 PrimaryNoiseWeight = 0.85
@@ -1668,8 +1665,8 @@ Threshold5 = -0.604
 Threshold6 = -0.383
 Threshold7 = -0.343
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
-MaxConcurrentThreads = 16
 EnableFrustumCulling = false
+CacheEnabled = false
 Player = NodePath("../CameraPivot")
 
 [node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
