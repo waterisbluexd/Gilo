@@ -165,6 +165,7 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
+visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
@@ -231,7 +232,7 @@ theme = ExtResource("2_0u8pi")
 text = "                  #x#x#x#x__Gilo Debugger__x#x#x#x#"
 horizontal_alignment = 1
 script = ExtResource("3_ab6ae")
-effect_type = 9
+effect_type = 11
 
 [node name="Performance_stats" type="Button" parent="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Info/MarginContainer/VBoxContainer/Panel/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -1651,6 +1652,7 @@ mesh = SubResource("CapsuleMesh_dtswy")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+WorldActive = true
 PrimaryBiomeNoise = ExtResource("15_dtswy")
 SecondaryBiomeNoise = ExtResource("16_11g8y")
 PrimaryNoiseWeight = 0.85

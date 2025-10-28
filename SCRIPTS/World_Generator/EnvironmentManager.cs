@@ -6,6 +6,8 @@ using System.Linq;
 [Tool]
 public partial class EnvironmentManager : Node3D
 {
+    private ResourceSystem _resourceSystem;
+
     [ExportGroup("Prop Database")]
     [Export] public Godot.Collections.Array<EnvironmentPropData> PropDatabase { get; set; }
 
@@ -38,6 +40,17 @@ public partial class EnvironmentManager : Node3D
         }
 
         _camera = GetViewport()?.GetCamera3D();
+        
+        // FIX: Use the static ResourceSystem.Instance property to access the singleton.
+        _resourceSystem = ResourceSystem.Instance; 
+        
+        if (_resourceSystem == null)
+        {
+            // If the instance is null, create it and add it to the scene root as a fallback.
+            _resourceSystem = new ResourceSystem();
+            _resourceSystem.Name = "ResourceSystem";
+            GetTree().Root.AddChild(_resourceSystem);
+        }
         
         CallDeferred(nameof(Initialize));
     }
@@ -104,106 +117,112 @@ public partial class EnvironmentManager : Node3D
     }
 
     private void GeneratePropChunk(Vector2I chunkCoord)
+{
+    var chunkPropData = new ChunkPropData { ChunkCoord = chunkCoord };
+    
+    float chunkWorldSize = _terrain.ChunkSize * _terrain.PixelSize;
+    Vector2 chunkWorldOrigin = new Vector2(
+        chunkCoord.X * chunkWorldSize,
+        chunkCoord.Y * chunkWorldSize
+    );
+
+    var biomePixels = new Dictionary<int, List<PixelPosition>>();
+    
+    for (int z = 0; z < _terrain.ChunkSize; z += PixelSkipInterval)
     {
-        var chunkPropData = new ChunkPropData { ChunkCoord = chunkCoord };
-        
-        float chunkWorldSize = _terrain.ChunkSize * _terrain.PixelSize;
-        Vector2 chunkWorldOrigin = new Vector2(
-            chunkCoord.X * chunkWorldSize,
-            chunkCoord.Y * chunkWorldSize
-        );
-
-        // Create a dictionary to group pixels by biome
-        var biomePixels = new Dictionary<int, List<PixelPosition>>();
-        
-        // Iterate through EXACT terrain pixels instead of sampling
-        for (int z = 0; z < _terrain.ChunkSize; z += PixelSkipInterval)
+        for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
         {
-            for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
-            {
-                // Calculate world position for this exact pixel
-                float localX = (x * _terrain.PixelSize) + (_terrain.PixelSize * 0.5f);
-                float localZ = (z * _terrain.PixelSize) + (_terrain.PixelSize * 0.5f);
-                
-                float worldX = chunkWorldOrigin.X + localX;
-                float worldZ = chunkWorldOrigin.Y + localZ;
+            float localX = (x * _terrain.PixelSize) + (_terrain.PixelSize * 0.5f);
+            float localZ = (z * _terrain.PixelSize) + (_terrain.PixelSize * 0.5f);
+            
+            float worldX = chunkWorldOrigin.X + localX;
+            float worldZ = chunkWorldOrigin.Y + localZ;
 
-                // Get the EXACT biome index at this pixel position
-                int biomeIndex = _terrain.GetBiomeIndexAt(worldX, worldZ);
-                
-                if (!biomePixels.ContainsKey(biomeIndex))
-                    biomePixels[biomeIndex] = new List<PixelPosition>();
-                
-                biomePixels[biomeIndex].Add(new PixelPosition
-                {
-                    WorldX = worldX,
-                    WorldZ = worldZ,
-                    LocalX = localX,
-                    LocalZ = localZ
-                });
-            }
+            int biomeIndex = _terrain.GetBiomeIndexAt(worldX, worldZ);
+            
+            if (!biomePixels.ContainsKey(biomeIndex))
+                biomePixels[biomeIndex] = new List<PixelPosition>();
+            
+            biomePixels[biomeIndex].Add(new PixelPosition
+            {
+                WorldX = worldX,
+                WorldZ = worldZ,
+                LocalX = localX,
+                LocalZ = localZ
+            });
         }
-
-        // Now spawn props based on exact biome pixel locations
-        foreach (var propData in PropDatabase)
-        {
-            if (propData == null)
-            {
-                GD.PushWarning("EnvironmentManager: Found a null item in PropDatabase. Skipping.");
-                continue;
-            }
-
-            // Get the mesh from the prop data (handles all source types)
-            var mesh = propData.GetMesh();
-            if (mesh == null)
-            {
-                GD.PushWarning($"Prop data '{propData.Name}' has no valid Mesh, Scene, or MeshInstance3D assigned!");
-                continue;
-            }
-
-            var propInstances = new List<PropInstance>();
-
-            // Check each biome that this prop can spawn in
-            for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
-            {
-                var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
-                
-                // Skip if prop can't spawn in this biome
-                if (!propData.AllowedBiomes.HasFlag(biomeFlag))
-                    continue;
-                
-                // Skip if no pixels of this biome exist in chunk
-                if (!biomePixels.ContainsKey(biomeIndex))
-                    continue;
-
-                // Spawn props at pixels of this biome
-                foreach (var pixel in biomePixels[biomeIndex])
-                {
-                    // Use probability check to thin out props
-                    float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
-                    if (randomValue < propData.Probability)
-                    {
-                        var instance = CreatePropInstance(
-                            pixel.WorldX, pixel.WorldZ, 
-                            pixel.LocalX, pixel.LocalZ, 
-                            propData
-                        );
-                        propInstances.Add(instance);
-                    }
-                }
-            }
-
-            if (propInstances.Count > 0)
-            {
-                var mmi = CreateMultiMeshInstance(propInstances, propData, chunkCoord);
-                chunkPropData.MultiMeshInstances.Add(mmi);
-                AddChild(mmi);
-            }
-        }
-
-        _propChunks[chunkCoord] = chunkPropData;
     }
 
+    foreach (var propData in PropDatabase)
+    {
+        if (propData == null) continue;
+
+        var mesh = propData.GetMesh();
+        if (mesh == null) continue;
+
+        var propInstances = new List<PropInstance>();
+        int instanceIndex = 0; // Track instance index for resource system
+
+        for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+        {
+            var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
+            
+            if (!propData.AllowedBiomes.HasFlag(biomeFlag))
+                continue;
+            
+            if (!biomePixels.ContainsKey(biomeIndex))
+                continue;
+
+            foreach (var pixel in biomePixels[biomeIndex])
+            {
+                // MODIFIED: Check if resource should spawn (not harvested)
+                if (!_resourceSystem.ShouldSpawnResource(chunkCoord, instanceIndex, propData.Name))
+                {
+                    instanceIndex++;
+                    continue; // Skip harvested resources
+                }
+
+                float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
+                if (randomValue < propData.Probability)
+                {
+                    var instance = CreatePropInstance(
+                        pixel.WorldX, pixel.WorldZ, 
+                        pixel.LocalX, pixel.LocalZ, 
+                        propData
+                    );
+                    propInstances.Add(instance);
+
+                    // ADDED: Register as harvestable resource
+                    // Note: You must ensure 'IsHarvestable' exists on EnvironmentPropData.cs
+                    if (propData.IsHarvestable) 
+                    {
+                        _resourceSystem.RegisterResource(
+                            chunkCoord, 
+                            instance.WorldPosition, 
+                            propData.Name, 
+                            instanceIndex
+                        );
+                    }
+                    
+                    instanceIndex++;
+                }
+                else
+                {
+                    instanceIndex++;
+                }
+            }
+        }
+
+        if (propInstances.Count > 0)
+        {
+            var mmi = CreateMultiMeshInstance(propInstances, propData, chunkCoord);
+            chunkPropData.MultiMeshInstances.Add(mmi);
+            AddChild(mmi);
+        }
+    }
+
+    _propChunks[chunkCoord] = chunkPropData;
+}
     private float GetTerrainHeightAt(float worldX, float worldZ)
     {
         // Get height using EXACT same method as terrain
@@ -318,17 +337,20 @@ public partial class EnvironmentManager : Node3D
     }
 
     private void UnloadPropChunk(Vector2I coord)
+{
+    if (_propChunks.TryGetValue(coord, out var chunkData))
     {
-        if (_propChunks.TryGetValue(coord, out var chunkData))
+        foreach (var mmi in chunkData.MultiMeshInstances)
         {
-            foreach (var mmi in chunkData.MultiMeshInstances)
-            {
-                if (IsInstanceValid(mmi))
-                    mmi.QueueFree();
-            }
-            _propChunks.Remove(coord);
+            if (IsInstanceValid(mmi))
+                mmi.QueueFree();
         }
+        _propChunks.Remove(coord);
+        
+        // Notify ResourceSystem
+        _resourceSystem?.UnloadChunk(coord);
     }
+}
 
     private void UpdatePropVisibility()
     {

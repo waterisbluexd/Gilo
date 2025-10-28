@@ -45,6 +45,19 @@ public partial class EnvironmentPropData : Resource
     
     [Export] public PackedScene PropScene { get; set; }
 
+    // ADD THIS TO EnvironmentPropData.cs
+
+    [ExportGroup("Resource Settings")]
+    [Export] public bool IsHarvestable { get; set; } = false;
+    
+    [Export] public string ResourceType { get; set; } = "Wood"; // "Wood", "Stone", "Food", etc.
+    
+    [Export(PropertyHint.Range, "1,1000")] 
+    public int ResourceYield { get; set; } = 50;
+    
+    [Export(PropertyHint.Range, "0.5,30.0")] 
+    public float HarvestTime { get; set; } = 3.0f;
+
     [ExportGroup("Placement Rules")]
     [Export(PropertyHint.Flags, "Biome 1,Biome 2,Biome 3,Biome 4,Biome 5,Biome 6,Biome 7,Biome 8")] 
     public BiomeFlags AllowedBiomes { get; set; }
