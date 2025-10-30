@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=33 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -15,8 +15,6 @@
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
 [ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
 [ext_resource type="Script" uid="uid://cusryiilxiyn7" path="res://SCRIPTS/sub_viewport.gd" id="12_11g8y"]
-[ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="15_dtswy"]
-[ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="16_11g8y"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -108,11 +106,12 @@ script = ExtResource("1_v5vvh")
 transform = Transform3D(-0.025797188, -0.92186064, -0.38666248, -0.94342375, -0.10545896, 0.31437272, -0.33058476, 0.37289658, -0.8669846, 0, 0, 0)
 light_color = Color(0.77762455, 0.7145413, 0.44411469, 1)
 shadow_enabled = true
-shadow_opacity = 0.72
-shadow_blur = 0.538
+shadow_blur = 0.0
 directional_shadow_split_1 = 0.096
 directional_shadow_split_2 = 0.096
 directional_shadow_split_3 = 0.096
+directional_shadow_max_distance = 8192.0
+directional_shadow_pancake_size = 1024.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="light/DirectionalLight3D"]
 environment = SubResource("Environment_wp4xf")
@@ -165,6 +164,7 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
+visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
@@ -1638,6 +1638,7 @@ projection = 1
 current = true
 size = 100.0
 near = 0.001
+far = 6980.75
 script = ExtResource("3_i3vxn")
 zoom_speed = 10.0
 show_debug_print = false
@@ -1652,29 +1653,9 @@ mesh = SubResource("CapsuleMesh_dtswy")
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 WorldActive = true
-PrimaryBiomeNoise = ExtResource("15_dtswy")
-SecondaryBiomeNoise = ExtResource("16_11g8y")
-PrimaryNoiseWeight = 0.85
-SecondaryNoiseWeight = 0.585
-NoiseContrast = 0.8
-EnableHeightVariation = false
-Threshold1 = -0.942
-Threshold2 = -0.779
-Threshold3 = -0.716
-Threshold4 = -0.667
-Threshold5 = -0.604
-Threshold6 = -0.383
-Threshold7 = -0.343
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
-EnableFrustumCulling = false
+MaxConcurrentThreads = 16
 Player = NodePath("../CameraPivot")
-
-[node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
-transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
-active = false
-
-[node name="BuildingPlacer" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="1" node_paths=PackedStringArray("camera")]
-camera = NodePath("../../CameraPivot/Camera3D")
 
 [node name="Display" type="Control" parent="Pixelated"]
 layout_mode = 3
@@ -1703,5 +1684,3 @@ expand_mode = 1
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_camera_manipulation_pressed"]
 [connection signal="pressed" from="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console" to="UI/CanvasLayer/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_console_pressed"]
-
-[editable path="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain"]

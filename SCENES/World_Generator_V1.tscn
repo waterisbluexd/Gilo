@@ -1,6 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=20 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
+[ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
+[ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="3_ul5h0"]
 [ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_xo5mt"]
@@ -16,31 +18,34 @@
 [ext_resource type="Resource" uid="uid://dqb1r457jj5vd" path="res://RESOURCES/Building_Res/HouseAllType/Hovel8.tres" id="14_n0uxr"]
 [ext_resource type="Resource" uid="uid://cvy3pchun6hv4" path="res://SCRIPTS/enviorment/Plants/Type_Tree_2.tres" id="14_xo5mt"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_bsi5x"]
-noise_type = 3
-seed = 1941146016
-frequency = 0.02
-fractal_octaves = 2
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_v2yxi"]
-noise_type = 3
-seed = 981898081
-frequency = 0.05
-fractal_octaves = 1
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
 noise_type = 3
 seed = 144119703
 frequency = 0.08
 fractal_octaves = 2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a4esh"]
+
 [node name="ChunkPixelTerrain" type="Node3D"]
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
 script = ExtResource("1_bsi5x")
 ChunkSize = 64
-PrimaryBiomeNoise = SubResource("FastNoiseLite_bsi5x")
-SecondaryBiomeNoise = SubResource("FastNoiseLite_v2yxi")
+PrimaryBiomeNoise = ExtResource("2_gx6qx")
+SecondaryBiomeNoise = ExtResource("3_ul5h0")
 HeightNoise = SubResource("FastNoiseLite_ndvok")
+PrimaryNoiseWeight = 0.85
+SecondaryNoiseWeight = 0.585
+NoiseContrast = 0.8
+EnableHeightVariation = false
+Threshold1 = -0.942
+Threshold2 = -0.779
+Threshold3 = -0.716
+Threshold4 = -0.667
+Threshold5 = -0.604
+Threshold6 = -0.383
+Threshold7 = -0.343
+CustomMaterial = SubResource("StandardMaterial3D_a4esh")
+EnableFrustumCulling = false
 
 [node name="NavigationGrid" type="Node3D" parent="."]
 script = ExtResource("4_jl6tj")

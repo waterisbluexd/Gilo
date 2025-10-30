@@ -41,8 +41,8 @@ public partial class TerrainChunk
                 float localX = (x * pixelSize) - halfChunkWorldSize + (pixelSize * 0.5f);
                 float localZ = (z * pixelSize) - halfChunkWorldSize + (pixelSize * 0.5f);
 
-                float worldX = chunkWorldOrigin.X + localX;
-                float worldZ = chunkWorldOrigin.Y + localZ;
+                float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
+                float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
                 var pixelColor = GetPixelColor(worldX, worldZ,
                     primaryNoise, secondaryNoise, primaryWeight, secondaryWeight, 

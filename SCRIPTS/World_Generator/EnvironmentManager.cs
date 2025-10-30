@@ -184,12 +184,12 @@ public partial class EnvironmentManager : Node3D
         {
             for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
             {
-                // EXACT match to TerrainChunk.Generate coordinate calculation
                 float localX = (x * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
                 float localZ = (z * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
-                
-                float worldX = chunkWorldOrigin.X + localX;
-                float worldZ = chunkWorldOrigin.Y + localZ;
+
+                // FIX: Add local offset to CHUNK CENTER, not origin
+                float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
+                float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
                 int biomeIndex = _terrain.GetBiomeIndexAt(worldX, worldZ);
                 

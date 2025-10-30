@@ -3,7 +3,7 @@ extends Camera3D
 
 # --- User-tweakable ---
 @export var snap : bool = true
-@export var min_size: float = 0
+@export var min_size: float = 80
 
 @export var max_size: float = 200.0
 @export var zoom_speed: float = 5.0
