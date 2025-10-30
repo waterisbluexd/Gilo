@@ -56,7 +56,6 @@ transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0,
 script = ExtResource("12_ndvok")
 PropDatabase = [ExtResource("13_ndvok"), ExtResource("14_xo5mt")]
 RandomScaleVariation = 0.0
-PixelSkipInterval = 1
 EnablePropCulling = false
 NavigationGridNode = NodePath("../NavigationGrid")
 DefaultPropCollisionSize = Vector2(2, 2)

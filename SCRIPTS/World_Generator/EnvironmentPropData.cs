@@ -48,7 +48,7 @@ public partial class EnvironmentPropData : Resource
     [ExportGroup("Resource Settings")]
     [Export] public bool IsHarvestable { get; set; } = false;
     
-    [Export] public string ResourceType { get; set; } = "Wood"; // "Wood", "Stone", "Food", etc.
+    [Export] public string ResourceType { get; set; } = "Wood";
     
     [Export(PropertyHint.Range, "1,1000")] 
     public int ResourceYield { get; set; } = 50;
@@ -57,8 +57,9 @@ public partial class EnvironmentPropData : Resource
     public float HarvestTime { get; set; } = 3.0f;
 
     [ExportGroup("Navigation Collision")]
-    [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero; // X and Z size for navigation blocking
-    [Export] public bool BlocksNavigation { get; set; } = true; // Toggle whether this prop blocks building placement
+    [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero;
+    [Export] public bool BlocksNavigation { get; set; } = true;
+    [Export] public bool AutoCalculateCollisionSize { get; set; } = true; // NEW: Auto-calculate from mesh bounds
 
     [ExportGroup("Placement Rules")]
     [Export(PropertyHint.Flags, "Biome 1,Biome 2,Biome 3,Biome 4,Biome 5,Biome 6,Biome 7,Biome 8")] 
@@ -79,7 +80,43 @@ public partial class EnvironmentPropData : Resource
     private Mesh _cachedMesh = null;
     private Material _cachedMaterial = null;
     private Vector3 _cachedScale = Vector3.One;
+    private Vector2 _cachedCollisionSize = Vector2.Zero;
     private bool _cacheValid = false;
+
+    // NEW: Get effective collision size (auto-calculated or manual)
+    public Vector2 GetCollisionSize()
+    {
+        // If manually set and not zero, use that
+        if (CollisionSize != Vector2.Zero)
+            return CollisionSize;
+        
+        // If auto-calculate is disabled, return zero (will use default)
+        if (!AutoCalculateCollisionSize)
+            return Vector2.Zero;
+        
+        // Use cached value if available
+        if (_cacheValid && _cachedCollisionSize != Vector2.Zero)
+            return _cachedCollisionSize;
+        
+        // Try to calculate from mesh
+        var mesh = GetMesh();
+        if (mesh != null)
+        {
+            var aabb = mesh.GetAabb();
+            var scale = GetScale();
+            
+            // Use X and Z dimensions (horizontal plane) with scale applied
+            _cachedCollisionSize = new Vector2(
+                aabb.Size.X * scale.X,
+                aabb.Size.Z * scale.Z
+            );
+            
+            return _cachedCollisionSize;
+        }
+        
+        // Fallback to zero (will use default in EnvironmentManager)
+        return Vector2.Zero;
+    }
 
     public Mesh GetMesh()
     {
@@ -243,5 +280,6 @@ public partial class EnvironmentPropData : Resource
         _cacheValid = false;
         _cachedMesh = null;
         _cachedMaterial = null;
+        _cachedCollisionSize = Vector2.Zero;
     }
 }
