@@ -12,7 +12,6 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public int ChunkSize { get; set; } = 32;
     [Export] public int RenderDistance { get; set; } = 4;
     [Export] public int UnloadDistance { get; set; } = 6;
-    [Export] public string SavePath { get; set; } = "res://world_cache/";
 
     [ExportGroup("Pixel Terrain Settings")]
     [Export] public float PixelSize { get; set; } = 1.0f;
@@ -60,7 +59,6 @@ public partial class ChunkPixelTerrain : Node3D
     [Export(PropertyHint.Range, "1,16")] public int MaxConcurrentThreads { get; set; } = 4;
     [Export] public bool EnableFrustumCulling { get; set; } = true;
     [Export] public int MaxChunksPerFrame { get; set; } = 2;
-    [Export] public bool CacheEnabled { get; set; } = true;
     [Export] public Node3D Player { get; set; }
 
     private bool _worldActive;
@@ -90,8 +88,6 @@ public partial class ChunkPixelTerrain : Node3D
             if (EnableHeightVariation && HeightNoise == null) HeightNoise = CreateNoise(0.08f, 2);
         }
         
-        DirAccess.MakeDirRecursiveAbsolute($"user://{SavePath.Replace("res://", "")}");
-        
         _camera = GetViewport()?.GetCamera3D();
         Player ??= FindPlayer() ?? _camera;
         
@@ -111,8 +107,6 @@ public partial class ChunkPixelTerrain : Node3D
         WorldActive = false;
         _cancellationTokenSource?.Cancel();
         _threadSemaphore?.Dispose();
-        foreach (var chunk in _loadedChunks.Values)
-            if (chunk.IsDirty) chunk.SaveToFile(SavePath);
     }
 
     public override void _Process(double delta)
@@ -265,15 +259,11 @@ public partial class ChunkPixelTerrain : Node3D
 
     private ChunkData GenerateChunk(Vector2I coord)
     {
-        var data = CacheEnabled ? TerrainChunk.LoadFromFile(coord, SavePath) : null;
-        if (data == null)
-        {
-            data = TerrainChunk.Generate(coord, ChunkSize, PixelSize, PrimaryBiomeNoise, 
-                SecondaryBiomeNoise, HeightNoise, _biomeColors, _biomeThresholds, 
-                EnableHeightVariation, HeightInfluence, TerrainHeightVariation,
-                PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast);
-            data.IsDirty = true;
-        }
+        // Always generate fresh chunks - no caching
+        var data = TerrainChunk.Generate(coord, ChunkSize, PixelSize, PrimaryBiomeNoise, 
+            SecondaryBiomeNoise, HeightNoise, _biomeColors, _biomeThresholds, 
+            EnableHeightVariation, HeightInfluence, TerrainHeightVariation,
+            PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast);
         return data;
     }
 
@@ -303,7 +293,6 @@ public partial class ChunkPixelTerrain : Node3D
     {
         if (_loadedChunks.TryGetValue(coord, out var chunk))
         {
-            if (chunk.IsDirty && CacheEnabled) chunk.SaveToFile(SavePath);
             chunk.MultiMeshInstance.QueueFree();
             _loadedChunks.Remove(coord);
         }
@@ -330,43 +319,25 @@ public partial class ChunkPixelTerrain : Node3D
 
     public int GetLoadedChunkCount() => _loadedChunks.Count;
     public int GetLoadingChunkCount() => _loadingChunks.Count;
-
-    public void ClearChunkCache()
-    {
-        var path = $"user://{SavePath.Replace("res://", "")}";
-        var dir = DirAccess.Open(path);
-        if (dir != null)
-        {
-            dir.ListDirBegin();
-            int count = 0;
-            for (var file = dir.GetNext(); file != ""; file = dir.GetNext())
-                if (!dir.CurrentIsDir() && file.EndsWith(".chunk")) { dir.Remove(file); count++; }
-            dir.ListDirEnd();
-            GD.Print($"Cleared {count} cached chunks");
-        }
-    }
     
     public int GetBiomeIndexAt(float worldX, float worldZ)
-{
-    // This calculation must be IDENTICAL to GetBiomeValueAt in EnvironmentManager
-    //
-    float primaryValue = PrimaryBiomeNoise.GetNoise2D(worldX, worldZ);
-    float secondaryValue = SecondaryBiomeNoise.GetNoise2D(worldX, worldZ);
-    
-    float combined = (primaryValue * PrimaryNoiseWeight + 
-                     secondaryValue * SecondaryNoiseWeight) * NoiseContrast;
-    
-    float noiseValue = Mathf.Clamp(combined, -1.0f, 1.0f);
+    {
+        float primaryValue = PrimaryBiomeNoise.GetNoise2D(worldX, worldZ);
+        float secondaryValue = SecondaryBiomeNoise.GetNoise2D(worldX, worldZ);
+        
+        float combined = (primaryValue * PrimaryNoiseWeight + 
+                         secondaryValue * SecondaryNoiseWeight) * NoiseContrast;
+        
+        float noiseValue = Mathf.Clamp(combined, -1.0f, 1.0f);
 
-    // Now, we check against the same thresholds the terrain uses
-    if (noiseValue < _biomeThresholds[0]) return 0; // Color 1
-    if (noiseValue < _biomeThresholds[1]) return 1; // Color 2
-    if (noiseValue < _biomeThresholds[2]) return 2; // Color 3
-    if (noiseValue < _biomeThresholds[3]) return 3; // Color 4
-    if (noiseValue < _biomeThresholds[4]) return 4; // Color 5
-    if (noiseValue < _biomeThresholds[5]) return 5; // Color 6
-    if (noiseValue < _biomeThresholds[6]) return 6; // Color 7
-    
-    return 7; // Default to Color 8
-}
+        if (noiseValue < _biomeThresholds[0]) return 0;
+        if (noiseValue < _biomeThresholds[1]) return 1;
+        if (noiseValue < _biomeThresholds[2]) return 2;
+        if (noiseValue < _biomeThresholds[3]) return 3;
+        if (noiseValue < _biomeThresholds[4]) return 4;
+        if (noiseValue < _biomeThresholds[5]) return 5;
+        if (noiseValue < _biomeThresholds[6]) return 6;
+        
+        return 7;
+    }
 }

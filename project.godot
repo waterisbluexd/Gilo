@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 DebugManager="*res://SCRIPTS/debugger/DebugManager.gd"
 ConsoleCapture="*res://SCRIPTS/debugger/ConsoleCapture.gd"
+ResourceSystem="*res://SCRIPTS/World_Generator/ResourceSystem.cs"
 
 [display]
 

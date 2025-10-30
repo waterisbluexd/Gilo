@@ -16,6 +16,7 @@ class_name BuildingPlacer
 @export var preview_height: float = 0.5 # How high above ground the preview floats
 @export var valid_color: Color = Color(0, 1, 0, 0.5) # Green for valid placement
 @export var invalid_color: Color = Color(1, 0, 0, 0.5) # Red for invalid placement
+@export var prop_blocked_color: Color = Color(1, 0.5, 0, 0.6) # Orange for prop blocking
 
 @export_group("Debug")
 @export var debug_placement: bool = false
@@ -151,19 +152,13 @@ func _can_place_at(world_pos: Vector3) -> bool:
 	var building_name = building.name if building else "Unknown"
 	var building_size = get_current_building_size()
 
-	# Use the new detailed placement check
-	var check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
-
-	# For non-debug mode, also show basic info when trying to place on occupied grid
-	#if not navigation_grid.debug_mode and not check_result.can_place:
-		#ConsoleCapture.console_log("Cannot place '%s' at world %s (grid %s-%s): %d cells blocked" % [
-			#building_name,
-			#world_pos,
-			#check_result.grid_start,
-			#check_result.grid_end,
-			#check_result.blocked_cells.size()
-		#])
-
+	# NEW: Use the enhanced placement check with prop detection
+	var check_result
+	if navigation_grid.has_method("check_area_placement_with_props"):
+		check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building_name)
+	else:
+		# Fallback to old method
+		check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
 	return check_result.can_place
 
 
@@ -221,7 +216,18 @@ func _update_preview(world_pos: Vector3):
 	var can_place = _can_place_at(world_pos)
 	var material = preview_mesh.material_override as StandardMaterial3D
 	if material:
-		material.albedo_color = valid_color if can_place else invalid_color
+		# NEW: Enhanced color feedback for prop blocking
+		if not can_place and navigation_grid and navigation_grid.has_method("check_area_placement_with_props"):
+			var check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size)
+			if check_result.blocking_props.size() > 0:
+				# Orange/yellow tint for prop blocking
+				material.albedo_color = prop_blocked_color
+			else:
+				# Regular red for other blocking
+				material.albedo_color = invalid_color
+		else:
+			# Green for valid placement
+			material.albedo_color = valid_color if can_place else invalid_color
 
 
 func _toggle_placement_mode():
@@ -232,6 +238,9 @@ func _toggle_placement_mode():
 		ConsoleCapture.console_log("Placement mode: %s" % ("ON" if is_placing_mode else "OFF"))
 		if is_placing_mode and navigation_grid:
 			ConsoleCapture.console_log("Current building: %s" % (get_current_building().name if get_current_building() else "None"))
+			# NEW: Show prop blocking stats
+			if navigation_grid.has_method("get_prop_blocked_count"):
+				ConsoleCapture.console_log("Prop-blocked cells: %d" % navigation_grid.get_prop_blocked_count())
 
 
 func _create_building_visual(world_pos: Vector3, building: BuildingData):

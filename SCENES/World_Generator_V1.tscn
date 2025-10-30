@@ -51,10 +51,13 @@ building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResour
 click_cooldown = 0.0
 auto_select_next_building = true
 
-[node name="EnvironmentManager" type="Node3D" parent="."]
-transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 31.965208, 0, 32.11379)
+[node name="EnvironmentManager" type="Node3D" parent="." node_paths=PackedStringArray("NavigationGridNode")]
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0)
 script = ExtResource("12_ndvok")
 PropDatabase = [ExtResource("13_ndvok"), ExtResource("14_xo5mt")]
 RandomScaleVariation = 0.0
 PixelSkipInterval = 1
 EnablePropCulling = false
+NavigationGridNode = NodePath("../NavigationGrid")
+DefaultPropCollisionSize = Vector2(2, 2)
+EnableDebugLogging = false

@@ -21,6 +21,9 @@ var nav_chunks: Dictionary = {}
 var chunk_access_times: Dictionary = {}  # For LRU cache management
 var chunk_terrain
 
+# NEW: Store prop blocking data separately for easy removal
+var prop_blocked_cells: Dictionary = {}  # grid_pos -> prop_name
+
 # Cell states
 enum CellState { WALKABLE = 0, BLOCKED = 1 }
 
@@ -45,6 +48,7 @@ func _ready():
 		else:
 			print("NavigationGrid initialized - No terrain system found")
 		print("Cell size: %s, Chunk size: %s" % [grid_cell_size, chunk_size])
+
 # --- OPTIMIZED CHUNK MANAGEMENT ---
 func ensure_chunk_loaded(chunk_coord: Vector2i):
 	if not nav_chunks.has(chunk_coord):
@@ -128,6 +132,14 @@ func get_chunk_coord_from_grid(grid_pos: Vector2i) -> Vector2i:
 		int(floor(float(grid_pos.y) / float(chunk_size)))
 	)
 
+func grid_to_world(grid_pos: Vector2i) -> Vector3:
+	"""Convert grid coordinates to world position (center of cell)"""
+	return Vector3(
+		grid_pos.x * grid_cell_size + grid_cell_size * 0.5,
+		0,
+		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
+	)
+
 # --- OPTIMIZED CELL STATE MANAGEMENT ---
 func set_cell(grid_pos: Vector2i, state: CellState):
 	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
@@ -182,7 +194,7 @@ func is_area_walkable(world_pos: Vector3, size: Vector2) -> bool:
 				return false
 	return true
 
-# NEW: Detailed area check with debug info
+# Detailed area check with debug info (LEGACY - kept for compatibility)
 func check_area_placement(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
@@ -226,6 +238,86 @@ func check_area_placement(world_pos: Vector3, size: Vector2, building_name: Stri
 		print("======================")
 	
 	return result
+
+# NEW: Enhanced placement check with prop detection
+func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
+	var result = {
+		"can_place": true,
+		"blocked_cells": [],
+		"blocking_props": [],  # List of prop names blocking placement
+		"grid_start": Vector2i.ZERO,
+		"grid_end": Vector2i.ZERO,
+		"total_cells": 0
+	}
+	
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
+	
+	result.grid_start = grid_start
+	result.grid_end = grid_end
+	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
+	
+	var blocking_props_set = {}  # Use as set to avoid duplicates
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var cell_pos = Vector2i(x, y)
+			if not is_walkable(cell_pos):
+				result.can_place = false
+				result.blocked_cells.append(cell_pos)
+				
+				# Check if blocked by a prop
+				if prop_blocked_cells.has(cell_pos):
+					var prop_name = prop_blocked_cells[cell_pos]
+					blocking_props_set[prop_name] = true
+	
+	# Convert set to array
+	for prop_name in blocking_props_set:
+		result.blocking_props.append(prop_name)
+	
+	if debug_mode:
+		print("=== PLACEMENT CHECK (WITH PROPS) ===")
+		print("Building: %s" % building_name)
+		print("World Position: %s" % world_pos)
+		print("Grid Range: %s to %s (%d cells)" % [grid_start, grid_end, result.total_cells])
+		print("Can place: %s" % ("YES" if result.can_place else "NO"))
+		if not result.can_place and result.blocking_props.size() > 0:
+			print("Blocked by props: %s" % ", ".join(result.blocking_props))
+		print("====================================")
+	
+	return result
+
+# NEW: Register environment prop as obstacle
+func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: String):
+	"""Register an environment prop as a blocking obstacle"""
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(prop_size.x, 0, prop_size.y))
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var grid_pos = Vector2i(x, y)
+			set_cell(grid_pos, CellState.BLOCKED)
+			prop_blocked_cells[grid_pos] = prop_name
+	
+	if debug_mode:
+		var cells_blocked = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
+		print("🌲 Registered prop obstacle: %s (%d cells blocked)" % [prop_name, cells_blocked])
+
+# NEW: Unregister prop obstacle when harvested
+func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
+	"""Remove prop obstacle when it's harvested"""
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(prop_size.x, 0, prop_size.y))
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var grid_pos = Vector2i(x, y)
+			prop_blocked_cells.erase(grid_pos)
+			set_cell(grid_pos, CellState.WALKABLE)
+	
+	if debug_mode:
+		var cells_unblocked = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
+		print("🪓 Unregistered prop obstacle at %s (%d cells freed)" % [world_pos, cells_unblocked])
 
 # --- OPTIMIZED PATHFINDING (A*) ---
 func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1000) -> Array[Vector3]:
@@ -312,6 +404,7 @@ func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 func clear_all():
 	nav_chunks.clear()
 	chunk_access_times.clear()
+	prop_blocked_cells.clear()  # NEW: Clear prop data
 	if debug_mode:
 		print("Cleared all navigation data")
 
@@ -327,175 +420,7 @@ func get_memory_usage_estimate() -> String:
 		return "%.1f KB" % (bytes / 1024.0)
 	else:
 		return "%.1f MB" % (bytes / (1024.0 * 1024.0))
-# Add this method to your NavigationGrid class
-func grid_to_world(grid_pos: Vector2i) -> Vector3:
-	"""Convert grid coordinates to world position (center of cell)"""
-	return Vector3(
-		grid_pos.x * grid_cell_size + grid_cell_size * 0.5,
-		0,
-		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
-	)
-# Add these methods to your existing NavigationGrid.gd
 
-# Enhanced cell types for better pathfinding
-enum CellType { 
-	WALKABLE = 0, 
-	BLOCKED = 1, 
-	ROAD = 2,      # Fast travel
-	DANGER = 3,    # Avoid unless necessary
-	WATER = 4,     # Avoid for most NPCs
-	BUILDING = 5   # Blocked but pathfind around
-}
-
-# Movement costs for different terrain
-var movement_costs = {
-	CellType.WALKABLE: 1.0,
-	CellType.ROAD: 0.5,      # Roads are faster
-	CellType.DANGER: 3.0,    # Avoid dangerous areas
-	CellType.WATER: 10.0,    # Very expensive to cross
-	CellType.BUILDING: 999.0, # Effectively blocked
-	CellType.BLOCKED: 999.0
-}
-
-# Enhanced pathfinding with costs and preferences
-func find_smart_path(start_world: Vector3, end_world: Vector3, npc_preferences: Dictionary = {}) -> Array[Vector3]:
-	var start_grid = world_to_grid(start_world)
-	var end_grid = world_to_grid(end_world)
-	
-	if not is_walkable(start_grid) or not is_walkable(end_grid):
-		return []
-	
-	# A* with terrain costs and NPC preferences
-	var open_set: Array[Vector2i] = [start_grid]
-	var came_from: Dictionary = {}
-	var g_score: Dictionary = {start_grid: 0.0}
-	var f_score: Dictionary = {start_grid: _smart_heuristic(start_grid, end_grid, npc_preferences)}
-	
-	var directions = [
-		Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, -1), Vector2i(-1, 0),
-		Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)  # Diagonal movement
-	]
-	
-	var max_iterations = 2000
-	var iterations = 0
-	
-	while open_set.size() > 0 and iterations < max_iterations:
-		iterations += 1
-		
-		var current = _get_lowest_f_score(open_set, f_score)
-		if current == end_grid:
-			return _reconstruct_smooth_path(came_from, current)
-		
-		open_set.erase(current)
-		
-		for dir in directions:
-			var neighbor = current + dir
-			var cell_type = get_cell_type(neighbor)
-			
-			if not _can_traverse(cell_type, npc_preferences):
-				continue
-			
-			var movement_cost = _get_movement_cost(cell_type, npc_preferences)
-			var diagonal_cost = 1.414 if abs(dir.x) + abs(dir.y) == 2 else 1.0
-			var total_cost = movement_cost * diagonal_cost
-			
-			var tentative_g = g_score[current] + total_cost
-			
-			if not g_score.has(neighbor) or tentative_g < g_score[neighbor]:
-				came_from[neighbor] = current
-				g_score[neighbor] = tentative_g
-				f_score[neighbor] = tentative_g + _smart_heuristic(neighbor, end_grid, npc_preferences)
-				
-				if neighbor not in open_set:
-					open_set.append(neighbor)
-	
-	return []  # No path found
-
-func get_cell_type(grid_pos: Vector2i) -> CellType:
-	# Override this to return enhanced cell types
-	if not is_walkable(grid_pos):
-		return CellType.BLOCKED
-	
-	# You would set these based on your world data
-	# For now, default to walkable
-	return CellType.WALKABLE
-
-func _can_traverse(cell_type: CellType, preferences: Dictionary) -> bool:
-	match cell_type:
-		CellType.BLOCKED, CellType.BUILDING:
-			return false
-		CellType.WATER:
-			return preferences.get("can_swim", false)
-		CellType.DANGER:
-			return preferences.get("brave", false) or preferences.get("desperate", false)
-		_:
-			return true
-
-func _get_movement_cost(cell_type: CellType, preferences: Dictionary) -> float:
-	var base_cost = movement_costs[cell_type]
-	
-	# Apply NPC preferences
-	if cell_type == CellType.ROAD and preferences.get("prefers_roads", true):
-		base_cost *= 0.3  # Even faster on roads for road-preferring NPCs
-	elif cell_type == CellType.DANGER and preferences.get("fearless", false):
-		base_cost *= 0.5  # Fearless NPCs don't mind danger as much
-	
-	return base_cost
-
-func _smart_heuristic(a: Vector2i, b: Vector2i, preferences: Dictionary) -> float:
-	var distance = sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
-	
-	# Bias towards roads if NPC prefers them
-	if preferences.get("prefers_roads", true):
-		# This is simplified - you'd actually check for roads near the path
-		distance *= 0.9
-	
-	return distance
-
-func _reconstruct_smooth_path(came_from: Dictionary, current: Vector2i) -> Array[Vector3]:
-	var grid_path: Array[Vector2i] = []
-	var temp_current = current
-	
-	while came_from.has(temp_current):
-		grid_path.push_front(temp_current)
-		temp_current = came_from[temp_current]
-	
-	# Convert to world positions and smooth the path
-	var world_path: Array[Vector3] = []
-	for i in range(grid_path.size()):
-		var world_pos = grid_to_world(grid_path[i])
-		world_path.append(world_pos)
-	
-	# Path smoothing - remove unnecessary waypoints
-	return _smooth_path(world_path)
-
-func _smooth_path(path: Array[Vector3]) -> Array[Vector3]:
-	if path.size() <= 2:
-		return path
-	
-	var smoothed: Array[Vector3] = [path[0]]
-	
-	for i in range(1, path.size() - 1):
-		var prev = path[i - 1]
-		var current = path[i]
-		var next = path[i + 1]
-		
-		# Check if we can skip this waypoint
-		if not _can_skip_waypoint(prev, current, next):
-			smoothed.append(current)
-	
-	smoothed.append(path[-1])
-	return smoothed
-
-func _can_skip_waypoint(prev: Vector3, current: Vector3, next: Vector3) -> bool:
-	# Simple line-of-sight check
-	var steps = 10
-	for i in range(1, steps):
-		var t = float(i) / float(steps)
-		var test_pos = prev.lerp(next, t)
-		var grid_pos = world_to_grid(test_pos)
-		
-		if not is_walkable(grid_pos):
-			return false
-	
-	return true
+# NEW: Get count of blocked prop cells
+func get_prop_blocked_count() -> int:
+	return prop_blocked_cells.size()

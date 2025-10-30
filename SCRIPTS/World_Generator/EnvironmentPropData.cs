@@ -45,8 +45,6 @@ public partial class EnvironmentPropData : Resource
     
     [Export] public PackedScene PropScene { get; set; }
 
-    // ADD THIS TO EnvironmentPropData.cs
-
     [ExportGroup("Resource Settings")]
     [Export] public bool IsHarvestable { get; set; } = false;
     
@@ -57,6 +55,10 @@ public partial class EnvironmentPropData : Resource
     
     [Export(PropertyHint.Range, "0.5,30.0")] 
     public float HarvestTime { get; set; } = 3.0f;
+
+    [ExportGroup("Navigation Collision")]
+    [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero; // X and Z size for navigation blocking
+    [Export] public bool BlocksNavigation { get; set; } = true; // Toggle whether this prop blocks building placement
 
     [ExportGroup("Placement Rules")]
     [Export(PropertyHint.Flags, "Biome 1,Biome 2,Biome 3,Biome 4,Biome 5,Biome 6,Biome 7,Biome 8")] 

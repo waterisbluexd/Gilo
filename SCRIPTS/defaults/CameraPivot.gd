@@ -1,4 +1,4 @@
-#CameraPivot Script with Chunk System Integration and Debug System
+#CameraPivot Script with Chunk System Integration and Debug System + TREE HARVESTING TEST
 extends Node3D
 
 # Rotation settings
@@ -46,32 +46,54 @@ var last_chunk_position: Vector2i
 @export var show_debug_print: bool = true
 @export var debug_log_interval: int = 120
 
+# ====== RESOURCE HARVESTING TEST ======
+var resource_system: Node = null
+var environment_manager: Node = null
+@export var harvest_radius := 50.0
+@export var show_harvest_debug := true
+
 func _ready():
 	player = get_node("..")
 	target_position = global_position
 	_setup_chunk_integration()
+	_setup_resource_system()
 	
 	DebugManager.register_camera_pivot(self)
 	
 	if enable_debug:
 		ConsoleCapture.console_log("CameraPivot initialized and registered")
-		
-		if show_debug_print:
-			await get_tree().process_frame
-			#print_initialization_debug()
 
-#func print_initialization_debug():
-	#if not enable_debug:
-		#return
-	#ConsoleCapture.console_log("=== CAMERA PIVOT INITIALIZATION ===")
-	#ConsoleCapture.console_log("Position: " + str(global_position))
-	#ConsoleCapture.console_log("Rotation: " + str(rad_to_deg(rotation.y)) + "°")
-	#ConsoleCapture.console_log("Movement Speed: " + str(movement_speed))
-	#ConsoleCapture.console_log("Sprint Multiplier: " + str(sprint_multiplier))
-	#ConsoleCapture.console_log("Smooth Movement: " + str(smooth_movement))
-	#ConsoleCapture.console_log("Pan Sensitivity: " + str(pan_sensitivity))
-	#ConsoleCapture.console_log("Grid Size: " + str(grid_size))
-	#ConsoleCapture.console_log("===================================")
+func _setup_resource_system():
+	# Try to find ResourceSystem (should be AutoLoad)
+	resource_system = get_node_or_null("/root/ResourceSystem")
+	
+	# Find EnvironmentManager
+	if chunk_terrain:
+		environment_manager = chunk_terrain.get_node_or_null("EnvironmentManager")
+	
+	if not environment_manager:
+		# Search for it in the scene
+		environment_manager = _find_node_by_type(get_tree().current_scene, "EnvironmentManager")
+	
+	if resource_system and environment_manager:
+		ConsoleCapture.console_log("✅ Resource harvesting system connected!")
+		ConsoleCapture.console_log("Press H to harvest nearest tree")
+		ConsoleCapture.console_log("Press J to list nearby resources")
+		ConsoleCapture.console_log("Press K to reset harvested resources")
+	else:
+		if not resource_system:
+			ConsoleCapture.console_log("⚠️ ResourceSystem not found (add as AutoLoad)")
+		if not environment_manager:
+			ConsoleCapture.console_log("⚠️ EnvironmentManager not found")
+
+func _find_node_by_type(node: Node, type_name: String) -> Node:
+	if node.get_class() == type_name or node.name.contains(type_name):
+		return node
+	for child in node.get_children():
+		var result = _find_node_by_type(child, type_name)
+		if result:
+			return result
+	return null
 
 func _setup_chunk_integration():
 	chunk_terrain = get_node_or_null("../ChunkPixelTerrain")
@@ -90,9 +112,6 @@ func _setup_chunk_integration():
 	if chunk_terrain:
 		ConsoleCapture.console_log("CameraPivot connected to chunk terrain system")
 		last_chunk_position = chunk_terrain.WorldToChunk(global_position)
-	#else:
-		#if enable_debug:
-			#ConsoleCapture.console_log("Warning: ChunkPixelTerrain not found in scene!")
 
 func _find_chunk_terrain_recursive(node: Node):
 	if node.has_method("WorldToChunk") and node.has_method("ChunkToWorld"):
@@ -120,12 +139,6 @@ func _process(delta):
 func log_periodic_status():
 	if not enable_debug or not is_moving() and not panning:
 		return
-	#
-	#ConsoleCapture.console_log("🎮 CAMERA STATUS:")
-	#ConsoleCapture.console_log("  Position: %s" % global_position)
-	#ConsoleCapture.console_log("  Moving: %s | Panning: %s | Sprinting: %s" % [is_moving(), panning, is_sprinting])
-	#if chunk_terrain:
-		#ConsoleCapture.console_log("  Chunk: %s" % get_chunk_position())
 
 func handle_movement_input():
 	movement_input = Vector3.ZERO
@@ -209,37 +222,26 @@ func handle_keyboard_input(event):
 		match event.keycode:
 			KEY_E:
 				target_angle -= 45.0
-				#ConsoleCapture.console_log("Rotated CCW to %s°" % target_angle)
 			KEY_Q:
 				target_angle += 45.0
-				#ConsoleCapture.console_log("Rotated CW to %s°" % target_angle)
 			KEY_ESCAPE:
 				get_tree().quit()
 			KEY_R:
 				reset_camera()
 			KEY_T:
 				smooth_movement = not smooth_movement
-				#ConsoleCapture.console_log("Smooth movement: " + str(smooth_movement))
-			#KEY_P:
-				#print_panning_status()
 			KEY_BRACKETLEFT:
 				pan_sensitivity = max(0.001, pan_sensitivity - 0.001)
-				#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
 			KEY_BRACKETRIGHT:
 				pan_sensitivity = min(0.02, pan_sensitivity + 0.001)
-				#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
 			KEY_MINUS:
 				pan_speed_multiplier = max(0.1, pan_speed_multiplier - 0.1)
-				#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
 			KEY_EQUAL:
 				pan_speed_multiplier = min(5.0, pan_speed_multiplier + 0.1)
-				#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
 			KEY_COMMA:
 				pan_acceleration = max(0.5, pan_acceleration - 0.1)
-				#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
 			KEY_PERIOD:
 				pan_acceleration = min(3.0, pan_acceleration + 0.1)
-				#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
 			KEY_SLASH:
 				reset_pan_settings()
 			KEY_F12:
@@ -248,16 +250,16 @@ func handle_keyboard_input(event):
 				if chunk_terrain and chunk_terrain.has_method("ClearChunkCache"):
 					chunk_terrain.ClearChunkCache()
 					ConsoleCapture.console_log("Cleared chunk cache - restart to regenerate")
-
-#func print_panning_status():
-	#ConsoleCapture.console_log("=== PANNING STATUS ===")
-	#ConsoleCapture.console_log("Panning active: " + str(panning))
-	#ConsoleCapture.console_log("Middle mouse pressed: " + str(middle_mouse_pressed))
-	#ConsoleCapture.console_log("Pan sensitivity: %.3f" % pan_sensitivity)
-	#ConsoleCapture.console_log("Pan speed multiplier: %.1f" % pan_speed_multiplier)
-	#ConsoleCapture.console_log("Pan acceleration: %.1f" % pan_acceleration)
-	#ConsoleCapture.console_log("Effective speed: %.4f" % get_effective_pan_speed())
-	#ConsoleCapture.console_log("=====================")
+			
+			# ====== RESOURCE HARVESTING TEST KEYS ======
+			KEY_H:
+				test_harvest_nearest_tree()
+			KEY_J:
+				test_list_nearby_resources()
+			KEY_K:
+				test_reset_harvested_resources()
+			KEY_L:
+				test_harvest_all_nearby()
 
 func reset_pan_settings():
 	pan_sensitivity = 0.005
@@ -325,6 +327,114 @@ func reset_camera():
 	current_angle = 45.0
 	if enable_debug:
 		ConsoleCapture.console_log("Camera reset to origin")
+
+# ====== RESOURCE HARVESTING TEST FUNCTIONS ======
+
+func test_harvest_nearest_tree():
+	if not resource_system or not environment_manager:
+		ConsoleCapture.console_log("❌ Resource system not available!")
+		return
+	
+	ConsoleCapture.console_log("🪓 Searching for nearest tree...")
+	
+	var resource = resource_system.FindNearestResource(global_position, "Tree", harvest_radius)
+	
+	if resource:
+		ConsoleCapture.console_log("🌲 Found tree at %s (distance: %.1fm)" % [
+			resource.WorldPosition,
+			global_position.distance_to(resource.WorldPosition)
+		])
+		
+		var success = resource_system.HarvestResource(resource, environment_manager)
+		
+		if success:
+			ConsoleCapture.console_log("✅ Tree successfully harvested!")
+			ConsoleCapture.console_log("   Got %d %s" % [resource.ResourceAmount, resource.PropName])
+			create_harvest_effect(resource.WorldPosition)
+		else:
+			ConsoleCapture.console_log("❌ Failed to harvest tree (already harvested?)")
+	else:
+		ConsoleCapture.console_log("❌ No trees found within %.1fm" % harvest_radius)
+
+func test_list_nearby_resources():
+	if not resource_system:
+		ConsoleCapture.console_log("❌ Resource system not available!")
+		return
+	
+	ConsoleCapture.console_log("📋 Listing resources within %.1fm..." % harvest_radius)
+	
+	var resources = resource_system.FindResourcesInRadius(global_position, "", harvest_radius)
+	
+	if resources.size() > 0:
+		ConsoleCapture.console_log("Found %d resources:" % resources.size())
+		
+		# Group by type
+		var by_type = {}
+		for res in resources:
+			if not by_type.has(res.PropName):
+				by_type[res.PropName] = []
+			by_type[res.PropName].append(res)
+		
+		for type in by_type.keys():
+			var count = by_type[type].size()
+			var closest = by_type[type][0]
+			var closest_dist = global_position.distance_to(closest.WorldPosition)
+			
+			for res in by_type[type]:
+				var dist = global_position.distance_to(res.WorldPosition)
+				if dist < closest_dist:
+					closest_dist = dist
+					closest = res
+			
+			ConsoleCapture.console_log("  • %s: %d total (nearest: %.1fm)" % [type, count, closest_dist])
+	else:
+		ConsoleCapture.console_log("No resources found nearby")
+
+func test_reset_harvested_resources():
+	if not resource_system:
+		ConsoleCapture.console_log("❌ Resource system not available!")
+		return
+	
+	ConsoleCapture.console_log("🔄 Resetting all harvested resources...")
+	resource_system.ClearHarvestedData()
+	ConsoleCapture.console_log("✅ Done! Reloading scene to respawn resources...")
+	
+	# Reload the current scene
+	await get_tree().create_timer(1.0).timeout
+	get_tree().reload_current_scene()
+
+func test_harvest_all_nearby():
+	if not resource_system or not environment_manager:
+		ConsoleCapture.console_log("❌ Resource system not available!")
+		return
+	
+	ConsoleCapture.console_log("🪓 Harvesting all trees within %.1fm..." % harvest_radius)
+	
+	var resources = resource_system.FindResourcesInRadius(global_position, "Tree", harvest_radius)
+	
+	if resources.size() > 0:
+		ConsoleCapture.console_log("Found %d trees to harvest" % resources.size())
+		
+		var harvested = 0
+		var total_yield = 0
+		
+		for res in resources:
+			var success = resource_system.HarvestResource(res, environment_manager)
+			if success:
+				harvested += 1
+				total_yield += res.ResourceAmount
+				create_harvest_effect(res.WorldPosition)
+		
+		ConsoleCapture.console_log("✅ Harvested %d/%d trees" % [harvested, resources.size()])
+		ConsoleCapture.console_log("   Total yield: %d wood" % total_yield)
+	else:
+		ConsoleCapture.console_log("❌ No trees found nearby")
+
+func create_harvest_effect(position: Vector3):
+	# Simple visual feedback - you can make this fancier later
+	ConsoleCapture.console_log("💥 *TIMBER!* Tree fell at %s" % position)
+	
+	# TODO: Add particles, falling animation, sound effects, etc.
 
 # PUBLIC UTILITY FUNCTIONS
 

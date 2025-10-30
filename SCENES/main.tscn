@@ -105,7 +105,7 @@ script = ExtResource("1_v5vvh")
 [node name="light" type="Node" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="light"]
-transform = Transform3D(-0.025797226, -0.92186046, -0.38666248, -0.69963044, -0.25962663, 0.6656659, -0.7140389, 0.28769314, -0.63826394, 0, 0, 0)
+transform = Transform3D(-0.025797188, -0.92186064, -0.38666248, -0.94342375, -0.10545896, 0.31437272, -0.33058476, 0.37289658, -0.8669846, 0, 0, 0)
 light_color = Color(0.77762455, 0.7145413, 0.44411469, 1)
 shadow_enabled = true
 shadow_opacity = 0.72
@@ -165,7 +165,6 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
-visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
@@ -1668,7 +1667,6 @@ Threshold6 = -0.383
 Threshold7 = -0.343
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
 EnableFrustumCulling = false
-CacheEnabled = false
 Player = NodePath("../CameraPivot")
 
 [node name="NavigationGrid" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" index="0"]
