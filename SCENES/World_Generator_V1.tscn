@@ -11,12 +11,12 @@
 [ext_resource type="Resource" uid="uid://dunmgs0i75dxk" path="res://RESOURCES/Building_Res/HouseAllType/Hovel3.tres" id="9_gx6qx"]
 [ext_resource type="Resource" uid="uid://b1gviv0q2nyi7" path="res://RESOURCES/Building_Res/HouseAllType/Hovel4.tres" id="10_ul5h0"]
 [ext_resource type="Resource" uid="uid://ci4bhs168d72y" path="res://RESOURCES/Building_Res/HouseAllType/Hovel5.tres" id="11_a4esh"]
-[ext_resource type="Resource" uid="uid://h405nckjcs32" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type1.tres" id="12_d66sa"]
 [ext_resource type="Script" uid="uid://fxrly6u7n0h7" path="res://SCRIPTS/World_Generator/EnvironmentManager.cs" id="12_ndvok"]
 [ext_resource type="Resource" uid="uid://dapn6fuee5y6k" path="res://SCRIPTS/enviorment/Plants/Type_Tree_1.tres" id="13_ndvok"]
 [ext_resource type="Resource" uid="uid://copygtnplvwrt" path="res://RESOURCES/Building_Res/HouseAllType/Hovel7.tres" id="13_v4jrb"]
 [ext_resource type="Resource" uid="uid://dqb1r457jj5vd" path="res://RESOURCES/Building_Res/HouseAllType/Hovel8.tres" id="14_n0uxr"]
 [ext_resource type="Resource" uid="uid://cvy3pchun6hv4" path="res://SCRIPTS/enviorment/Plants/Type_Tree_2.tres" id="14_xo5mt"]
+[ext_resource type="Resource" uid="uid://cdjijj82op454" path="res://RESOURCES/WorkHouse/WoordCutter/WoodCutter1.tres" id="15_ul5h0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
 noise_type = 3
@@ -52,7 +52,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="."]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("12_d66sa")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0")])
 click_cooldown = 0.0
 auto_select_next_building = true
 

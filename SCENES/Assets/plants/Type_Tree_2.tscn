@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://c8mqtaa8dso0m"]
+[gd_scene load_steps=8 format=4 uid="uid://c8mqtaa8dso0m"]
 
 [ext_resource type="Texture2D" uid="uid://c0kajr4qeqihi" path="res://MODLES/assetsmodel/plants/Type_Tree_2_Image_0.png" id="1_pytdu"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_idd83"]
@@ -59,9 +59,16 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_4qebe")
 
+[sub_resource type="BoxMesh" id="BoxMesh_idd83"]
+size = Vector3(0.125, 0.063, 0.125)
+
 [node name="Type_Tree_2" type="Node3D"]
 
 [node name="cube_001" type="MeshInstance3D" parent="."]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 mesh = SubResource("ArrayMesh_3qi5t")
 skeleton = NodePath("")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="cube_001"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.781713, 0)
+mesh = SubResource("BoxMesh_idd83")

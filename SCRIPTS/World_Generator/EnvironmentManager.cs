@@ -38,11 +38,12 @@ public partial class EnvironmentManager : Node3D
     private int _totalResourcesRegistered = 0;
     private bool _resourceSystemReady = false;
 
+    // NEW: Track all props registered with NavigationGrid for proper cleanup
+    private Dictionary<Vector2I, List<PropNavigationData>> _chunkPropNavData = new();
+
     public override void _Ready()
     {
-        // CRITICAL: Ensure EnvironmentManager is at world origin (0,0,0)
         GlobalPosition = Vector3.Zero;
-        
         SetProcess(true);
         
         _terrain = GetParent<ChunkPixelTerrain>();
@@ -70,7 +71,6 @@ public partial class EnvironmentManager : Node3D
                 GD.Print("✅ ResourceSystem connected successfully");
         }
 
-        // Find NavigationGrid
         if (RegisterWithNavigationGrid)
         {
             if (NavigationGridNode != null)
@@ -169,7 +169,6 @@ public partial class EnvironmentManager : Node3D
         
         float chunkWorldSize = _terrain.ChunkSize * _terrain.PixelSize;
         
-        // CRITICAL FIX: Calculate chunk origin exactly as TerrainChunk does
         Vector2 chunkWorldOrigin = new Vector2(
             chunkCoord.X * chunkWorldSize,
             chunkCoord.Y * chunkWorldSize
@@ -179,7 +178,6 @@ public partial class EnvironmentManager : Node3D
 
         var biomePixels = new Dictionary<int, List<PixelPosition>>();
         
-        // Sample pixels using EXACT same coordinate system as TerrainChunk.Generate
         for (int z = 0; z < _terrain.ChunkSize; z += PixelSkipInterval)
         {
             for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
@@ -187,7 +185,6 @@ public partial class EnvironmentManager : Node3D
                 float localX = (x * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
                 float localZ = (z * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
 
-                // FIX: Add local offset to CHUNK CENTER, not origin
                 float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
                 float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
@@ -209,6 +206,10 @@ public partial class EnvironmentManager : Node3D
         int chunkResourceCount = 0;
         int skippedHarvestedCount = 0;
         int propsRegisteredWithNav = 0;
+
+        // NEW: Initialize navigation tracking for this chunk
+        if (!_chunkPropNavData.ContainsKey(chunkCoord))
+            _chunkPropNavData[chunkCoord] = new List<PropNavigationData>();
 
         foreach (var propData in PropDatabase)
         {
@@ -278,9 +279,10 @@ public partial class EnvironmentManager : Node3D
                             _totalResourcesRegistered++;
                         }
 
-                        if (RegisterWithNavigationGrid && _navigationGrid != null)
+                        // NEW: Register with navigation and track it
+                        if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
                         {
-                            RegisterPropWithNavigation(instance.WorldPosition, propData);
+                            RegisterPropWithNavigation(instance.WorldPosition, propData, chunkCoord);
                             propsRegisteredWithNav++;
                         }
                         
@@ -309,7 +311,8 @@ public partial class EnvironmentManager : Node3D
         }
     }
 
-    private void RegisterPropWithNavigation(Vector3 worldPos, EnvironmentPropData propData)
+    // UPDATED: Track prop navigation registration
+    private void RegisterPropWithNavigation(Vector3 worldPos, EnvironmentPropData propData, Vector2I chunkCoord)
     {
         if (_navigationGrid == null) return;
 
@@ -317,10 +320,22 @@ public partial class EnvironmentManager : Node3D
         if (collisionSize == Vector2.Zero)
             collisionSize = DefaultPropCollisionSize;
 
-        // CRITICAL: Navigation grid uses Y=0 plane
-        Vector3 flatWorldPos = new Vector3(worldPos.X, 0, worldPos.Z);
+        // Round world position to grid precision to avoid floating-point errors
+        Vector3 flatWorldPos = new Vector3(
+            Mathf.Round(worldPos.X * 100f) / 100f,
+            0,
+            Mathf.Round(worldPos.Z * 100f) / 100f
+        );
 
         _navigationGrid.Call("register_prop_obstacle", flatWorldPos, collisionSize, propData.Name);
+        
+        // NEW: Track this registration for cleanup
+        _chunkPropNavData[chunkCoord].Add(new PropNavigationData
+        {
+            WorldPosition = flatWorldPos,
+            CollisionSize = collisionSize,
+            PropName = propData.Name
+        });
         
         if (EnableDebugLogging && _totalResourcesRegistered <= 5)
         {
@@ -336,7 +351,12 @@ public partial class EnvironmentManager : Node3D
         if (collisionSize == Vector2.Zero)
             collisionSize = DefaultPropCollisionSize;
 
-        Vector3 flatWorldPos = new Vector3(worldPos.X, 0, worldPos.Z);
+        // Match the rounding used during registration
+        Vector3 flatWorldPos = new Vector3(
+            Mathf.Round(worldPos.X * 100f) / 100f,
+            0,
+            Mathf.Round(worldPos.Z * 100f) / 100f
+        );
         
         _navigationGrid.Call("unregister_prop_obstacle", flatWorldPos, collisionSize);
         
@@ -370,7 +390,6 @@ public partial class EnvironmentManager : Node3D
         
         float terrainHeight = GetTerrainHeightAt(worldX, worldZ);
         
-        // Local position relative to chunk center (this will be relative to the MMI position)
         transform.Origin = new Vector3(localX, terrainHeight, localZ);
 
         if (EnableRandomRotation)
@@ -394,7 +413,7 @@ public partial class EnvironmentManager : Node3D
         return new PropInstance
         {
             Transform = transform,
-            WorldPosition = new Vector3(worldX, terrainHeight, worldZ) // Absolute world position
+            WorldPosition = new Vector3(worldX, terrainHeight, worldZ)
         };
     }
 
@@ -437,7 +456,6 @@ public partial class EnvironmentManager : Node3D
             mmi.MaterialOverride = material;
         }
 
-        // Position MMI at chunk center (same as terrain chunks)
         mmi.Position = new Vector3(
             chunkWorldOrigin.X + chunkWorldSize * 0.5f,
             0,
@@ -449,8 +467,28 @@ public partial class EnvironmentManager : Node3D
         return mmi;
     }
 
+    // UPDATED: Clean up navigation data when chunk unloads
     private void UnloadPropChunk(Vector2I coord)
     {
+        // NEW: Unregister all props from navigation BEFORE removing visual data
+        if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
+        {
+            if (_navigationGrid != null)
+            {
+                int unregisteredCount = 0;
+                foreach (var navData in navDataList)
+                {
+                    _navigationGrid.Call("unregister_prop_obstacle", navData.WorldPosition, navData.CollisionSize);
+                    unregisteredCount++;
+                }
+                
+                if (EnableDebugLogging)
+                    GD.Print($"🧹 Unregistered {unregisteredCount} props from navigation (chunk {coord})");
+            }
+            
+            _chunkPropNavData.Remove(coord);
+        }
+
         if (_propChunks.TryGetValue(coord, out var chunkData))
         {
             foreach (var mmi in chunkData.MultiMeshInstances)
@@ -514,10 +552,68 @@ public partial class EnvironmentManager : Node3D
         foreach (var coord in new List<Vector2I>(_propChunks.Keys))
             UnloadPropChunk(coord);
         _propChunks.Clear();
+        _chunkPropNavData.Clear(); // NEW: Clear navigation tracking
         _totalResourcesRegistered = 0;
     }
 
     public Node3D GetNavigationGrid() => _navigationGrid;
+
+    // NEW: Force verify navigation sync (call this if you notice inconsistencies)
+    public void VerifyNavigationSync()
+    {
+        if (_navigationGrid == null) return;
+
+        var loadedChunks = GetLoadedTerrainChunks();
+        
+        // Find chunks in nav data that shouldn't exist
+        var orphanedChunks = new List<Vector2I>();
+        foreach (var coord in _chunkPropNavData.Keys)
+        {
+            if (!loadedChunks.Contains(coord))
+                orphanedChunks.Add(coord);
+        }
+
+        // Clean up orphaned navigation data
+        foreach (var coord in orphanedChunks)
+        {
+            if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
+            {
+                foreach (var navData in navDataList)
+                {
+                    _navigationGrid.Call("unregister_prop_obstacle", navData.WorldPosition, navData.CollisionSize);
+                }
+                _chunkPropNavData.Remove(coord);
+                GD.Print($"🧹 Cleaned orphaned navigation data for chunk {coord}");
+            }
+        }
+
+        if (EnableDebugLogging)
+        {
+            GD.Print($"Navigation sync check: {loadedChunks.Count} terrain chunks, {_chunkPropNavData.Count} nav chunks, {orphanedChunks.Count} orphaned");
+        }
+    }
+
+    // NEW: Get navigation stats for debugging
+    public Godot.Collections.Dictionary GetNavigationStats()
+    {
+        var stats = new Godot.Collections.Dictionary();
+        stats["loaded_prop_chunks"] = _propChunks.Count;
+        stats["nav_data_chunks"] = _chunkPropNavData.Count;
+        
+        int totalNavProps = 0;
+        foreach (var navList in _chunkPropNavData.Values)
+            totalNavProps += navList.Count;
+        
+        stats["total_nav_props"] = totalNavProps;
+        
+        if (_navigationGrid != null)
+        {
+            var propBlockedCount = _navigationGrid.Call("get_prop_blocked_count");
+            stats["nav_grid_blocked_cells"] = propBlockedCount;
+        }
+        
+        return stats;
+    }
 }
 
 public class ChunkPropData
@@ -538,4 +634,12 @@ public class PixelPosition
     public float WorldZ { get; set; }
     public float LocalX { get; set; }
     public float LocalZ { get; set; }
+}
+
+// NEW: Track prop navigation registrations for proper cleanup
+public class PropNavigationData
+{
+    public Vector3 WorldPosition { get; set; }
+    public Vector2 CollisionSize { get; set; }
+    public string PropName { get; set; }
 }

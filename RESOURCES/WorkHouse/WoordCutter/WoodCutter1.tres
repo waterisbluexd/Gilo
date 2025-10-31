@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://cdjijj82op454"]
+
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_co63h"]
+[ext_resource type="PackedScene" uid="uid://4g1axmj0tl7f" path="res://SCENES/Assets/WorkHouse/WoodCutter/type_wood_cutter_1.tscn" id="2_530cb"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_rhqsc"]
+
+[resource]
+script = ExtResource("2_rhqsc")
+name = "WoodCutter"
+size = Vector2(2, 2)
+prefab = ExtResource("2_530cb")
+building_type = 1
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

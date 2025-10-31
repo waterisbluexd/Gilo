@@ -9,8 +9,8 @@ class_name NavigationGrid
 @export var active: bool = true
 
 @export_group("Performance")
-@export var max_loaded_chunks: int = 100  # Unload chunks when exceeded
-@export var auto_unload_distance: float = 200.0  # Unload chunks beyond this distance
+@export var max_loaded_chunks: int = 100
+@export var auto_unload_distance: float = 200.0
 
 @export_group("Debug")
 @export var debug_mode: bool = false
@@ -18,25 +18,22 @@ class_name NavigationGrid
 
 # --- INTERNAL VARIABLES ---
 var nav_chunks: Dictionary = {}
-var chunk_access_times: Dictionary = {}  # For LRU cache management
+var chunk_access_times: Dictionary = {}
 var chunk_terrain
 
-# NEW: Store prop blocking data separately for easy removal
+# Store prop blocking data with precise tracking
 var prop_blocked_cells: Dictionary = {}  # grid_pos -> prop_name
+var prop_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2}
 
 # Cell states
 enum CellState { WALKABLE = 0, BLOCKED = 1 }
 
-# --- INITIALIZATION ---
 func _ready():
-	# Try to find the terrain system
 	var parent = get_parent()
 	
-	# Check if parent has the methods we need
 	if parent and parent.has_method("world_to_chunk") and parent.has_method("chunk_to_world"):
 		chunk_terrain = parent
 	else:
-		# Search in siblings
 		for sibling in parent.get_children():
 			if sibling.has_method("world_to_chunk") and sibling.has_method("chunk_to_world"):
 				chunk_terrain = sibling
@@ -52,7 +49,6 @@ func _ready():
 # --- OPTIMIZED CHUNK MANAGEMENT ---
 func ensure_chunk_loaded(chunk_coord: Vector2i):
 	if not nav_chunks.has(chunk_coord):
-		# Check if we need to unload old chunks first
 		if nav_chunks.size() >= max_loaded_chunks:
 			_unload_oldest_chunk()
 		
@@ -64,7 +60,6 @@ func ensure_chunk_loaded(chunk_coord: Vector2i):
 		if show_chunk_info:
 			print("Loaded chunk: %s (Total chunks: %s)" % [chunk_coord, nav_chunks.size()])
 	
-	# Update access time for LRU
 	chunk_access_times[chunk_coord] = Time.get_ticks_msec()
 
 func _unload_oldest_chunk():
@@ -88,7 +83,6 @@ func unload_chunk(chunk_coord: Vector2i):
 	if show_chunk_info:
 		print("Unloaded chunk: %s" % chunk_coord)
 
-# Auto-unload distant chunks (call this periodically from your main game loop)
 func cleanup_distant_chunks(center_world_pos: Vector3):
 	var center_chunk = world_to_chunk(center_world_pos)
 	var chunks_to_unload = []
@@ -121,7 +115,6 @@ func world_to_chunk(world_pos: Vector3) -> Vector2i:
 	)
 
 func grid_to_local(grid_pos: Vector2i) -> Vector2i:
-	# Simplified - no need for chunk_coord parameter
 	var local_x = ((grid_pos.x % chunk_size) + chunk_size) % chunk_size
 	var local_y = ((grid_pos.y % chunk_size) + chunk_size) % chunk_size
 	return Vector2i(local_x, local_y)
@@ -133,12 +126,17 @@ func get_chunk_coord_from_grid(grid_pos: Vector2i) -> Vector2i:
 	)
 
 func grid_to_world(grid_pos: Vector2i) -> Vector3:
-	"""Convert grid coordinates to world position (center of cell)"""
 	return Vector3(
 		grid_pos.x * grid_cell_size + grid_cell_size * 0.5,
 		0,
 		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
 	)
+
+# NEW: Generate unique key for world position (with rounding)
+func _world_pos_to_key(world_pos: Vector3) -> String:
+	var rounded_x = snapped(world_pos.x, 0.01)
+	var rounded_z = snapped(world_pos.z, 0.01)
+	return "%.2f_%.2f" % [rounded_x, rounded_z]
 
 # --- OPTIMIZED CELL STATE MANAGEMENT ---
 func set_cell(grid_pos: Vector2i, state: CellState):
@@ -194,7 +192,6 @@ func is_area_walkable(world_pos: Vector3, size: Vector2) -> bool:
 				return false
 	return true
 
-# Detailed area check with debug info (LEGACY - kept for compatibility)
 func check_area_placement(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
@@ -239,12 +236,11 @@ func check_area_placement(world_pos: Vector3, size: Vector2, building_name: Stri
 	
 	return result
 
-# NEW: Enhanced placement check with prop detection
 func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
 		"blocked_cells": [],
-		"blocking_props": [],  # List of prop names blocking placement
+		"blocking_props": [],
 		"grid_start": Vector2i.ZERO,
 		"grid_end": Vector2i.ZERO,
 		"total_cells": 0
@@ -257,7 +253,7 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 	result.grid_end = grid_end
 	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
 	
-	var blocking_props_set = {}  # Use as set to avoid duplicates
+	var blocking_props_set = {}
 	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
@@ -266,12 +262,10 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 				result.can_place = false
 				result.blocked_cells.append(cell_pos)
 				
-				# Check if blocked by a prop
 				if prop_blocked_cells.has(cell_pos):
 					var prop_name = prop_blocked_cells[cell_pos]
 					blocking_props_set[prop_name] = true
 	
-	# Convert set to array
 	for prop_name in blocking_props_set:
 		result.blocking_props.append(prop_name)
 	
@@ -287,39 +281,80 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 	
 	return result
 
-# NEW: Register environment prop as obstacle
+# IMPROVED: Register environment prop with tracking
 func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: String):
-	"""Register an environment prop as a blocking obstacle"""
+	var pos_key = _world_pos_to_key(world_pos)
+	
+	# Check if already registered
+	if prop_registrations.has(pos_key):
+		if debug_mode:
+			print("⚠️ Prop already registered at %s" % world_pos)
+		return
+	
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(prop_size.x, 0, prop_size.y))
+	
+	var affected_cells = []
 	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
 			var grid_pos = Vector2i(x, y)
 			set_cell(grid_pos, CellState.BLOCKED)
 			prop_blocked_cells[grid_pos] = prop_name
+			affected_cells.append(grid_pos)
+	
+	# Store registration info for precise unregistration
+	prop_registrations[pos_key] = {
+		"grid_cells": affected_cells,
+		"size": prop_size,
+		"name": prop_name
+	}
 	
 	if debug_mode:
-		var cells_blocked = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
-		print("🌲 Registered prop obstacle: %s (%d cells blocked)" % [prop_name, cells_blocked])
+		print("🌲 Registered prop: %s at %s (%d cells)" % [prop_name, world_pos, affected_cells.size()])
 
-# NEW: Unregister prop obstacle when harvested
+# IMPROVED: Unregister prop with verification
 func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
-	"""Remove prop obstacle when it's harvested"""
-	var grid_start = world_to_grid(world_pos)
-	var grid_end = world_to_grid(world_pos + Vector3(prop_size.x, 0, prop_size.y))
+	var pos_key = _world_pos_to_key(world_pos)
+	
+	if not prop_registrations.has(pos_key):
+		if debug_mode:
+			print("⚠️ No prop registration found at %s (key: %s)" % [world_pos, pos_key])
+			print("   Available keys: %s" % prop_registrations.keys())
+		return
+	
+	var reg_data = prop_registrations[pos_key]
+	var affected_cells = reg_data.grid_cells
+	
+	# Clear the exact cells that were blocked
+	for grid_pos in affected_cells:
+		prop_blocked_cells.erase(grid_pos)
+		set_cell(grid_pos, CellState.WALKABLE)
+	
+	prop_registrations.erase(pos_key)
+	
+	if debug_mode:
+		print("🪓 Unregistered prop at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+
+# NEW: Clear all prop obstacles (useful for chunk unloading)
+func clear_prop_obstacles_in_area(world_start: Vector3, world_end: Vector3):
+	var grid_start = world_to_grid(world_start)
+	var grid_end = world_to_grid(world_end)
+	
+	var cleared_count = 0
 	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
 			var grid_pos = Vector2i(x, y)
-			prop_blocked_cells.erase(grid_pos)
-			set_cell(grid_pos, CellState.WALKABLE)
+			if prop_blocked_cells.has(grid_pos):
+				prop_blocked_cells.erase(grid_pos)
+				set_cell(grid_pos, CellState.WALKABLE)
+				cleared_count += 1
 	
-	if debug_mode:
-		var cells_unblocked = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
-		print("🪓 Unregistered prop obstacle at %s (%d cells freed)" % [world_pos, cells_unblocked])
+	if debug_mode and cleared_count > 0:
+		print("🧹 Cleared %d prop obstacles in area" % cleared_count)
 
-# --- OPTIMIZED PATHFINDING (A*) ---
+# --- PATHFINDING (A*) ---
 func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1000) -> Array[Vector3]:
 	var start_grid = world_to_grid(start_world)
 	var end_grid = world_to_grid(end_world)
@@ -387,7 +422,7 @@ func _reconstruct_path(came_from: Dictionary, current: Vector2i) -> Array[Vector
 		current = came_from[current]
 	return path
 
-# --- SIMPLE PUBLIC API ---
+# --- PUBLIC API ---
 func place_building(world_pos: Vector3, building_size: Vector2):
 	if debug_mode:
 		print("Placing building at: %s, size: %s" % [world_pos, building_size])
@@ -404,7 +439,8 @@ func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 func clear_all():
 	nav_chunks.clear()
 	chunk_access_times.clear()
-	prop_blocked_cells.clear()  # NEW: Clear prop data
+	prop_blocked_cells.clear()
+	prop_registrations.clear()
 	if debug_mode:
 		print("Cleared all navigation data")
 
@@ -421,6 +457,8 @@ func get_memory_usage_estimate() -> String:
 	else:
 		return "%.1f MB" % (bytes / (1024.0 * 1024.0))
 
-# NEW: Get count of blocked prop cells
 func get_prop_blocked_count() -> int:
 	return prop_blocked_cells.size()
+
+func get_prop_registration_count() -> int:
+	return prop_registrations.size()
