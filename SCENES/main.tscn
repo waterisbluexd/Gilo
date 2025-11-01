@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=33 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -92,6 +92,15 @@ bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
 bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_dtswy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v5vvh"]
+noise_type = 4
+frequency = 0.0054
+fractal_type = 3
+fractal_octaves = 2
+fractal_lacunarity = 1.96
+fractal_gain = 2.405
+fractal_weighted_strength = 0.94
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11g8y"]
 
@@ -1652,6 +1661,9 @@ mesh = SubResource("CapsuleMesh_dtswy")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+WaterNoise = SubResource("FastNoiseLite_v5vvh")
+BeachThreshold = -1.0
+BeachWidth = 5.042
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
 MaxConcurrentThreads = 16
 Player = NodePath("../CameraPivot")

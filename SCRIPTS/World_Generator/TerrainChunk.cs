@@ -22,10 +22,12 @@ public partial class TerrainChunk
 
     public static ChunkData Generate(
         Vector2I chunkCoord, int chunkSize, float pixelSize,
-        FastNoiseLite primaryNoise, FastNoiseLite secondaryNoise, FastNoiseLite heightNoise,
+        FastNoiseLite primaryNoise, FastNoiseLite secondaryNoise, FastNoiseLite heightNoise, FastNoiseLite waterNoise, FastNoiseLite beachNoise,
         Color[] colors, float[] thresholds,
         bool enableHeight, float heightInfluence, float heightVariation,
-        float primaryWeight, float secondaryWeight, float contrast)
+        float primaryWeight, float secondaryWeight, float contrast,
+        bool enableWater, float waterThreshold, Color waterColor, float waterHeight,
+        bool enableBeaches, float beachThreshold, float beachWidth, Color sandColor)
     {
         var chunkWorldSize = chunkSize * pixelSize;
         var chunkWorldOrigin = new Vector2(chunkCoord.X * chunkWorldSize, chunkCoord.Y * chunkWorldSize);
@@ -44,12 +46,73 @@ public partial class TerrainChunk
                 float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
                 float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
-                var pixelColor = GetPixelColor(worldX, worldZ,
-                    primaryNoise, secondaryNoise, primaryWeight, secondaryWeight, 
-                    contrast, colors, thresholds);
+                // Check if this pixel should be water
+                bool isWater = false;
+                if (enableWater && waterNoise != null)
+                {
+                    float waterValue = waterNoise.GetNoise2D(worldX, worldZ);
+                    isWater = waterValue < waterThreshold;
+                }
+
+                Color pixelColor;
+                float yPosition;
+
+                if (isWater)
+                {
+                    pixelColor = waterColor;
+                    yPosition = waterHeight;
+                }
+                else
+                {
+                    // Check if this should be a beach (sand near water)
+                    bool isBeach = false;
+                    if (enableBeaches && beachNoise != null)
+                    {
+                        // Check if there's water nearby
+                        bool hasWaterNearby = false;
+                        float checkRadius = beachWidth * pixelSize;
+                        
+                        // Sample a few points around this pixel to see if water is nearby
+                        for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
+                        {
+                            float checkX = worldX + Mathf.Cos(angle) * checkRadius;
+                            float checkZ = worldZ + Mathf.Sin(angle) * checkRadius;
+                            
+                            if (waterNoise != null)
+                            {
+                                float checkWaterValue = waterNoise.GetNoise2D(checkX, checkZ);
+                                if (checkWaterValue < waterThreshold)
+                                {
+                                    hasWaterNearby = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // If water is nearby, use beach noise to determine if this pixel should be sand
+                        if (hasWaterNearby)
+                        {
+                            float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
+                            isBeach = beachNoiseValue > beachThreshold;
+                        }
+                    }
+                    
+                    if (isBeach)
+                    {
+                        pixelColor = sandColor;
+                    }
+                    else
+                    {
+                        pixelColor = GetPixelColor(worldX, worldZ,
+                            primaryNoise, secondaryNoise, primaryWeight, secondaryWeight, 
+                            contrast, colors, thresholds);
+                    }
+                    
+                    yPosition = 0.0f;
+                }
 
                 var transform = Transform3D.Identity;
-                transform.Origin = new Vector3(localX, 0, localZ);
+                transform.Origin = new Vector3(localX, yPosition, localZ);
                 transform = transform.Scaled(new Vector3(pixelSize, 1.0f, pixelSize));
 
                 transforms.Add(transform);

@@ -25,6 +25,7 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public FastNoiseLite PrimaryBiomeNoise { get; set; }
     [Export] public FastNoiseLite SecondaryBiomeNoise { get; set; }
     [Export] public FastNoiseLite HeightNoise { get; set; }
+    [Export] public FastNoiseLite WaterNoise { get; set; }
     [Export] public bool AutoCreateDefaultNoise { get; set; } = true;
     [Export(PropertyHint.Range, "0.0,1.0")] public float PrimaryNoiseWeight { get; set; } = 0.75f;
     [Export(PropertyHint.Range, "0.0,1.0")] public float SecondaryNoiseWeight { get; set; } = 0.25f;
@@ -33,6 +34,19 @@ public partial class ChunkPixelTerrain : Node3D
     [ExportGroup("Height Settings")]
     [Export] public bool EnableHeightVariation { get; set; } = true;
     [Export(PropertyHint.Range, "0.0,1.0")] public float HeightInfluence { get; set; } = 1.0f;
+
+    [ExportGroup("Water Settings")]
+    [Export] public bool EnableWater { get; set; } = true;
+    [Export(PropertyHint.Range, "-1.0,1.0")] public float WaterThreshold { get; set; } = -0.3f;
+    [Export] public Color WaterColor { get; set; } = new Color(0.2f, 0.4f, 0.8f, 1.0f);
+    [Export] public float WaterHeight { get; set; } = -0.5f;
+
+    [ExportGroup("Beach/Sand Settings")]
+    [Export] public bool EnableBeaches { get; set; } = true;
+    [Export] public FastNoiseLite BeachNoise { get; set; }
+    [Export(PropertyHint.Range, "-1.0,1.0")] public float BeachThreshold { get; set; } = 0.3f;
+    [Export(PropertyHint.Range, "1.0,10.0")] public float BeachWidth { get; set; } = 3.0f;
+    [Export] public Color SandColor { get; set; } = new Color(0.93f, 0.87f, 0.64f, 1.0f);
 
     [ExportGroup("Biome Colors & Thresholds")]
     [Export] public Color Color1 { get; set; } = new Color(0.169f, 0.239f, 0.075f, 1.0f);
@@ -86,6 +100,8 @@ public partial class ChunkPixelTerrain : Node3D
             PrimaryBiomeNoise ??= CreateNoise(0.02f, 2);
             SecondaryBiomeNoise ??= CreateNoise(0.05f, 1);
             if (EnableHeightVariation && HeightNoise == null) HeightNoise = CreateNoise(0.08f, 2);
+            if (EnableWater && WaterNoise == null) WaterNoise = CreateNoise(0.03f, 2);
+            if (EnableBeaches && BeachNoise == null) BeachNoise = CreateNoise(0.15f, 1);
         }
         
         _camera = GetViewport()?.GetCamera3D();
@@ -259,11 +275,14 @@ public partial class ChunkPixelTerrain : Node3D
 
     private ChunkData GenerateChunk(Vector2I coord)
     {
-        // Always generate fresh chunks - no caching
-        var data = TerrainChunk.Generate(coord, ChunkSize, PixelSize, PrimaryBiomeNoise, 
-            SecondaryBiomeNoise, HeightNoise, _biomeColors, _biomeThresholds, 
+        var data = TerrainChunk.Generate(
+            coord, ChunkSize, PixelSize, 
+            PrimaryBiomeNoise, SecondaryBiomeNoise, HeightNoise, WaterNoise, BeachNoise,
+            _biomeColors, _biomeThresholds, 
             EnableHeightVariation, HeightInfluence, TerrainHeightVariation,
-            PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast);
+            PrimaryNoiseWeight, SecondaryNoiseWeight, NoiseContrast,
+            EnableWater, WaterThreshold, WaterColor, WaterHeight,
+            EnableBeaches, BeachThreshold, BeachWidth, SandColor);
         return data;
     }
 
@@ -339,5 +358,12 @@ public partial class ChunkPixelTerrain : Node3D
         if (noiseValue < _biomeThresholds[6]) return 6;
         
         return 7;
+    }
+    
+    public bool IsWaterAt(float worldX, float worldZ)
+    {
+        if (!EnableWater || WaterNoise == null) return false;
+        float waterValue = WaterNoise.GetNoise2D(worldX, worldZ);
+        return waterValue < WaterThreshold;
     }
 }
