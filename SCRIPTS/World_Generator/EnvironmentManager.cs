@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 [Tool]
 public partial class EnvironmentManager : Node3D
@@ -14,10 +13,8 @@ public partial class EnvironmentManager : Node3D
 
     [ExportGroup("Placement Settings")]
     [Export] public bool EnableRandomRotation { get; set; } = true;
-    
     [Export(PropertyHint.Range, "0.0,1.0")] 
     public float RandomScaleVariation { get; set; } = 0.2f;
-    
     [Export(PropertyHint.Range, "1,32")]
     public int PixelSkipInterval { get; set; } = 1;
 
@@ -37,8 +34,10 @@ public partial class EnvironmentManager : Node3D
     private Camera3D _camera;
     private int _totalResourcesRegistered = 0;
     private bool _resourceSystemReady = false;
-
     private Dictionary<Vector2I, List<PropNavigationData>> _chunkPropNavData = new();
+    
+    // OPTIMIZATION: Cache biome pixel data per chunk
+    private Dictionary<Vector2I, Dictionary<int, List<PixelPosition>>> _biomePixelCache = new();
 
     public override void _Ready()
     {
@@ -54,7 +53,6 @@ public partial class EnvironmentManager : Node3D
         }
 
         _camera = GetViewport()?.GetCamera3D();
-        
         _resourceSystem = GetNodeOrNull<ResourceSystem>("/root/ResourceSystem");
         
         if (_resourceSystem == null)
@@ -72,23 +70,12 @@ public partial class EnvironmentManager : Node3D
 
         if (RegisterWithNavigationGrid)
         {
-            if (NavigationGridNode != null)
-            {
-                _navigationGrid = NavigationGridNode;
-            }
-            else
-            {
-                _navigationGrid = GetNodeOrNull<Node3D>("NavigationGrid");
-            }
+            _navigationGrid = NavigationGridNode ?? GetNodeOrNull<Node3D>("NavigationGrid");
 
             if (_navigationGrid == null)
-            {
                 GD.PushWarning("NavigationGrid not found! Props won't block building placement.");
-            }
             else if (EnableDebugLogging)
-            {
                 GD.Print("✅ NavigationGrid connected successfully");
-            }
         }
         
         CallDeferred(nameof(Initialize));
@@ -153,9 +140,7 @@ public partial class EnvironmentManager : Node3D
             {
                 var parts = child.Name.ToString().Replace("chunk_(", "").Replace(")", "").Split(",");
                 if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int x) && int.TryParse(parts[1].Trim(), out int z))
-                {
                     chunks.Add(new Vector2I(x, z));
-                }
             }
         }
         
@@ -167,43 +152,22 @@ public partial class EnvironmentManager : Node3D
         var chunkPropData = new ChunkPropData { ChunkCoord = chunkCoord };
         
         float chunkWorldSize = _terrain.ChunkSize * _terrain.PixelSize;
-        
         Vector2 chunkWorldOrigin = new Vector2(
             chunkCoord.X * chunkWorldSize,
             chunkCoord.Y * chunkWorldSize
         );
-        
         float halfChunkWorldSize = chunkWorldSize * 0.5f;
 
-        var biomePixels = new Dictionary<int, List<PixelPosition>>();
-        
-        for (int z = 0; z < _terrain.ChunkSize; z += PixelSkipInterval)
+        // OPTIMIZATION: Check cache first
+        Dictionary<int, List<PixelPosition>> biomePixels;
+        if (_biomePixelCache.TryGetValue(chunkCoord, out var cached))
         {
-            for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
-            {
-                float localX = (x * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
-                float localZ = (z * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
-
-                float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
-                float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
-
-                // SIMPLE CHECK: Skip if this position is water
-                if (_terrain.IsWaterAt(worldX, worldZ))
-                    continue;
-
-                int biomeIndex = _terrain.GetBiomeIndexAt(worldX, worldZ);
-                
-                if (!biomePixels.ContainsKey(biomeIndex))
-                    biomePixels[biomeIndex] = new List<PixelPosition>();
-                
-                biomePixels[biomeIndex].Add(new PixelPosition
-                {
-                    WorldX = worldX,
-                    WorldZ = worldZ,
-                    LocalX = localX,
-                    LocalZ = localZ
-                });
-            }
+            biomePixels = cached;
+        }
+        else
+        {
+            biomePixels = GenerateBiomePixelData(chunkCoord, chunkWorldOrigin, halfChunkWorldSize);
+            _biomePixelCache[chunkCoord] = biomePixels;
         }
 
         int chunkResourceCount = 0;
@@ -245,9 +209,7 @@ public partial class EnvironmentManager : Node3D
                         {
                             skippedHarvestedCount++;
                             if (EnableDebugLogging && skippedHarvestedCount <= 3)
-                            {
                                 GD.Print($"🚫 Skipping harvested {propData.Name} at index {instanceIndex} in chunk {chunkCoord}");
-                            }
                         }
                     }
 
@@ -312,6 +274,43 @@ public partial class EnvironmentManager : Node3D
         }
     }
 
+    // OPTIMIZATION: Separate method for biome pixel generation with caching
+    private Dictionary<int, List<PixelPosition>> GenerateBiomePixelData(Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize)
+    {
+        var biomePixels = new Dictionary<int, List<PixelPosition>>();
+        
+        for (int z = 0; z < _terrain.ChunkSize; z += PixelSkipInterval)
+        {
+            for (int x = 0; x < _terrain.ChunkSize; x += PixelSkipInterval)
+            {
+                float localX = (x * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
+                float localZ = (z * _terrain.PixelSize) - halfChunkWorldSize + (_terrain.PixelSize * 0.5f);
+
+                float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
+                float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
+
+                // OPTIMIZATION: Use combined method to reduce noise calls
+                var (biomeIndex, isWater) = _terrain.GetTerrainInfoAt(worldX, worldZ);
+                
+                if (isWater)
+                    continue;
+                
+                if (!biomePixels.ContainsKey(biomeIndex))
+                    biomePixels[biomeIndex] = new List<PixelPosition>();
+                
+                biomePixels[biomeIndex].Add(new PixelPosition
+                {
+                    WorldX = worldX,
+                    WorldZ = worldZ,
+                    LocalX = localX,
+                    LocalZ = localZ
+                });
+            }
+        }
+        
+        return biomePixels;
+    }
+
     private void RegisterPropWithNavigation(Vector3 worldPos, EnvironmentPropData propData, Vector2I chunkCoord)
     {
         if (_navigationGrid == null) return;
@@ -336,9 +335,7 @@ public partial class EnvironmentManager : Node3D
         });
         
         if (EnableDebugLogging && _totalResourcesRegistered <= 5)
-        {
             GD.Print($"🌲 Registered prop at {flatWorldPos} (size: {collisionSize})");
-        }
     }
 
     public void UnregisterPropFromNavigation(Vector3 worldPos, EnvironmentPropData propData)
@@ -386,7 +383,6 @@ public partial class EnvironmentManager : Node3D
         var transform = Transform3D.Identity;
         
         float terrainHeight = GetTerrainHeightAt(worldX, worldZ);
-        
         transform.Origin = new Vector3(localX, terrainHeight, localZ);
 
         if (EnableRandomRotation)
@@ -441,17 +437,13 @@ public partial class EnvironmentManager : Node3D
         };
 
         for (int i = 0; i < instances.Count; i++)
-        {
             multiMesh.SetInstanceTransform(i, instances[i].Transform);
-        }
 
         mmi.Multimesh = multiMesh;
 
         var material = propData.GetMaterial();
         if (material != null)
-        {
             mmi.MaterialOverride = material;
-        }
 
         mmi.Position = new Vector3(
             chunkWorldOrigin.X + chunkWorldSize * 0.5f,
@@ -466,6 +458,9 @@ public partial class EnvironmentManager : Node3D
 
     private void UnloadPropChunk(Vector2I coord)
     {
+        // OPTIMIZATION: Remove from biome pixel cache
+        _biomePixelCache.Remove(coord);
+        
         if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
         {
             if (_navigationGrid != null)
@@ -548,6 +543,7 @@ public partial class EnvironmentManager : Node3D
             UnloadPropChunk(coord);
         _propChunks.Clear();
         _chunkPropNavData.Clear();
+        _biomePixelCache.Clear(); // Clear cache too
         _totalResourcesRegistered = 0;
     }
 
@@ -571,18 +567,14 @@ public partial class EnvironmentManager : Node3D
             if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
             {
                 foreach (var navData in navDataList)
-                {
                     _navigationGrid.Call("unregister_prop_obstacle", navData.WorldPosition, navData.CollisionSize);
-                }
                 _chunkPropNavData.Remove(coord);
                 GD.Print($"🧹 Cleaned orphaned navigation data for chunk {coord}");
             }
         }
 
         if (EnableDebugLogging)
-        {
             GD.Print($"Navigation sync check: {loadedChunks.Count} terrain chunks, {_chunkPropNavData.Count} nav chunks, {orphanedChunks.Count} orphaned");
-        }
     }
 
     public Godot.Collections.Dictionary GetNavigationStats()

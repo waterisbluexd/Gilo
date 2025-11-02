@@ -46,7 +46,6 @@ public partial class TerrainChunk
                 float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
                 float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
-                // Check if this pixel should be water
                 bool isWater = false;
                 if (enableWater && waterNoise != null)
                 {
@@ -64,7 +63,6 @@ public partial class TerrainChunk
                 }
                 else
                 {
-                    // Check if this should be a beach (sand near water)
                     bool isBeach = false;
                     if (enableBeaches && beachNoise != null)
                     {
@@ -89,7 +87,6 @@ public partial class TerrainChunk
                             }
                         }
                         
-                        // If water is nearby, use beach noise to determine if this pixel should be sand
                         if (hasWaterNearby)
                         {
                             float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
@@ -148,15 +145,15 @@ public partial class TerrainChunk
     #endregion
 
     #region Mesh Creation (Main Thread)
-    
+
     private static ArrayMesh CreateQuadMesh()
     {
         var vertices = new Vector3[]
         {
-            new Vector3(-0.5f, 0, -0.5f), // Bottom-left
-            new Vector3( 0.5f, 0, -0.5f), // Bottom-right
-            new Vector3( 0.5f, 0,  0.5f), // Top-right
-            new Vector3(-0.5f, 0,  0.5f)  // Top-left
+            new Vector3(-0.5f, 0, -0.5f),
+            new Vector3( 0.5f, 0, -0.5f),
+            new Vector3( 0.5f, 0,  0.5f),
+            new Vector3(-0.5f, 0,  0.5f)
         };
 
         var indices = new int[] { 0, 1, 2, 0, 2, 3 };
@@ -175,6 +172,8 @@ public partial class TerrainChunk
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
         return arrayMesh;
     }
+    
+    
 
     public void CreateMesh(int chunkSize, float pixelSize, StandardMaterial3D customMaterial)
     {

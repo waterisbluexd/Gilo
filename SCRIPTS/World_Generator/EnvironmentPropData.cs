@@ -4,16 +4,6 @@ using System;
 [GlobalClass]
 public partial class EnvironmentPropData : Resource
 {
-    public enum PropType
-    {
-        Tree,
-        Bush,
-        Rock,
-        Flower,
-        Grass,
-        Other
-    }
-
     public enum PropSourceType
     {
         Mesh,
@@ -35,46 +25,35 @@ public partial class EnvironmentPropData : Resource
 
     [ExportGroup("Basic Info")]
     [Export] public string Name { get; set; } = "New Prop";
-    
-    [Export] public PropType DataSetType { get; set; } = PropType.Tree;
 
     [ExportGroup("Prop Source")]
     [Export] public PropSourceType SourceType { get; set; } = PropSourceType.Mesh;
-
     [Export] public Mesh PropMesh { get; set; }
-    
     [Export] public PackedScene PropScene { get; set; }
 
     [ExportGroup("Resource Settings")]
     [Export] public bool IsHarvestable { get; set; } = false;
-    
     [Export] public string ResourceType { get; set; } = "Wood";
-    
     [Export(PropertyHint.Range, "1,1000")] 
     public int ResourceYield { get; set; } = 50;
-    
     [Export(PropertyHint.Range, "0.5,30.0")] 
     public float HarvestTime { get; set; } = 3.0f;
 
     [ExportGroup("Navigation Collision")]
     [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero;
     [Export] public bool BlocksNavigation { get; set; } = true;
-    [Export] public bool AutoCalculateCollisionSize { get; set; } = true; // NEW: Auto-calculate from mesh bounds
+    [Export] public bool AutoCalculateCollisionSize { get; set; } = true;
 
     [ExportGroup("Placement Rules")]
     [Export(PropertyHint.Flags, "Biome 1,Biome 2,Biome 3,Biome 4,Biome 5,Biome 6,Biome 7,Biome 8")] 
     public BiomeFlags AllowedBiomes { get; set; }
-
     [Export(PropertyHint.Range, "0.0,1.0")] 
     public float Probability { get; set; } = 0.05f;
-    
     [Export] public Vector3 FixedScale { get; set; } = Vector3.One;
 
     [ExportGroup("Advanced Options")]
     [Export] public bool InheritMaterialsFromSource { get; set; } = true;
-    
     [Export] public bool InheritScaleFromScene { get; set; } = true;
-    
     [Export] public StandardMaterial3D OverrideMaterial { get; set; }
 
     private Mesh _cachedMesh = null;
@@ -83,29 +62,23 @@ public partial class EnvironmentPropData : Resource
     private Vector2 _cachedCollisionSize = Vector2.Zero;
     private bool _cacheValid = false;
 
-    // NEW: Get effective collision size (auto-calculated or manual)
     public Vector2 GetCollisionSize()
     {
-        // If manually set and not zero, use that
         if (CollisionSize != Vector2.Zero)
             return CollisionSize;
         
-        // If auto-calculate is disabled, return zero (will use default)
         if (!AutoCalculateCollisionSize)
             return Vector2.Zero;
         
-        // Use cached value if available
         if (_cacheValid && _cachedCollisionSize != Vector2.Zero)
             return _cachedCollisionSize;
         
-        // Try to calculate from mesh
         var mesh = GetMesh();
         if (mesh != null)
         {
             var aabb = mesh.GetAabb();
             var scale = GetScale();
             
-            // Use X and Z dimensions (horizontal plane) with scale applied
             _cachedCollisionSize = new Vector2(
                 aabb.Size.X * scale.X,
                 aabb.Size.Z * scale.Z
@@ -114,7 +87,6 @@ public partial class EnvironmentPropData : Resource
             return _cachedCollisionSize;
         }
         
-        // Fallback to zero (will use default in EnvironmentManager)
         return Vector2.Zero;
     }
 
@@ -147,14 +119,10 @@ public partial class EnvironmentPropData : Resource
                         _cachedMesh = meshInstance.Mesh;
                         
                         if (InheritMaterialsFromSource && OverrideMaterial == null)
-                        {
                             _cachedMaterial = meshInstance.GetActiveMaterial(0);
-                        }
                         
                         if (InheritScaleFromScene)
-                        {
                             _cachedScale = meshInstance.Scale;
-                        }
                         
                         instance.QueueFree();
                         _cacheValid = true;
@@ -234,13 +202,9 @@ public partial class EnvironmentPropData : Resource
                 var meshInstance = FindMeshInstanceInNode(instance);
                 
                 if (meshInstance != null)
-                {
                     _cachedScale = meshInstance.Scale;
-                }
                 else
-                {
                     _cachedScale = FixedScale;
-                }
                 
                 instance.QueueFree();
                 return _cachedScale;

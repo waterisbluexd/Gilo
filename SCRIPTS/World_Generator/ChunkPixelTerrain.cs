@@ -78,7 +78,6 @@ public partial class ChunkPixelTerrain : Node3D
     private bool _worldActive;
     private Dictionary<Vector2I, TerrainChunk> _loadedChunks = new();
     private HashSet<Vector2I> _loadingChunks = new();
-    private Queue<Vector2I> _generationQueue = new();
     private ConcurrentQueue<ChunkData> _meshCreationQueue = new();
     private SemaphoreSlim _threadSemaphore;
     private CancellationTokenSource _cancellationTokenSource;
@@ -90,7 +89,6 @@ public partial class ChunkPixelTerrain : Node3D
     public override void _Ready()
     {
         SetProcess(true);
-        SetPhysicsProcess(false);
         
         _biomeColors = new[] { Color1, Color2, Color3, Color4, Color5, Color6, Color7, Color8 };
         _biomeThresholds = new[] { Threshold1, Threshold2, Threshold3, Threshold4, Threshold5, Threshold6, Threshold7 };
@@ -190,32 +188,30 @@ public partial class ChunkPixelTerrain : Node3D
         if (Player == null) return;
 
         var playerChunk = WorldToChunk(Player.GlobalPosition);
-        var chunksToLoad = new Dictionary<Vector2I, float>();
 
+        // OPTIMIZATION: Removed expensive sorting - direct iteration
         for (int x = playerChunk.X - RenderDistance; x <= playerChunk.X + RenderDistance; x++)
+        {
             for (int z = playerChunk.Y - RenderDistance; z <= playerChunk.Y + RenderDistance; z++)
             {
                 var coord = new Vector2I(x, z);
-                if (!_loadedChunks.ContainsKey(coord) && !_loadingChunks.Contains(coord))
-                    chunksToLoad[coord] = playerChunk.DistanceSquaredTo(coord);
+                // OPTIMIZATION: Use TryGetValue instead of ContainsKey
+                if (!_loadedChunks.TryGetValue(coord, out _) && !_loadingChunks.Contains(coord))
+                    LoadChunkAsync(coord);
             }
-
-        var sorted = new List<Vector2I>(chunksToLoad.Keys);
-        sorted.Sort((a, b) => chunksToLoad[a].CompareTo(chunksToLoad[b]));
-        
-        _generationQueue.Clear();
-        foreach (var chunk in sorted)
-        {
-            _generationQueue.Enqueue(chunk);
-            if (!_loadedChunks.ContainsKey(chunk) && !_loadingChunks.Contains(chunk))
-                LoadChunkAsync(chunk);
         }
 
-        foreach (var coord in new List<Vector2I>(_loadedChunks.Keys))
+        // Unload distant chunks
+        var chunksToUnload = new List<Vector2I>();
+        foreach (var coord in _loadedChunks.Keys)
         {
             int dist = Math.Max(Math.Abs(coord.X - playerChunk.X), Math.Abs(coord.Y - playerChunk.Y));
-            if (dist > UnloadDistance) UnloadChunk(coord);
+            if (dist > UnloadDistance) 
+                chunksToUnload.Add(coord);
         }
+
+        foreach (var coord in chunksToUnload)
+            UnloadChunk(coord);
     }
 
     private void UpdateChunkVisibility()
@@ -319,10 +315,10 @@ public partial class ChunkPixelTerrain : Node3D
 
     private void ClearWorld()
     {
-        foreach (var coord in new List<Vector2I>(_loadedChunks.Keys)) UnloadChunk(coord);
+        foreach (var coord in new List<Vector2I>(_loadedChunks.Keys)) 
+            UnloadChunk(coord);
         _loadedChunks.Clear();
         _loadingChunks.Clear();
-        _generationQueue.Clear();
         _meshCreationQueue = new ConcurrentQueue<ChunkData>();
     }
 
@@ -336,10 +332,8 @@ public partial class ChunkPixelTerrain : Node3D
         coord.Y * ChunkSize * PixelSize
     );
 
-    public int GetLoadedChunkCount() => _loadedChunks.Count;
-    public int GetLoadingChunkCount() => _loadingChunks.Count;
-    
-    public int GetBiomeIndexAt(float worldX, float worldZ)
+    // OPTIMIZATION: Combined method to reduce noise calls
+    public (int biomeIndex, bool isWater) GetTerrainInfoAt(float worldX, float worldZ)
     {
         float primaryValue = PrimaryBiomeNoise.GetNoise2D(worldX, worldZ);
         float secondaryValue = SecondaryBiomeNoise.GetNoise2D(worldX, worldZ);
@@ -349,21 +343,34 @@ public partial class ChunkPixelTerrain : Node3D
         
         float noiseValue = Mathf.Clamp(combined, -1.0f, 1.0f);
 
-        if (noiseValue < _biomeThresholds[0]) return 0;
-        if (noiseValue < _biomeThresholds[1]) return 1;
-        if (noiseValue < _biomeThresholds[2]) return 2;
-        if (noiseValue < _biomeThresholds[3]) return 3;
-        if (noiseValue < _biomeThresholds[4]) return 4;
-        if (noiseValue < _biomeThresholds[5]) return 5;
-        if (noiseValue < _biomeThresholds[6]) return 6;
-        
-        return 7;
+        int biomeIndex;
+        if (noiseValue < _biomeThresholds[0]) biomeIndex = 0;
+        else if (noiseValue < _biomeThresholds[1]) biomeIndex = 1;
+        else if (noiseValue < _biomeThresholds[2]) biomeIndex = 2;
+        else if (noiseValue < _biomeThresholds[3]) biomeIndex = 3;
+        else if (noiseValue < _biomeThresholds[4]) biomeIndex = 4;
+        else if (noiseValue < _biomeThresholds[5]) biomeIndex = 5;
+        else if (noiseValue < _biomeThresholds[6]) biomeIndex = 6;
+        else biomeIndex = 7;
+
+        bool isWater = false;
+        if (EnableWater && WaterNoise != null)
+        {
+            float waterValue = WaterNoise.GetNoise2D(worldX, worldZ);
+            isWater = waterValue < WaterThreshold;
+        }
+
+        return (biomeIndex, isWater);
+    }
+
+    // Keep old methods for backward compatibility
+    public int GetBiomeIndexAt(float worldX, float worldZ)
+    {
+        return GetTerrainInfoAt(worldX, worldZ).biomeIndex;
     }
     
     public bool IsWaterAt(float worldX, float worldZ)
     {
-        if (!EnableWater || WaterNoise == null) return false;
-        float waterValue = WaterNoise.GetNoise2D(worldX, worldZ);
-        return waterValue < WaterThreshold;
+        return GetTerrainInfoAt(worldX, worldZ).isWater;
     }
 }
