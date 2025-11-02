@@ -44,7 +44,7 @@ public partial class ChunkPixelTerrain : Node3D
     [ExportGroup("Beach/Sand Settings")]
     [Export] public bool EnableBeaches { get; set; } = true;
     [Export] public FastNoiseLite BeachNoise { get; set; }
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float BeachThreshold { get; set; } = 0.3f;
+    [Export(PropertyHint.Range, "-2.0,1.0")] public float BeachThreshold { get; set; } = -0.8f;
     [Export(PropertyHint.Range, "1.0,10.0")] public float BeachWidth { get; set; } = 3.0f;
     [Export] public Color SandColor { get; set; } = new Color(0.93f, 0.87f, 0.64f, 1.0f);
 

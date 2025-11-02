@@ -50,6 +50,8 @@ public partial class EnvironmentPropData : Resource
     [Export(PropertyHint.Range, "0.0,1.0")] 
     public float Probability { get; set; } = 0.05f;
     [Export] public Vector3 FixedScale { get; set; } = Vector3.One;
+    [Export] public bool AvoidWater { get; set; } = true;
+    [Export] public bool AvoidBeaches { get; set; } = true;
 
     [ExportGroup("Advanced Options")]
     [Export] public bool InheritMaterialsFromSource { get; set; } = true;

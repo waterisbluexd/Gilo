@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=33 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://8mwneyu1hclo" path="res://SCRIPTS/debugger/Linechart.gd" id="5_o4jo6"]
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
 [ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
-[ext_resource type="Script" uid="uid://cusryiilxiyn7" path="res://SCRIPTS/sub_viewport.gd" id="12_7p5hq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1636,7 +1635,6 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(640, 360)
 size_2d_override_stretch = true
 render_target_update_mode = 4
-script = ExtResource("12_7p5hq")
 
 [node name="CameraPivot" type="Node3D" parent="Pixelated/Main/SubViewportContainer/SubViewport"]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, -312.99997)
@@ -1666,10 +1664,9 @@ mesh = SubResource("CapsuleMesh_dtswy")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 HeightNoise = null
 WaterNoise = SubResource("FastNoiseLite_v5vvh")
-BeachThreshold = -1.0
+BeachThreshold = -2.0
 BeachWidth = 10.0
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
-MaxConcurrentThreads = 16
 Player = NodePath("../CameraPivot")
 
 [node name="Display" type="Control" parent="Pixelated"]
