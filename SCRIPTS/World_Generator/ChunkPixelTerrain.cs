@@ -8,6 +8,19 @@ using System.Threading.Tasks;
 [Tool]
 public partial class ChunkPixelTerrain : Node3D
 {
+    [ExportGroup("World Seed")]
+    [Export] 
+    public int WorldSeed 
+    { 
+        get => _worldSeed; 
+        set 
+        {
+            _worldSeed = value;
+            ApplyWorldSeedToNoise();
+        }
+    }
+    private int _worldSeed = 0;
+
     [ExportGroup("Chunk Settings")]
     [Export] public int ChunkSize { get; set; } = 32;
     [Export] public int RenderDistance { get; set; } = 4;
@@ -101,6 +114,9 @@ public partial class ChunkPixelTerrain : Node3D
             if (EnableWater && WaterNoise == null) WaterNoise = CreateNoise(0.03f, 2);
             if (EnableBeaches && BeachNoise == null) BeachNoise = CreateNoise(0.15f, 1);
         }
+
+        // Apply WorldSeed to all noise generators
+        ApplyWorldSeedToNoise();
         
         _camera = GetViewport()?.GetCamera3D();
         Player ??= FindPlayer() ?? _camera;
@@ -114,6 +130,25 @@ public partial class ChunkPixelTerrain : Node3D
             WorldActive = true;
             UpdateChunks();
         }
+    }
+
+    // Apply WorldSeed to all noise generators (only changes Seed, not frequency)
+    private void ApplyWorldSeedToNoise()
+    {
+        if (PrimaryBiomeNoise != null)
+            PrimaryBiomeNoise.Seed = _worldSeed;
+        
+        if (SecondaryBiomeNoise != null)
+            SecondaryBiomeNoise.Seed = _worldSeed;
+        
+        if (HeightNoise != null)
+            HeightNoise.Seed = _worldSeed;
+        
+        if (WaterNoise != null)
+            WaterNoise.Seed = _worldSeed;
+        
+        if (BeachNoise != null)
+            BeachNoise.Seed = _worldSeed;
     }
 
     public override void _ExitTree()
@@ -170,7 +205,7 @@ public partial class ChunkPixelTerrain : Node3D
         Frequency = freq,
         FractalType = FastNoiseLite.FractalTypeEnum.Fbm,
         FractalOctaves = octaves,
-        Seed = (int)GD.Randi()
+        Seed = _worldSeed  // Use WorldSeed instead of random
     };
 
     private Node3D FindPlayer()
