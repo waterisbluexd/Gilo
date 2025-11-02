@@ -68,6 +68,7 @@ public partial class TerrainChunk
                     {
                         // Check if there's water nearby
                         bool hasWaterNearby = false;
+                        // Use a fixed check radius relative to pixel size for consistency
                         float checkRadius = beachWidth * pixelSize;
                         
                         // Sample a few points around this pixel to see if water is nearby
@@ -87,10 +88,15 @@ public partial class TerrainChunk
                             }
                         }
                         
+                        // Check proximity to water AND beach noise threshold
                         if (hasWaterNearby)
                         {
                             float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
-                            isBeach = beachNoiseValue > beachThreshold;
+                            // Only apply sand if the terrain is "low" enough based on beach width/threshold
+                            if (beachNoiseValue > beachThreshold && Mathf.Abs(waterHeight) < beachWidth)
+                            {
+                                isBeach = true;
+                            }
                         }
                     }
                     
@@ -106,9 +112,17 @@ public partial class TerrainChunk
                     }
                     
                     yPosition = 0.0f;
+                    
+                    // Apply height variation after determining color
+                    if (enableHeight && heightNoise != null)
+                    {
+                        float heightValue = heightNoise.GetNoise2D(worldX, worldZ);
+                        yPosition += heightValue * heightVariation * heightInfluence;
+                    }
                 }
 
                 var transform = Transform3D.Identity;
+                // Scale is now 1.0f on the Y-axis, height is controlled by yPosition
                 transform.Origin = new Vector3(localX, yPosition, localZ);
                 transform = transform.Scaled(new Vector3(pixelSize, 1.0f, pixelSize));
 
@@ -145,37 +159,10 @@ public partial class TerrainChunk
     #endregion
 
     #region Mesh Creation (Main Thread)
-
-    private static ArrayMesh CreateQuadMesh()
-    {
-        var vertices = new Vector3[]
-        {
-            new Vector3(-0.5f, 0, -0.5f),
-            new Vector3( 0.5f, 0, -0.5f),
-            new Vector3( 0.5f, 0,  0.5f),
-            new Vector3(-0.5f, 0,  0.5f)
-        };
-
-        var indices = new int[] { 0, 1, 2, 0, 2, 3 };
-        var normals = new Vector3[] { Vector3.Up, Vector3.Up, Vector3.Up, Vector3.Up };
-        var uvs = new Vector2[] { new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0), new Vector2(0, 0) };
-
-        var arrayMesh = new ArrayMesh();
-        var arrays = new Godot.Collections.Array();
-        arrays.Resize((int)Mesh.ArrayType.Max);
-
-        arrays[(int)Mesh.ArrayType.Vertex] = vertices;
-        arrays[(int)Mesh.ArrayType.Normal] = normals;
-        arrays[(int)Mesh.ArrayType.TexUV] = uvs;
-        arrays[(int)Mesh.ArrayType.Index] = indices;
-
-        arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
-        return arrayMesh;
-    }
     
-    
-
-    public void CreateMesh(int chunkSize, float pixelSize, StandardMaterial3D customMaterial)
+    // REMOVED: The static CreateQuadMesh method is gone.
+    // OPTIMIZATION: Updated signature to accept the pre-created mesh (pixelMesh)
+    public void CreateMesh(int chunkSize, float pixelSize, StandardMaterial3D customMaterial, ArrayMesh pixelMesh)
     {
         if (Data.Transforms == null || Data.Transforms.Length == 0)
         {
@@ -189,10 +176,10 @@ public partial class TerrainChunk
             return;
         }
         
-        var baseMesh = CreateQuadMesh();
+        // OPTIMIZATION: Use the passed-in mesh, eliminating the creation lag.
         var multiMesh = new MultiMesh();
         multiMesh.TransformFormat = MultiMesh.TransformFormatEnum.Transform3D;
-        multiMesh.Mesh = baseMesh;
+        multiMesh.Mesh = pixelMesh; // <- The key optimization
         multiMesh.UseColors = true;
         multiMesh.InstanceCount = Data.Transforms.Length;
 

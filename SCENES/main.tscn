@@ -105,7 +105,7 @@ domain_warp_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7p5hq"]
 noise_type = 3
-frequency = 0.15
+frequency = 0.0001
 fractal_octaves = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11g8y"]
@@ -1667,7 +1667,6 @@ mesh = SubResource("CapsuleMesh_dtswy")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-WorldActive = true
 HeightNoise = null
 WaterNoise = SubResource("FastNoiseLite_v5vvh")
 BeachNoise = SubResource("FastNoiseLite_7p5hq")
