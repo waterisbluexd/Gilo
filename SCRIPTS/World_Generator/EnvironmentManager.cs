@@ -36,7 +36,6 @@ public partial class EnvironmentManager : Node3D
     private bool _resourceSystemReady = false;
     private Dictionary<Vector2I, List<PropNavigationData>> _chunkPropNavData = new();
     
-    // OPTIMIZATION: Cache biome pixel data per chunk
     private Dictionary<Vector2I, Dictionary<int, List<PixelPosition>>> _biomePixelCache = new();
 
     public override void _Ready()
@@ -58,8 +57,6 @@ public partial class EnvironmentManager : Node3D
         if (_resourceSystem == null)
         {
             GD.PushError("⚠️ CRITICAL: ResourceSystem not found in AutoLoad!");
-            GD.PushError("   Please add ResourceSystem.cs to Project Settings → AutoLoad");
-            GD.PushError("   Resource harvesting will NOT work!");
         }
         else
         {
@@ -90,13 +87,17 @@ public partial class EnvironmentManager : Node3D
         }
 
         int harvestableCount = 0;
+        int clusteredCount = 0;
         foreach (var prop in PropDatabase)
         {
-            if (prop != null && prop.IsHarvestable)
-                harvestableCount++;
+            if (prop != null)
+            {
+                if (prop.IsHarvestable) harvestableCount++;
+                if (prop.PlacementPattern == EnvironmentPropData.SpawnPattern.Clustered) clusteredCount++;
+            }
         }
 
-        GD.Print($"EnvironmentManager initialized with {PropDatabase.Count} prop types ({harvestableCount} harvestable)");
+        GD.Print($"EnvironmentManager initialized with {PropDatabase.Count} prop types ({harvestableCount} harvestable, {clusteredCount} clustered)");
     }
 
     public override void _Process(double delta)
@@ -158,7 +159,6 @@ public partial class EnvironmentManager : Node3D
         );
         float halfChunkWorldSize = chunkWorldSize * 0.5f;
 
-        // OPTIMIZATION: Check cache first
         Dictionary<int, List<PixelPosition>> biomePixels;
         if (_biomePixelCache.TryGetValue(chunkCoord, out var cached))
         {
@@ -184,85 +184,17 @@ public partial class EnvironmentManager : Node3D
             var mesh = propData.GetMesh();
             if (mesh == null) continue;
 
-            var propInstances = new List<PropInstance>();
-            int instanceIndex = 0;
-
-            for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+            if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Scattered)
             {
-                var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
-                
-                if (!propData.AllowedBiomes.HasFlag(biomeFlag))
-                    continue;
-                
-                if (!biomePixels.ContainsKey(biomeIndex))
-                    continue;
-
-                foreach (var pixel in biomePixels[biomeIndex])
-                {
-                    bool shouldSpawn = true;
-                    
-                    if (_resourceSystemReady && propData.IsHarvestable)
-                    {
-                        shouldSpawn = _resourceSystem.ShouldSpawnResource(chunkCoord, instanceIndex, propData.Name);
-                        
-                        if (!shouldSpawn)
-                        {
-                            skippedHarvestedCount++;
-                            if (EnableDebugLogging && skippedHarvestedCount <= 3)
-                                GD.Print($"🚫 Skipping harvested {propData.Name} at index {instanceIndex} in chunk {chunkCoord}");
-                        }
-                    }
-
-                    if (!shouldSpawn)
-                    {
-                        instanceIndex++;
-                        continue;
-                    }
-
-                    float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
-                    if (randomValue < propData.Probability)
-                    {
-                        var instance = CreatePropInstance(
-                            pixel.WorldX, pixel.WorldZ, 
-                            pixel.LocalX, pixel.LocalZ, 
-                            propData,
-                            chunkWorldOrigin,
-                            halfChunkWorldSize
-                        );
-                        propInstances.Add(instance);
-
-                        if (propData.IsHarvestable && _resourceSystemReady) 
-                        {
-                            _resourceSystem.RegisterResource(
-                                chunkCoord, 
-                                instance.WorldPosition, 
-                                propData.Name, 
-                                instanceIndex
-                            );
-                            chunkResourceCount++;
-                            _totalResourcesRegistered++;
-                        }
-
-                        if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
-                        {
-                            RegisterPropWithNavigation(instance.WorldPosition, propData, chunkCoord);
-                            propsRegisteredWithNav++;
-                        }
-                        
-                        instanceIndex++;
-                    }
-                    else
-                    {
-                        instanceIndex++;
-                    }
-                }
+                GenerateScatteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
+                    halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
+                    ref skippedHarvestedCount, ref propsRegisteredWithNav);
             }
-
-            if (propInstances.Count > 0)
+            else if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Clustered)
             {
-                var mmi = CreateMultiMeshInstance(propInstances, propData, chunkCoord, chunkWorldOrigin, chunkWorldSize);
-                chunkPropData.MultiMeshInstances.Add(mmi);
-                AddChild(mmi);
+                GenerateClusteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
+                    halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
+                    ref skippedHarvestedCount, ref propsRegisteredWithNav);
             }
         }
 
@@ -274,7 +206,247 @@ public partial class EnvironmentManager : Node3D
         }
     }
 
-    // OPTIMIZATION: Separate method for biome pixel generation with caching
+    private void GenerateScatteredProps(
+        EnvironmentPropData propData, 
+        Dictionary<int, List<PixelPosition>> biomePixels,
+        Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize,
+        ChunkPropData chunkPropData, ref int chunkResourceCount, 
+        ref int skippedHarvestedCount, ref int propsRegisteredWithNav)
+    {
+        var propInstances = new List<PropInstance>();
+        int instanceIndex = 0;
+
+        for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+        {
+            var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
+            
+            if (!propData.AllowedBiomes.HasFlag(biomeFlag))
+                continue;
+            
+            if (!biomePixels.ContainsKey(biomeIndex))
+                continue;
+
+            foreach (var pixel in biomePixels[biomeIndex])
+            {
+                bool shouldSpawn = true;
+                
+                if (_resourceSystemReady && propData.IsHarvestable)
+                {
+                    shouldSpawn = _resourceSystem.ShouldSpawnResource(chunkCoord, instanceIndex, propData.Name);
+                    
+                    if (!shouldSpawn)
+                    {
+                        skippedHarvestedCount++;
+                        if (EnableDebugLogging && skippedHarvestedCount <= 3)
+                            GD.Print($"🚫 Skipping harvested {propData.Name} at index {instanceIndex} in chunk {chunkCoord}");
+                    }
+                }
+
+                if (!shouldSpawn)
+                {
+                    instanceIndex++;
+                    continue;
+                }
+
+                float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
+                if (randomValue < propData.Probability)
+                {
+                    var instance = CreatePropInstance(
+                        pixel.WorldX, pixel.WorldZ, 
+                        pixel.LocalX, pixel.LocalZ, 
+                        propData,
+                        chunkWorldOrigin,
+                        halfChunkWorldSize
+                    );
+                    propInstances.Add(instance);
+
+                    if (propData.IsHarvestable && _resourceSystemReady) 
+                    {
+                        _resourceSystem.RegisterResource(
+                            chunkCoord, 
+                            instance.WorldPosition, 
+                            propData.Name, 
+                            instanceIndex
+                        );
+                        chunkResourceCount++;
+                        _totalResourcesRegistered++;
+                    }
+
+                    if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
+                    {
+                        RegisterPropWithNavigation(instance.WorldPosition, propData, chunkCoord);
+                        propsRegisteredWithNav++;
+                    }
+                }
+                
+                instanceIndex++;
+            }
+        }
+
+        if (propInstances.Count > 0)
+        {
+            var mmi = CreateMultiMeshInstance(propInstances, propData, chunkCoord, chunkWorldOrigin, 
+                _terrain.ChunkSize * _terrain.PixelSize);
+            chunkPropData.MultiMeshInstances.Add(mmi);
+            AddChild(mmi);
+        }
+    }
+
+    private void GenerateClusteredProps(
+        EnvironmentPropData propData, 
+        Dictionary<int, List<PixelPosition>> biomePixels,
+        Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize,
+        ChunkPropData chunkPropData, ref int chunkResourceCount, 
+        ref int skippedHarvestedCount, ref int propsRegisteredWithNav)
+    {
+        var propInstances = new List<PropInstance>();
+        int instanceIndex = 0;
+
+        var processedPixels = new HashSet<Vector2I>();
+
+        for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+        {
+            var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
+            
+            if (!propData.AllowedBiomes.HasFlag(biomeFlag))
+                continue;
+            
+            if (!biomePixels.ContainsKey(biomeIndex))
+                continue;
+
+            var pixelGrid = new Dictionary<Vector2I, PixelPosition>();
+            foreach (var pixel in biomePixels[biomeIndex])
+            {
+                var gridCoord = new Vector2I(
+                    Mathf.FloorToInt(pixel.LocalX / _terrain.PixelSize),
+                    Mathf.FloorToInt(pixel.LocalZ / _terrain.PixelSize)
+                );
+                if (!pixelGrid.ContainsKey(gridCoord))
+                    pixelGrid[gridCoord] = pixel;
+            }
+
+            foreach (var kvp in pixelGrid)
+            {
+                var gridCoord = kvp.Key;
+                
+                if (processedPixels.Contains(gridCoord))
+                    continue;
+
+                var pixel = kvp.Value;
+                float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
+                
+                if (randomValue < propData.Probability)
+                {
+                    var cluster = GenerateCluster(pixel, gridCoord, pixelGrid, processedPixels, 
+                        propData, chunkCoord, chunkWorldOrigin, halfChunkWorldSize, ref instanceIndex);
+                    
+                    propInstances.AddRange(cluster);
+
+                    foreach (var instance in cluster)
+                    {
+                        if (propData.IsHarvestable && _resourceSystemReady) 
+                        {
+                            _resourceSystem.RegisterResource(
+                                chunkCoord, 
+                                instance.WorldPosition, 
+                                propData.Name, 
+                                instanceIndex++
+                            );
+                            chunkResourceCount++;
+                            _totalResourcesRegistered++;
+                        }
+
+                        if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
+                        {
+                            RegisterPropWithNavigation(instance.WorldPosition, propData, chunkCoord);
+                            propsRegisteredWithNav++;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (propInstances.Count > 0)
+        {
+            var mmi = CreateMultiMeshInstance(propInstances, propData, chunkCoord, chunkWorldOrigin, 
+                _terrain.ChunkSize * _terrain.PixelSize);
+            chunkPropData.MultiMeshInstances.Add(mmi);
+            AddChild(mmi);
+        }
+    }
+
+    private List<PropInstance> GenerateCluster(
+        PixelPosition seedPixel, Vector2I seedGrid,
+        Dictionary<Vector2I, PixelPosition> pixelGrid,
+        HashSet<Vector2I> processedPixels,
+        EnvironmentPropData propData, Vector2I chunkCoord,
+        Vector2 chunkWorldOrigin, float halfChunkWorldSize, ref int instanceIndex)
+    {
+        var cluster = new List<PropInstance>();
+        var queue = new Queue<(Vector2I coord, float probability)>();
+        
+        queue.Enqueue((seedGrid, propData.Probability));
+        
+        int clusterSize = 0;
+
+        while (queue.Count > 0 && clusterSize < propData.MaxClusterSize)
+        {
+            var (currentGrid, currentProb) = queue.Dequeue();
+            
+            if (processedPixels.Contains(currentGrid))
+                continue;
+            
+            if (!pixelGrid.TryGetValue(currentGrid, out var pixel))
+                continue;
+
+            processedPixels.Add(currentGrid);
+
+            var instance = CreatePropInstance(
+                pixel.WorldX, pixel.WorldZ, 
+                pixel.LocalX, pixel.LocalZ, 
+                propData,
+                chunkWorldOrigin,
+                halfChunkWorldSize
+            );
+            cluster.Add(instance);
+            clusterSize++;
+
+            var adjacentCells = new Vector2I[]
+            {
+                new Vector2I(currentGrid.X + 1, currentGrid.Y),
+                new Vector2I(currentGrid.X - 1, currentGrid.Y),
+                new Vector2I(currentGrid.X, currentGrid.Y + 1),
+                new Vector2I(currentGrid.X, currentGrid.Y - 1),
+                new Vector2I(currentGrid.X + 1, currentGrid.Y + 1),
+                new Vector2I(currentGrid.X - 1, currentGrid.Y - 1),
+                new Vector2I(currentGrid.X + 1, currentGrid.Y - 1),
+                new Vector2I(currentGrid.X - 1, currentGrid.Y + 1)
+            };
+
+            foreach (var adjacentGrid in adjacentCells)
+            {
+                if (processedPixels.Contains(adjacentGrid))
+                    continue;
+                
+                if (!pixelGrid.ContainsKey(adjacentGrid))
+                    continue;
+
+                float newProb = currentProb * (1.0f - propData.ClusterDecayRate);
+                
+                float spreadRandom = GetDeterministicRandom(
+                    adjacentGrid.X * 100f, adjacentGrid.Y * 100f, 
+                    propData.Name + currentGrid.X + currentGrid.Y);
+                
+                if (spreadRandom < propData.ClusterSpreadChance && newProb > 0.01f)
+                {
+                    queue.Enqueue((adjacentGrid, newProb));
+                }
+            }
+        }
+
+        return cluster;
+    }
+
     private Dictionary<int, List<PixelPosition>> GenerateBiomePixelData(Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize)
     {
         var biomePixels = new Dictionary<int, List<PixelPosition>>();
@@ -289,12 +461,46 @@ public partial class EnvironmentManager : Node3D
                 float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
                 float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
-                // OPTIMIZATION: Use combined method to reduce noise calls
                 var (biomeIndex, isWater) = _terrain.GetTerrainInfoAt(worldX, worldZ);
                 
                 if (isWater)
                     continue;
                 
+                // OPTIMIZED: Check if this is a beach and skip it entirely
+                // Beach pixels simply won't exist in the biomePixels data
+                if (_terrain.EnableBeaches && _terrain.WaterNoise != null && _terrain.BeachNoise != null)
+                {
+                    // Quick beach detection - check if water is nearby
+                    bool isNearWater = false;
+                    float checkRadius = _terrain.BeachWidth * _terrain.PixelSize;
+                    
+                    // Only check 4 cardinal directions for performance
+                    for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 4)
+                    {
+                        float checkX = worldX + Mathf.Cos(angle) * checkRadius;
+                        float checkZ = worldZ + Mathf.Sin(angle) * checkRadius;
+                        
+                        float checkWaterValue = _terrain.WaterNoise.GetNoise2D(checkX, checkZ);
+                        if (checkWaterValue < _terrain.WaterThreshold)
+                        {
+                            isNearWater = true;
+                            break;
+                        }
+                    }
+                    
+                    // If near water, check beach noise to confirm it's a beach
+                    if (isNearWater)
+                    {
+                        float beachNoiseValue = _terrain.BeachNoise.GetNoise2D(worldX, worldZ);
+                        if (beachNoiseValue > _terrain.BeachThreshold)
+                        {
+                            // This is a beach pixel - skip it entirely!
+                            continue;
+                        }
+                    }
+                }
+                
+                // Only add non-beach, non-water pixels to the biome data
                 if (!biomePixels.ContainsKey(biomeIndex))
                     biomePixels[biomeIndex] = new List<PixelPosition>();
                 
@@ -333,9 +539,6 @@ public partial class EnvironmentManager : Node3D
             CollisionSize = collisionSize,
             PropName = propData.Name
         });
-        
-        if (EnableDebugLogging && _totalResourcesRegistered <= 5)
-            GD.Print($"🌲 Registered prop at {flatWorldPos} (size: {collisionSize})");
     }
 
     public void UnregisterPropFromNavigation(Vector3 worldPos, EnvironmentPropData propData)
@@ -458,7 +661,6 @@ public partial class EnvironmentManager : Node3D
 
     private void UnloadPropChunk(Vector2I coord)
     {
-        // OPTIMIZATION: Remove from biome pixel cache
         _biomePixelCache.Remove(coord);
         
         if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
@@ -543,60 +745,11 @@ public partial class EnvironmentManager : Node3D
             UnloadPropChunk(coord);
         _propChunks.Clear();
         _chunkPropNavData.Clear();
-        _biomePixelCache.Clear(); // Clear cache too
+        _biomePixelCache.Clear();
         _totalResourcesRegistered = 0;
     }
 
     public Node3D GetNavigationGrid() => _navigationGrid;
-
-    public void VerifyNavigationSync()
-    {
-        if (_navigationGrid == null) return;
-
-        var loadedChunks = GetLoadedTerrainChunks();
-        
-        var orphanedChunks = new List<Vector2I>();
-        foreach (var coord in _chunkPropNavData.Keys)
-        {
-            if (!loadedChunks.Contains(coord))
-                orphanedChunks.Add(coord);
-        }
-
-        foreach (var coord in orphanedChunks)
-        {
-            if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
-            {
-                foreach (var navData in navDataList)
-                    _navigationGrid.Call("unregister_prop_obstacle", navData.WorldPosition, navData.CollisionSize);
-                _chunkPropNavData.Remove(coord);
-                GD.Print($"🧹 Cleaned orphaned navigation data for chunk {coord}");
-            }
-        }
-
-        if (EnableDebugLogging)
-            GD.Print($"Navigation sync check: {loadedChunks.Count} terrain chunks, {_chunkPropNavData.Count} nav chunks, {orphanedChunks.Count} orphaned");
-    }
-
-    public Godot.Collections.Dictionary GetNavigationStats()
-    {
-        var stats = new Godot.Collections.Dictionary();
-        stats["loaded_prop_chunks"] = _propChunks.Count;
-        stats["nav_data_chunks"] = _chunkPropNavData.Count;
-        
-        int totalNavProps = 0;
-        foreach (var navList in _chunkPropNavData.Values)
-            totalNavProps += navList.Count;
-        
-        stats["total_nav_props"] = totalNavProps;
-        
-        if (_navigationGrid != null)
-        {
-            var propBlockedCount = _navigationGrid.Call("get_prop_blocked_count");
-            stats["nav_grid_blocked_cells"] = propBlockedCount;
-        }
-        
-        return stats;
-    }
 }
 
 public class ChunkPropData

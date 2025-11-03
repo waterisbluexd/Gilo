@@ -384,7 +384,7 @@ public partial class ChunkPixelTerrain : Node3D
         chunk.MultiMeshInstance.Position = new Vector3(pos.X + ChunkSize * PixelSize * 0.5f, 0, pos.Y + ChunkSize * PixelSize * 0.5f);
         
         AddChild(chunk.MultiMeshInstance);
-        _loadedChunks[data.ChunkCoord] = chunk;
+        _loadedChunks[data.ChunkCoord] = chunk;
     }
 
     private void UnloadChunk(Vector2I coord)

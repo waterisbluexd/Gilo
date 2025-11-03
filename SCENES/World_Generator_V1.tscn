@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=22 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -20,9 +20,18 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
 noise_type = 3
-seed = 144119703
 frequency = 0.08
 fractal_octaves = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a4esh"]
+noise_type = 3
+frequency = 0.03
+fractal_octaves = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m1pdk"]
+noise_type = 3
+frequency = 0.15
+fractal_octaves = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a4esh"]
 
@@ -33,10 +42,12 @@ ChunkSize = 64
 PrimaryBiomeNoise = ExtResource("2_gx6qx")
 SecondaryBiomeNoise = ExtResource("3_ul5h0")
 HeightNoise = SubResource("FastNoiseLite_ndvok")
+WaterNoise = SubResource("FastNoiseLite_a4esh")
 PrimaryNoiseWeight = 0.85
 SecondaryNoiseWeight = 0.585
 NoiseContrast = 0.8
-EnableHeightVariation = false
+HeightInfluence = 0.03
+BeachNoise = SubResource("FastNoiseLite_m1pdk")
 Threshold1 = -0.942
 Threshold2 = -0.779
 Threshold3 = -0.716

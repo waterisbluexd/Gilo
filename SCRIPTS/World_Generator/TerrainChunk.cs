@@ -66,12 +66,8 @@ public partial class TerrainChunk
                     bool isBeach = false;
                     if (enableBeaches && beachNoise != null)
                     {
-                        // Check if there's water nearby
                         bool hasWaterNearby = false;
-                        // Use a fixed check radius relative to pixel size for consistency
                         float checkRadius = beachWidth * pixelSize;
-                        
-                        // Sample a few points around this pixel to see if water is nearby
                         for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
                         {
                             float checkX = worldX + Mathf.Cos(angle) * checkRadius;
@@ -87,12 +83,9 @@ public partial class TerrainChunk
                                 }
                             }
                         }
-                        
-                        // Check proximity to water AND beach noise threshold
                         if (hasWaterNearby)
                         {
                             float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
-                            // Only apply sand if the terrain is "low" enough based on beach width/threshold
                             if (beachNoiseValue > beachThreshold && Mathf.Abs(waterHeight) < beachWidth)
                             {
                                 isBeach = true;
