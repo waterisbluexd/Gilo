@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 [Tool]
 public partial class ChunkPixelTerrain : Node3D
@@ -34,6 +35,10 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public bool WorldActive { get => _worldActive; set => SetWorldActive(value); }
     [Export] public bool AutoGenerateOnReady { get; set; } = true;
 
+    [ExportGroup("Biomes")]
+    [Export] public Godot.Collections.Array<BiomeData> Biomes { get; set; } = new();
+    [Export] public bool UseDefaultBiomes { get; set; } = true;
+
     [ExportGroup("Noise Settings")]
     [Export] public FastNoiseLite PrimaryBiomeNoise { get; set; }
     [Export] public FastNoiseLite SecondaryBiomeNoise { get; set; }
@@ -61,23 +66,6 @@ public partial class ChunkPixelTerrain : Node3D
     [Export(PropertyHint.Range, "1.0,10.0")] public float BeachWidth { get; set; } = 3.0f;
     [Export] public Color SandColor { get; set; } = new Color(0.93f, 0.87f, 0.64f, 1.0f);
 
-    [ExportGroup("Biome Colors & Thresholds")]
-    [Export] public Color Color1 { get; set; } = new Color(0.169f, 0.239f, 0.075f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold1 { get; set; } = -0.6f;
-    [Export] public Color Color2 { get; set; } = new Color(0.196f, 0.341f, 0.133f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold2 { get; set; } = -0.3f;
-    [Export] public Color Color3 { get; set; } = new Color(0.38f, 0.408f, 0.133f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold3 { get; set; } = -0.1f;
-    [Export] public Color Color4 { get; set; } = new Color(0.447f, 0.569f, 0.267f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold4 { get; set; } = 0.1f;
-    [Export] public Color Color5 { get; set; } = new Color(0.78f, 0.69f, 0.282f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold5 { get; set; } = 0.3f;
-    [Export] public Color Color6 { get; set; } = new Color(0.482f, 0.624f, 0.2f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold6 { get; set; } = 0.5f;
-    [Export] public Color Color7 { get; set; } = new Color(0.545f, 0.702f, 0.22f, 1.0f);
-    [Export(PropertyHint.Range, "-1.0,1.0")] public float Threshold7 { get; set; } = 0.7f;
-    [Export] public Color Color8 { get; set; } = new Color(0.647f, 0.753f, 0.208f, 1.0f);
-
     [ExportGroup("Material Settings")]
     [Export] public StandardMaterial3D CustomMaterial { get; set; }
 
@@ -85,7 +73,6 @@ public partial class ChunkPixelTerrain : Node3D
     [Export] public bool UseMultithreading { get; set; } = true;
     [Export(PropertyHint.Range, "1,16")] public int MaxConcurrentThreads { get; set; } = 4;
     [Export] public bool EnableFrustumCulling { get; set; } = true;
-    // OPTIMIZATION: Default to 1 to minimize the main-thread work per frame
     [Export(PropertyHint.Range, "1,8")] public int MaxChunksPerFrame { get; set; } = 1; 
     [Export] public Node3D Player { get; set; }
 
@@ -99,16 +86,20 @@ public partial class ChunkPixelTerrain : Node3D
     private float[] _biomeThresholds;
     private Vector2I _lastPlayerChunk = new Vector2I(99999, 99999);
     private Camera3D _camera;
-    
-    // OPTIMIZATION: Store the base mesh resource once
     private ArrayMesh _pixelMesh; 
 
     public override void _Ready()
     {
         SetProcess(true);
         
-        _biomeColors = new[] { Color1, Color2, Color3, Color4, Color5, Color6, Color7, Color8 };
-        _biomeThresholds = new[] { Threshold1, Threshold2, Threshold3, Threshold4, Threshold5, Threshold6, Threshold7 };
+        // Initialize default biomes if needed
+        if (UseDefaultBiomes && (Biomes == null || Biomes.Count == 0))
+        {
+            InitializeDefaultBiomes();
+        }
+        
+        // Extract colors and thresholds from BiomeData array
+        UpdateBiomeArrays();
         
         if (AutoCreateDefaultNoise)
         {
@@ -119,7 +110,6 @@ public partial class ChunkPixelTerrain : Node3D
             if (EnableBeaches && BeachNoise == null) BeachNoise = CreateNoise(0.15f, 1);
         }
 
-        // Apply WorldSeed to all noise generators
         ApplyWorldSeedToNoise();
         
         _camera = GetViewport()?.GetCamera3D();
@@ -128,7 +118,6 @@ public partial class ChunkPixelTerrain : Node3D
         _threadSemaphore = new SemaphoreSlim(MaxConcurrentThreads, MaxConcurrentThreads);
         _cancellationTokenSource = new CancellationTokenSource();
         
-        // OPTIMIZATION: Create the base mesh ONCE here to prevent per-chunk lag
         CreatePixelMesh(); 
 
         if (AutoGenerateOnReady && Player != null)
@@ -138,8 +127,43 @@ public partial class ChunkPixelTerrain : Node3D
             UpdateChunks();
         }
     }
+
+    private void InitializeDefaultBiomes()
+    {
+        Biomes = new Godot.Collections.Array<BiomeData>
+        {
+            new BiomeData("Jungle", Color.FromHtml("2b3d13"), -0.942f),
+            new BiomeData("Biome_2", Color.FromHtml("325722"), -0.779f),
+            new BiomeData("Biome_3", Color.FromHtml("616822"), -0.716f),
+            new BiomeData("Biome_4", Color.FromHtml("729144"), -0.667f),
+            new BiomeData("Biome_5", Color.FromHtml("c7b048"), -0.604f),
+            new BiomeData("Biome_6", Color.FromHtml("7b9f33"), -0.383f),
+            new BiomeData("Biome_7", Color.FromHtml("8bb338"), -0.343f),
+            new BiomeData("Biome_8", Color.FromHtml("a5c035"), 1.0f)
+        };
+        
+        GD.Print($"✅ Initialized {Biomes.Count} default biomes");
+    }
+
+    private void UpdateBiomeArrays()
+    {
+        if (Biomes == null || Biomes.Count == 0)
+        {
+            GD.PushError("No biomes defined!");
+            _biomeColors = new Color[] { Colors.Green };
+            _biomeThresholds = new float[] { 1.0f };
+            return;
+        }
+
+        // Sort biomes by threshold
+        var sortedBiomes = Biomes.OrderBy(b => b.Threshold).ToList();
+        
+        _biomeColors = sortedBiomes.Select(b => b.BiomeColor).ToArray();
+        _biomeThresholds = sortedBiomes.Take(sortedBiomes.Count - 1).Select(b => b.Threshold).ToArray();
+        
+        GD.Print($"🌍 Loaded {_biomeColors.Length} biomes with {_biomeThresholds.Length} thresholds");
+    }
     
-    // OPTIMIZATION: New method to create the Quad Mesh once
     private void CreatePixelMesh()
     {
         var vertices = new Vector3[]
@@ -166,8 +190,6 @@ public partial class ChunkPixelTerrain : Node3D
         _pixelMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
     }
 
-
-    // Apply WorldSeed to all noise generators (only changes Seed, not frequency)
     private void ApplyWorldSeedToNoise()
     {
         if (PrimaryBiomeNoise != null)
@@ -210,7 +232,6 @@ public partial class ChunkPixelTerrain : Node3D
         }
 
         int processed = 0;
-        // The throttling limit (MaxChunksPerFrame=1) ensures minimal work per frame.
         while (processed++ < MaxChunksPerFrame && _meshCreationQueue.TryDequeue(out var data))
             CreateChunkObject(data);
 
@@ -241,7 +262,7 @@ public partial class ChunkPixelTerrain : Node3D
         Frequency = freq,
         FractalType = FastNoiseLite.FractalTypeEnum.Fbm,
         FractalOctaves = octaves,
-        Seed = _worldSeed  // Use WorldSeed instead of random
+        Seed = _worldSeed
     };
 
     private Node3D FindPlayer()
@@ -260,19 +281,16 @@ public partial class ChunkPixelTerrain : Node3D
 
         var playerChunk = WorldToChunk(Player.GlobalPosition);
 
-        // OPTIMIZATION: Removed expensive sorting - direct iteration
         for (int x = playerChunk.X - RenderDistance; x <= playerChunk.X + RenderDistance; x++)
         {
             for (int z = playerChunk.Y - RenderDistance; z <= playerChunk.Y + RenderDistance; z++)
             {
                 var coord = new Vector2I(x, z);
-                // OPTIMIZATION: Use TryGetValue instead of ContainsKey
                 if (!_loadedChunks.TryGetValue(coord, out _) && !_loadingChunks.Contains(coord))
                     LoadChunkAsync(coord);
             }
         }
 
-        // Unload distant chunks
         var chunksToUnload = new List<Vector2I>();
         foreach (var coord in _loadedChunks.Keys)
         {
@@ -368,7 +386,6 @@ public partial class ChunkPixelTerrain : Node3D
         _loadingChunks.Remove(data.ChunkCoord);
         if (_loadedChunks.ContainsKey(data.ChunkCoord) || !_worldActive) return;
         
-        // Safety check for pre-created mesh
         if (_pixelMesh == null)
         {
             GD.PushError("Pixel mesh was not created! Cannot load chunk.");
@@ -377,7 +394,6 @@ public partial class ChunkPixelTerrain : Node3D
         }
 
         var chunk = new TerrainChunk(data.ChunkCoord, data);
-        // Pass the single, pre-created mesh resource
         chunk.CreateMesh(ChunkSize, PixelSize, CustomMaterial, _pixelMesh); 
         
         var pos = ChunkToWorld(data.ChunkCoord);
@@ -415,7 +431,6 @@ public partial class ChunkPixelTerrain : Node3D
         coord.Y * ChunkSize * PixelSize
     );
 
-    // OPTIMIZATION: Combined method to reduce noise calls
     public (int biomeIndex, bool isWater) GetTerrainInfoAt(float worldX, float worldZ)
     {
         float primaryValue = PrimaryBiomeNoise.GetNoise2D(worldX, worldZ);
@@ -426,15 +441,15 @@ public partial class ChunkPixelTerrain : Node3D
         
         float noiseValue = Mathf.Clamp(combined, -1.0f, 1.0f);
 
-        int biomeIndex;
-        if (noiseValue < _biomeThresholds[0]) biomeIndex = 0;
-        else if (noiseValue < _biomeThresholds[1]) biomeIndex = 1;
-        else if (noiseValue < _biomeThresholds[2]) biomeIndex = 2;
-        else if (noiseValue < _biomeThresholds[3]) biomeIndex = 3;
-        else if (noiseValue < _biomeThresholds[4]) biomeIndex = 4;
-        else if (noiseValue < _biomeThresholds[5]) biomeIndex = 5;
-        else if (noiseValue < _biomeThresholds[6]) biomeIndex = 6;
-        else biomeIndex = 7;
+        int biomeIndex = _biomeThresholds.Length;
+        for (int i = 0; i < _biomeThresholds.Length; i++)
+        {
+            if (noiseValue < _biomeThresholds[i])
+            {
+                biomeIndex = i;
+                break;
+            }
+        }
 
         bool isWater = false;
         if (EnableWater && WaterNoise != null)
@@ -446,7 +461,6 @@ public partial class ChunkPixelTerrain : Node3D
         return (biomeIndex, isWater);
     }
 
-    // Keep old methods for backward compatibility
     public int GetBiomeIndexAt(float worldX, float worldZ)
     {
         return GetTerrainInfoAt(worldX, worldZ).biomeIndex;
@@ -456,4 +470,6 @@ public partial class ChunkPixelTerrain : Node3D
     {
         return GetTerrainInfoAt(worldX, worldZ).isWater;
     }
+    
+    public int GetBiomeCount() => _biomeColors?.Length ?? 0;
 }

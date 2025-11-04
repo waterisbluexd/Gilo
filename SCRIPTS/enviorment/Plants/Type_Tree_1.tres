@@ -10,4 +10,5 @@ SourceType = 1
 PropScene = ExtResource("1_l4hsf")
 IsHarvestable = true
 CollisionSize = Vector2(2, 2)
+AllowedBiomes = 56
 metadata/_custom_type_script = "uid://dko4jpirlylb2"

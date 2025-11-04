@@ -1,14 +1,23 @@
-[gd_scene load_steps=22 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=31 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
+[ext_resource type="Script" uid="uid://boy4f1ocq8nmv" path="res://SCRIPTS/World_Generator/BiomeData.cs" id="2_ul5h0"]
+[ext_resource type="Resource" uid="uid://c8224dfi77esm" path="res://SCRIPTS/World_Generator/Biome/Biome_1.tres" id="3_a4esh"]
 [ext_resource type="FastNoiseLite" uid="uid://bwbd8x15tw21j" path="res://SHADER/resources/worldgennoise/SecondaryBiomeNoise.tres" id="3_ul5h0"]
+[ext_resource type="Resource" uid="uid://d3ybb58vjhgiu" path="res://SCRIPTS/World_Generator/Biome/Biome_2.tres" id="4_7eh8x"]
 [ext_resource type="Script" uid="uid://5ouu4qu5gpxd" path="res://SCRIPTS/World_Generator/NavigationGrid.gd" id="4_jl6tj"]
+[ext_resource type="Resource" uid="uid://6xudhupuw34g" path="res://SCRIPTS/World_Generator/Biome/Biome_3.tres" id="5_f0ktq"]
 [ext_resource type="Script" uid="uid://cx7msig0if6dy" path="res://SCRIPTS/World_Generator/BuildingPlacer.gd" id="5_te0ef"]
+[ext_resource type="Resource" uid="uid://bq25eibns2x5i" path="res://SCRIPTS/World_Generator/Biome/Biome_4.tres" id="6_t185i"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_xo5mt"]
+[ext_resource type="Resource" uid="uid://ckdgmknuu2ix5" path="res://SCRIPTS/World_Generator/Biome/Biome_5.tres" id="7_cljw5"]
 [ext_resource type="Resource" uid="uid://k822t4ved52n" path="res://RESOURCES/Building_Res/HouseAllType/Hovel1.tres" id="7_d66sa"]
+[ext_resource type="Resource" uid="uid://cptxi60eyuemd" path="res://SCRIPTS/World_Generator/Biome/Biome_6.tres" id="8_0a2qd"]
 [ext_resource type="Resource" uid="uid://6pnro5702iow" path="res://RESOURCES/Building_Res/HouseAllType/Hovel2.tres" id="8_28e2f"]
+[ext_resource type="Resource" uid="uid://drbdycqyq28ip" path="res://SCRIPTS/World_Generator/Biome/Biome_7.tres" id="9_adjln"]
 [ext_resource type="Resource" uid="uid://dunmgs0i75dxk" path="res://RESOURCES/Building_Res/HouseAllType/Hovel3.tres" id="9_gx6qx"]
+[ext_resource type="Resource" uid="uid://bv12dad5xb7ng" path="res://SCRIPTS/World_Generator/Biome/Biome_8.tres" id="10_4p0f6"]
 [ext_resource type="Resource" uid="uid://b1gviv0q2nyi7" path="res://RESOURCES/Building_Res/HouseAllType/Hovel4.tres" id="10_ul5h0"]
 [ext_resource type="Resource" uid="uid://ci4bhs168d72y" path="res://RESOURCES/Building_Res/HouseAllType/Hovel5.tres" id="11_a4esh"]
 [ext_resource type="Script" uid="uid://fxrly6u7n0h7" path="res://SCRIPTS/World_Generator/EnvironmentManager.cs" id="12_ndvok"]
@@ -39,6 +48,7 @@ fractal_octaves = 1
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
 script = ExtResource("1_bsi5x")
 ChunkSize = 64
+Biomes = Array[ExtResource("2_ul5h0")]([ExtResource("3_a4esh"), ExtResource("4_7eh8x"), ExtResource("5_f0ktq"), ExtResource("6_t185i"), ExtResource("7_cljw5"), ExtResource("8_0a2qd"), ExtResource("9_adjln"), ExtResource("10_4p0f6")])
 PrimaryBiomeNoise = ExtResource("2_gx6qx")
 SecondaryBiomeNoise = ExtResource("3_ul5h0")
 HeightNoise = SubResource("FastNoiseLite_ndvok")
@@ -48,13 +58,6 @@ SecondaryNoiseWeight = 0.585
 NoiseContrast = 0.8
 HeightInfluence = 0.03
 BeachNoise = SubResource("FastNoiseLite_m1pdk")
-Threshold1 = -0.942
-Threshold2 = -0.779
-Threshold3 = -0.716
-Threshold4 = -0.667
-Threshold5 = -0.604
-Threshold6 = -0.383
-Threshold7 = -0.343
 CustomMaterial = SubResource("StandardMaterial3D_a4esh")
 EnableFrustumCulling = false
 

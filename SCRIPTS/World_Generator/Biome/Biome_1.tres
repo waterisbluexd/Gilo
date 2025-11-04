@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BiomeData" load_steps=2 format=3 uid="uid://c8224dfi77esm"]
+
+[ext_resource type="Script" uid="uid://boy4f1ocq8nmv" path="res://SCRIPTS/World_Generator/BiomeData.cs" id="1_2qlf4"]
+
+[resource]
+script = ExtResource("1_2qlf4")
+BiomeName = "Biome_1"
+BiomeColor = Color(0.64705884, 0.7529412, 0.20784314, 1)
+Threshold = 1.0
+metadata/_custom_type_script = "uid://boy4f1ocq8nmv"

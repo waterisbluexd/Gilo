@@ -35,8 +35,8 @@ public partial class EnvironmentManager : Node3D
     private int _totalResourcesRegistered = 0;
     private bool _resourceSystemReady = false;
     private Dictionary<Vector2I, List<PropNavigationData>> _chunkPropNavData = new();
-    
     private Dictionary<Vector2I, Dictionary<int, List<PixelPosition>>> _biomePixelCache = new();
+    private int _biomeCount = 8;
 
     public override void _Ready()
     {
@@ -51,18 +51,21 @@ public partial class EnvironmentManager : Node3D
             return;
         }
 
+        _biomeCount = _terrain.GetBiomeCount();
+        GD.Print($"🌍 EnvironmentManager detected {_biomeCount} biomes");
+
         _camera = GetViewport()?.GetCamera3D();
         _resourceSystem = GetNodeOrNull<ResourceSystem>("/root/ResourceSystem");
         
         if (_resourceSystem == null)
         {
-            GD.PushError("âš ï¸ CRITICAL: ResourceSystem not found in AutoLoad!");
+            GD.PushError("⚠️ CRITICAL: ResourceSystem not found in AutoLoad!");
         }
         else
         {
             _resourceSystemReady = true;
             if (EnableDebugLogging)
-                GD.Print("âœ… ResourceSystem connected successfully");
+                GD.Print("✅ ResourceSystem connected successfully");
         }
 
         if (RegisterWithNavigationGrid)
@@ -72,7 +75,7 @@ public partial class EnvironmentManager : Node3D
             if (_navigationGrid == null)
                 GD.PushWarning("NavigationGrid not found! Props won't block building placement.");
             else if (EnableDebugLogging)
-                GD.Print("âœ… NavigationGrid connected successfully");
+                GD.Print("✅ NavigationGrid connected successfully");
         }
         
         CallDeferred(nameof(Initialize));
@@ -186,14 +189,12 @@ public partial class EnvironmentManager : Node3D
 
             if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Scattered)
             {
-                // Original scattered logic
                 GenerateScatteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
                     halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
                     ref skippedHarvestedCount, ref propsRegisteredWithNav);
             }
             else if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Clustered)
             {
-                // New clustered logic for rocks/hills
                 GenerateClusteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
                     halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
                     ref skippedHarvestedCount, ref propsRegisteredWithNav);
@@ -204,7 +205,7 @@ public partial class EnvironmentManager : Node3D
 
         if (EnableDebugLogging && (chunkResourceCount > 0 || skippedHarvestedCount > 0 || propsRegisteredWithNav > 0))
         {
-            GD.Print($"ðŸŒ² Chunk {chunkCoord}: Spawned {chunkResourceCount} resources, Skipped {skippedHarvestedCount} harvested, Registered {propsRegisteredWithNav} with NavGrid (Total: {_totalResourcesRegistered})");
+            GD.Print($"🌲 Chunk {chunkCoord}: Spawned {chunkResourceCount} resources, Skipped {skippedHarvestedCount} harvested, Registered {propsRegisteredWithNav} with NavGrid (Total: {_totalResourcesRegistered})");
         }
     }
 
@@ -218,7 +219,7 @@ public partial class EnvironmentManager : Node3D
         var propInstances = new List<PropInstance>();
         int instanceIndex = 0;
 
-        for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+        for (int biomeIndex = 0; biomeIndex < _biomeCount; biomeIndex++)
         {
             var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
             
@@ -240,7 +241,7 @@ public partial class EnvironmentManager : Node3D
                     {
                         skippedHarvestedCount++;
                         if (EnableDebugLogging && skippedHarvestedCount <= 3)
-                            GD.Print($"ðŸš« Skipping harvested {propData.Name} at index {instanceIndex} in chunk {chunkCoord}");
+                            GD.Print($"🚫 Skipping harvested {propData.Name} at index {instanceIndex} in chunk {chunkCoord}");
                     }
                 }
 
@@ -304,10 +305,9 @@ public partial class EnvironmentManager : Node3D
         var propInstances = new List<PropInstance>();
         int instanceIndex = 0;
 
-        // Track which pixels have been processed in clusters
         var processedPixels = new HashSet<Vector2I>();
 
-        for (int biomeIndex = 0; biomeIndex < 8; biomeIndex++)
+        for (int biomeIndex = 0; biomeIndex < _biomeCount; biomeIndex++)
         {
             var biomeFlag = (EnvironmentPropData.BiomeFlags)(1 << biomeIndex);
             
@@ -317,7 +317,6 @@ public partial class EnvironmentManager : Node3D
             if (!biomePixels.ContainsKey(biomeIndex))
                 continue;
 
-            // Convert to grid coordinates for cluster logic
             var pixelGrid = new Dictionary<Vector2I, PixelPosition>();
             foreach (var pixel in biomePixels[biomeIndex])
             {
@@ -329,7 +328,6 @@ public partial class EnvironmentManager : Node3D
                     pixelGrid[gridCoord] = pixel;
             }
 
-            // Try to spawn clusters
             foreach (var kvp in pixelGrid)
             {
                 var gridCoord = kvp.Key;
@@ -340,16 +338,13 @@ public partial class EnvironmentManager : Node3D
                 var pixel = kvp.Value;
                 float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
                 
-                // Check if this pixel starts a new cluster
                 if (randomValue < propData.Probability)
                 {
-                    // Start a cluster from this seed point
                     var cluster = GenerateCluster(pixel, gridCoord, pixelGrid, processedPixels, 
                         propData, chunkCoord, chunkWorldOrigin, halfChunkWorldSize, ref instanceIndex);
                     
                     propInstances.AddRange(cluster);
 
-                    // Register resources for cluster
                     foreach (var instance in cluster)
                     {
                         if (propData.IsHarvestable && _resourceSystemReady) 
@@ -393,7 +388,6 @@ public partial class EnvironmentManager : Node3D
         var cluster = new List<PropInstance>();
         var queue = new Queue<(Vector2I coord, float probability)>();
         
-        // Start with the seed
         queue.Enqueue((seedGrid, propData.Probability));
         
         int clusterSize = 0;
@@ -410,7 +404,6 @@ public partial class EnvironmentManager : Node3D
 
             processedPixels.Add(currentGrid);
 
-            // Create instance at this position
             var instance = CreatePropInstance(
                 pixel.WorldX, pixel.WorldZ, 
                 pixel.LocalX, pixel.LocalZ, 
@@ -421,14 +414,12 @@ public partial class EnvironmentManager : Node3D
             cluster.Add(instance);
             clusterSize++;
 
-            // Try to spread to adjacent cells
             var adjacentCells = new Vector2I[]
             {
                 new Vector2I(currentGrid.X + 1, currentGrid.Y),
                 new Vector2I(currentGrid.X - 1, currentGrid.Y),
                 new Vector2I(currentGrid.X, currentGrid.Y + 1),
                 new Vector2I(currentGrid.X, currentGrid.Y - 1),
-                // Diagonals (optional, makes clusters more organic)
                 new Vector2I(currentGrid.X + 1, currentGrid.Y + 1),
                 new Vector2I(currentGrid.X - 1, currentGrid.Y - 1),
                 new Vector2I(currentGrid.X + 1, currentGrid.Y - 1),
@@ -443,7 +434,6 @@ public partial class EnvironmentManager : Node3D
                 if (!pixelGrid.ContainsKey(adjacentGrid))
                     continue;
 
-                // Calculate spread probability (decays with distance from seed)
                 float newProb = currentProb * (1.0f - propData.ClusterDecayRate);
                 
                 float spreadRandom = GetDeterministicRandom(
@@ -536,7 +526,7 @@ public partial class EnvironmentManager : Node3D
         _navigationGrid.Call("unregister_prop_obstacle", flatWorldPos, collisionSize);
         
         if (EnableDebugLogging)
-            GD.Print($"ðŸª“ Unregistered {propData.Name} from navigation at {flatWorldPos}");
+            GD.Print($"🪓 Unregistered {propData.Name} from navigation at {flatWorldPos}");
     }
 
     private float GetTerrainHeightAt(float worldX, float worldZ)
@@ -653,7 +643,7 @@ public partial class EnvironmentManager : Node3D
                 }
                 
                 if (EnableDebugLogging)
-                    GD.Print($"ðŸ§¹ Unregistered {unregisteredCount} props from navigation (chunk {coord})");
+                    GD.Print($"🧹 Unregistered {unregisteredCount} props from navigation (chunk {coord})");
             }
             
             _chunkPropNavData.Remove(coord);
@@ -755,4 +745,4 @@ public class PropNavigationData
     public Vector3 WorldPosition { get; set; }
     public Vector2 CollisionSize { get; set; }
     public string PropName { get; set; }
-}   
+}
