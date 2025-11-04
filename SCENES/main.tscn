@@ -1663,7 +1663,6 @@ surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-WorldActive = true
 HeightNoise = SubResource("FastNoiseLite_dtswy")
 WaterNoise = SubResource("FastNoiseLite_v5vvh")
 EnableHeightVariation = false
@@ -1671,6 +1670,13 @@ HeightInfluence = 0.0
 BeachNoise = SubResource("FastNoiseLite_7p5hq")
 BeachThreshold = -2.0
 BeachWidth = 10.0
+Threshold1 = -0.6
+Threshold2 = -0.3
+Threshold3 = -0.1
+Threshold4 = 0.1
+Threshold5 = 0.3
+Threshold6 = 0.5
+Threshold7 = 0.7
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
 Player = NodePath("../CameraPivot")
 
