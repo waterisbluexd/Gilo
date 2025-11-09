@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=3 format=3 uid="uid://njwk2bul8wip"]
+
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_mfe3w"]
+[ext_resource type="PackedScene" uid="uid://thl2thtqnah8" path="res://SCENES/Assets/aggri/big_rock_03.tscn" id="1_vniw6"]
+
+[resource]
+script = ExtResource("1_mfe3w")
+Name = "Rock"
+SourceType = 1
+PropScene = ExtResource("1_vniw6")
+IsHarvestable = true
+ResourceType = "Rock"
+CollisionSize = Vector2(8, 8)
+PlacementPattern = 1
+AllowedBiomeNames = Array[String](["Rock"])
+Probability = 0.009
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

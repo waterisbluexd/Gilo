@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=2 format=3 uid="uid://bk8xphqhmqnb5"]
+
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_cu5h5"]
+
+[resource]
+script = ExtResource("1_cu5h5")
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

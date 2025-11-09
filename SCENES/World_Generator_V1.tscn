@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=35 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="6_xo5mt"]
 [ext_resource type="Resource" uid="uid://ckdgmknuu2ix5" path="res://SCRIPTS/World_Generator/Biome/Biome_5.tres" id="7_cljw5"]
 [ext_resource type="Resource" uid="uid://k822t4ved52n" path="res://RESOURCES/Building_Res/HouseAllType/Hovel1.tres" id="7_d66sa"]
+[ext_resource type="Resource" uid="uid://cqbmbtimyjcbm" path="res://SCRIPTS/World_Generator/Biome/Biome_Rock.tres" id="7_t185i"]
 [ext_resource type="Resource" uid="uid://cptxi60eyuemd" path="res://SCRIPTS/World_Generator/Biome/Biome_6.tres" id="8_0a2qd"]
 [ext_resource type="Resource" uid="uid://6pnro5702iow" path="res://RESOURCES/Building_Res/HouseAllType/Hovel2.tres" id="8_28e2f"]
 [ext_resource type="Resource" uid="uid://drbdycqyq28ip" path="res://SCRIPTS/World_Generator/Biome/Biome_7.tres" id="9_adjln"]
@@ -21,11 +22,20 @@
 [ext_resource type="Resource" uid="uid://b1gviv0q2nyi7" path="res://RESOURCES/Building_Res/HouseAllType/Hovel4.tres" id="10_ul5h0"]
 [ext_resource type="Resource" uid="uid://ci4bhs168d72y" path="res://RESOURCES/Building_Res/HouseAllType/Hovel5.tres" id="11_a4esh"]
 [ext_resource type="Script" uid="uid://fxrly6u7n0h7" path="res://SCRIPTS/World_Generator/EnvironmentManager.cs" id="12_ndvok"]
-[ext_resource type="Resource" uid="uid://dapn6fuee5y6k" path="res://SCRIPTS/enviorment/Plants/Type_Tree_1.tres" id="13_ndvok"]
+[ext_resource type="Resource" uid="uid://dapn6fuee5y6k" path="res://SCRIPTS/enviorment/Type_env/Type_Tree_1.tres" id="13_ndvok"]
 [ext_resource type="Resource" uid="uid://copygtnplvwrt" path="res://RESOURCES/Building_Res/HouseAllType/Hovel7.tres" id="13_v4jrb"]
 [ext_resource type="Resource" uid="uid://dqb1r457jj5vd" path="res://RESOURCES/Building_Res/HouseAllType/Hovel8.tres" id="14_n0uxr"]
-[ext_resource type="Resource" uid="uid://cvy3pchun6hv4" path="res://SCRIPTS/enviorment/Plants/Type_Tree_2.tres" id="14_xo5mt"]
+[ext_resource type="Resource" uid="uid://cvy3pchun6hv4" path="res://SCRIPTS/enviorment/Type_env/Type_Tree_2.tres" id="14_xo5mt"]
 [ext_resource type="Resource" uid="uid://cdjijj82op454" path="res://RESOURCES/WorkHouse/WoordCutter/WoodCutter1.tres" id="15_ul5h0"]
+[ext_resource type="Resource" uid="uid://b4xemj4vdgs1m" path="res://SCRIPTS/enviorment/Type_env/Type_Tree_3.tres" id="27_f0ktq"]
+[ext_resource type="Resource" uid="uid://cebwatquh854p" path="res://SCRIPTS/enviorment/Type_env/Type_Rock_1.tres" id="29_cljw5"]
+
+[sub_resource type="Resource" id="Resource_t185i"]
+script = ExtResource("2_ul5h0")
+BiomeName = "Biome_3_redo"
+BiomeColor = Color(0.48235294, 0.62352943, 0.2, 1)
+Threshold = -0.5800000000000001
+metadata/_custom_type_script = "uid://boy4f1ocq8nmv"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
 noise_type = 3
@@ -48,7 +58,7 @@ fractal_octaves = 1
 transform = Transform3D(0.203, 0, 0, 0, 0.203, 0, 0, 0, 0.203, 0, 0, 0)
 script = ExtResource("1_bsi5x")
 ChunkSize = 64
-Biomes = Array[ExtResource("2_ul5h0")]([ExtResource("3_a4esh"), ExtResource("4_7eh8x"), ExtResource("5_f0ktq"), ExtResource("6_t185i"), ExtResource("7_cljw5"), ExtResource("8_0a2qd"), ExtResource("9_adjln"), ExtResource("10_4p0f6")])
+Biomes = Array[ExtResource("2_ul5h0")]([ExtResource("3_a4esh"), ExtResource("4_7eh8x"), ExtResource("5_f0ktq"), ExtResource("7_t185i"), SubResource("Resource_t185i"), ExtResource("6_t185i"), ExtResource("7_cljw5"), ExtResource("8_0a2qd"), ExtResource("9_adjln"), ExtResource("10_4p0f6")])
 PrimaryBiomeNoise = ExtResource("2_gx6qx")
 SecondaryBiomeNoise = ExtResource("3_ul5h0")
 HeightNoise = SubResource("FastNoiseLite_ndvok")
@@ -73,7 +83,8 @@ auto_select_next_building = true
 [node name="EnvironmentManager" type="Node3D" parent="." node_paths=PackedStringArray("NavigationGridNode")]
 transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0)
 script = ExtResource("12_ndvok")
-PropDatabase = [ExtResource("13_ndvok"), ExtResource("14_xo5mt")]
+PropDatabase = [ExtResource("13_ndvok"), ExtResource("14_xo5mt"), ExtResource("27_f0ktq"), ExtResource("29_cljw5")]
+EnableRandomRotation = false
 RandomScaleVariation = 0.0
 EnablePropCulling = false
 NavigationGridNode = NodePath("../NavigationGrid")

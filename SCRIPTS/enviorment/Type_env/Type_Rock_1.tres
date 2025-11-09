@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=4 format=3 uid="uid://cebwatquh854p"]
+
+[ext_resource type="PackedScene" uid="uid://dipiu0tafwgol" path="res://SCENES/Assets/aggri/big_rock_2.tscn" id="1_cb01h"]
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="2_g3p33"]
+[ext_resource type="PackedScene" uid="uid://dvxvgqgu20206" path="res://SCENES/Assets/aggri/big_rock_05.tscn" id="2_pji2t"]
+
+[resource]
+script = ExtResource("2_g3p33")
+Name = "Rock"
+SourceType = 2
+PropScene = ExtResource("1_cb01h")
+PropSceneVariants = Array[PackedScene]([ExtResource("1_cb01h"), ExtResource("2_pji2t")])
+ResourceType = "Rock"
+CollisionType = 1
+CollisionSize = Vector2(50, 50)
+CollisionGroupName = "Rocks"
+AvoidGroupNames = Array[String](["Rocks", "Tree"])
+PlacementPattern = 1
+AllowedBiomeNames = Array[String](["Rock", "Tree"])
+Probability = 0.005
+ClusterSpreadChance = 0.001
+MaxClusterSize = 1
+ClusterDecayRate = 0.0
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

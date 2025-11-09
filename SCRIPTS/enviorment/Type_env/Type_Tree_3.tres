@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=3 format=3 uid="uid://b4xemj4vdgs1m"]
+
+[ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_ilx0l"]
+[ext_resource type="PackedScene" uid="uid://f5foo8kynoq6" path="res://SCENES/Assets/plants/Type_Tree_3.tscn" id="1_yl3qh"]
+
+[resource]
+script = ExtResource("1_ilx0l")
+Name = "Dead Tree"
+SpawnPriority = 70
+SourceType = 1
+PropScene = ExtResource("1_yl3qh")
+IsHarvestable = true
+CollisionSize = Vector2(4, 4)
+CollisionGroupName = "Tree"
+AvoidGroupNames = Array[String](["Rocks"])
+AllowedBiomeNames = Array[String](["Biome_4"])
+Probability = 0.004
+metadata/_custom_type_script = "uid://dko4jpirlylb2"

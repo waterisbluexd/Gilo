@@ -7,35 +7,32 @@ public partial class EnvironmentPropData : Resource
     public enum PropSourceType
     {
         Mesh,
-        PackedScene
+        PackedScene,
+        MultiplePackedScenes  // NEW: Support for multiple scene variants
     }
 
     public enum SpawnPattern
     {
-        Scattered,      // Random placement (trees, grass)
-        Clustered       // Adjacent placement (rocks, hills)
+        Scattered,
+        Clustered
     }
 
-    [Flags]
-    public enum BiomeFlags
+    public enum CollisionMode
     {
-        Biome1 = 1 << 0,
-        Biome2 = 1 << 1,
-        Biome3 = 1 << 2,
-        Biome4 = 1 << 3,
-        Biome5 = 1 << 4,
-        Biome6 = 1 << 5,
-        Biome7 = 1 << 6,
-        Biome8 = 1 << 7
+        GridBased,      // Old system - simple grid collision
+        Area3D          // New system - uses Area3D for precise collision
     }
 
     [ExportGroup("Basic Info")]
     [Export] public string Name { get; set; } = "New Prop";
+    [Export(PropertyHint.Range, "0,100")]
+    public int SpawnPriority { get; set; } = 50;  // NEW: Higher priority spawns first
 
     [ExportGroup("Prop Source")]
     [Export] public PropSourceType SourceType { get; set; } = PropSourceType.Mesh;
     [Export] public Mesh PropMesh { get; set; }
     [Export] public PackedScene PropScene { get; set; }
+    [Export] public Godot.Collections.Array<PackedScene> PropSceneVariants { get; set; } = new();  // NEW
 
     [ExportGroup("Resource Settings")]
     [Export] public bool IsHarvestable { get; set; } = false;
@@ -45,28 +42,39 @@ public partial class EnvironmentPropData : Resource
     [Export(PropertyHint.Range, "0.5,30.0")]
     public float HarvestTime { get; set; } = 3.0f;
 
-    [ExportGroup("Navigation Collision")]
-    [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero;
+    [ExportGroup("Collision & Navigation")]
+    [Export] public CollisionMode CollisionType { get; set; } = CollisionMode.GridBased;  // NEW
     [Export] public bool BlocksNavigation { get; set; } = true;
+    
+    // Grid-based collision (old system)
+    [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero;
     [Export] public bool AutoCalculateCollisionSize { get; set; } = true;
+    
+    // Collision Group (for BOTH Area3D and grid-based props)
+    [Export] public string CollisionGroupName { get; set; } = "";  // NEW: e.g., "tree_collision", "rock_collision"
+    [Export] public Godot.Collections.Array<string> AvoidGroupNames { get; set; } = new();  // NEW: Groups this prop shouldn't overlap with
 
     [ExportGroup("Placement Rules")]
     [Export] public SpawnPattern PlacementPattern { get; set; } = SpawnPattern.Scattered;
-    [Export(PropertyHint.Flags, "Biome 1,Biome 2,Biome 3,Biome 4,Biome 5,Biome 6,Biome 7,Biome 8")]
-    public BiomeFlags AllowedBiomes { get; set; }
+    [Export] public Godot.Collections.Array<string> AllowedBiomeNames { get; set; } = new();
     [Export(PropertyHint.Range, "0.0,1.0")]
     public float Probability { get; set; } = 0.05f;
     [Export] public Vector3 FixedScale { get; set; } = Vector3.One;
     [Export] public bool AvoidWater { get; set; } = true;
     [Export] public bool AvoidBeaches { get; set; } = true;
 
-    [ExportGroup("Clustering Settings (for Rocks/Hills)")]
+    [ExportGroup("Clustering Settings")]
     [Export(PropertyHint.Range, "0.0,1.0")]
-    public float ClusterSpreadChance { get; set; } = 0.7f; // Chance to spread to adjacent
+    public float ClusterSpreadChance { get; set; } = 0.7f;
     [Export(PropertyHint.Range, "1,8")]
-    public int MaxClusterSize { get; set; } = 6; // Max rocks in a cluster
+    public int MaxClusterSize { get; set; } = 6;
     [Export(PropertyHint.Range, "0.0,1.0")]
-    public float ClusterDecayRate { get; set; } = 0.3f; // Probability reduction per step
+    public float ClusterDecayRate { get; set; } = 0.3f;
+
+    [ExportGroup("Multiple Scenes Settings")]
+    [Export(PropertyHint.Range, "0.0,5.0")]
+    public float MinDistanceBetweenVariants { get; set; } = 2.0f;  // NEW: Minimum distance between scene variants
+    [Export] public bool RandomizeVariantSelection { get; set; } = true;  // NEW
 
     [ExportGroup("Advanced Options")]
     [Export] public bool InheritMaterialsFromSource { get; set; } = true;
@@ -79,8 +87,51 @@ public partial class EnvironmentPropData : Resource
     private Vector2 _cachedCollisionSize = Vector2.Zero;
     private bool _cacheValid = false;
 
+    public bool UsesArea3DCollision()
+    {
+        return CollisionType == CollisionMode.Area3D && !string.IsNullOrEmpty(CollisionGroupName);
+    }
+
+    public string GetCollisionGroup()
+    {
+        // Return the explicit group name if set
+        if (!string.IsNullOrEmpty(CollisionGroupName))
+            return CollisionGroupName;
+        
+        // Otherwise, derive from prop name (backward compatibility)
+        string lowerName = Name.ToLower();
+        if (lowerName.Contains("tree")) return "tree_collision";
+        if (lowerName.Contains("rock") || lowerName.Contains("boulder")) return "rock_collision";
+        if (lowerName.Contains("bush") || lowerName.Contains("shrub")) return "bush_collision";
+        
+        return "prop_collision"; // Default fallback
+    }
+
+    public bool HasMultipleScenes()
+    {
+        return SourceType == PropSourceType.MultiplePackedScenes && 
+               PropSceneVariants != null && 
+               PropSceneVariants.Count > 0;
+    }
+
+    public PackedScene GetRandomSceneVariant(float randomValue)
+    {
+        if (!HasMultipleScenes())
+            return PropScene;
+
+        if (!RandomizeVariantSelection && PropSceneVariants.Count > 0)
+            return PropSceneVariants[0];
+
+        int index = Mathf.FloorToInt(randomValue * PropSceneVariants.Count);
+        index = Mathf.Clamp(index, 0, PropSceneVariants.Count - 1);
+        return PropSceneVariants[index];
+    }
+
     public Vector2 GetCollisionSize()
     {
+        if (UsesArea3DCollision())
+            return Vector2.Zero; // Area3D handles collision
+
         if (CollisionSize != Vector2.Zero)
             return CollisionSize;
 
@@ -120,7 +171,9 @@ public partial class EnvironmentPropData : Resource
                 return PropMesh;
 
             case PropSourceType.PackedScene:
-                if (PropScene == null)
+            case PropSourceType.MultiplePackedScenes:
+                var sceneToUse = HasMultipleScenes() ? PropSceneVariants[0] : PropScene;
+                if (sceneToUse == null)
                 {
                     _cacheValid = true;
                     return null;
@@ -128,7 +181,7 @@ public partial class EnvironmentPropData : Resource
 
                 try
                 {
-                    var instance = PropScene.Instantiate();
+                    var instance = sceneToUse.Instantiate();
                     var meshInstance = FindMeshInstanceInNode(instance);
 
                     if (meshInstance != null)
@@ -178,11 +231,13 @@ public partial class EnvironmentPropData : Resource
         switch (SourceType)
         {
             case PropSourceType.PackedScene:
-                if (PropScene == null) return null;
+            case PropSourceType.MultiplePackedScenes:
+                var sceneToUse = HasMultipleScenes() ? PropSceneVariants[0] : PropScene;
+                if (sceneToUse == null) return null;
 
                 try
                 {
-                    var instance = PropScene.Instantiate();
+                    var instance = sceneToUse.Instantiate();
                     var meshInstance = FindMeshInstanceInNode(instance);
 
                     Material material = null;
@@ -205,17 +260,18 @@ public partial class EnvironmentPropData : Resource
 
     public Vector3 GetScale()
     {
-        if (InheritScaleFromScene && SourceType == PropSourceType.PackedScene)
+        if (InheritScaleFromScene && (SourceType == PropSourceType.PackedScene || SourceType == PropSourceType.MultiplePackedScenes))
         {
             if (_cacheValid)
                 return _cachedScale;
 
-            if (PropScene == null)
+            var sceneToUse = HasMultipleScenes() ? PropSceneVariants[0] : PropScene;
+            if (sceneToUse == null)
                 return FixedScale;
 
             try
             {
-                var instance = PropScene.Instantiate();
+                var instance = sceneToUse.Instantiate();
                 var meshInstance = FindMeshInstanceInNode(instance);
 
                 if (meshInstance != null)
@@ -253,7 +309,10 @@ public partial class EnvironmentPropData : Resource
 
     public bool IsValid()
     {
-        return GetMesh() != null;
+        if (SourceType == PropSourceType.MultiplePackedScenes)
+            return PropSceneVariants != null && PropSceneVariants.Count > 0;
+        
+        return GetMesh() != null || PropScene != null;
     }
 
     public void InvalidateCache()

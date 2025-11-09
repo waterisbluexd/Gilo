@@ -84,6 +84,7 @@ public partial class ChunkPixelTerrain : Node3D
     private CancellationTokenSource _cancellationTokenSource;
     private Color[] _biomeColors;
     private float[] _biomeThresholds;
+    private string[] _biomeNames; // <-- MODIFICATION: Added to store biome names
     private Vector2I _lastPlayerChunk = new Vector2I(99999, 99999);
     private Camera3D _camera;
     private ArrayMesh _pixelMesh; 
@@ -152,6 +153,7 @@ public partial class ChunkPixelTerrain : Node3D
             GD.PushError("No biomes defined!");
             _biomeColors = new Color[] { Colors.Green };
             _biomeThresholds = new float[] { 1.0f };
+            _biomeNames = new string[] { "Default" }; // <-- MODIFICATION: Add fallback name
             return;
         }
 
@@ -159,9 +161,11 @@ public partial class ChunkPixelTerrain : Node3D
         var sortedBiomes = Biomes.OrderBy(b => b.Threshold).ToList();
         
         _biomeColors = sortedBiomes.Select(b => b.BiomeColor).ToArray();
+        _biomeNames = sortedBiomes.Select(b => b.BiomeName).ToArray(); // <-- MODIFICATION: Populate names array
         _biomeThresholds = sortedBiomes.Take(sortedBiomes.Count - 1).Select(b => b.Threshold).ToArray();
         
-        GD.Print($"🌍 Loaded {_biomeColors.Length} biomes with {_biomeThresholds.Length} thresholds");
+        // <-- MODIFICATION: Use _biomeNames for the count in the log
+        GD.Print($"🌍 Loaded {_biomeNames.Length} biomes with {_biomeThresholds.Length} thresholds");
     }
     
     private void CreatePixelMesh()
@@ -470,6 +474,12 @@ public partial class ChunkPixelTerrain : Node3D
     {
         return GetTerrainInfoAt(worldX, worldZ).isWater;
     }
-    
-    public int GetBiomeCount() => _biomeColors?.Length ?? 0;
+    public int GetBiomeCount() => _biomeNames?.Length ?? 0;
+    public string GetBiomeName(int biomeIndex)
+    {
+        if (_biomeNames != null && biomeIndex >= 0 && biomeIndex < _biomeNames.Length)
+            return _biomeNames[biomeIndex];
+        
+        return "Unknown";
+    }
 }

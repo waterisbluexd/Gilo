@@ -62,13 +62,13 @@ shadow_mesh = SubResource("ArrayMesh_4qebe")
 [sub_resource type="BoxMesh" id="BoxMesh_idd83"]
 size = Vector3(0.125, 0.063, 0.125)
 
-[node name="Type_Tree_2" type="Node3D"]
+[node name="Type_Tree_2" type="Node3D" groups=["Tree"]]
 
-[node name="cube_001" type="MeshInstance3D" parent="."]
+[node name="cube_001" type="MeshInstance3D" parent="." groups=["Tree"]]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
 mesh = SubResource("ArrayMesh_3qi5t")
 skeleton = NodePath("")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="cube_001"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="cube_001" groups=["Tree"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.781713, 0)
 mesh = SubResource("BoxMesh_idd83")
