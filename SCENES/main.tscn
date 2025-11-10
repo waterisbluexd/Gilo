@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=47 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -61,12 +61,35 @@ region_rect = Rect2(193, 193, 62, 48)
 [sub_resource type="Theme" id="Theme_m6pji"]
 Panel/styles/panel = SubResource("StyleBoxTexture_bx8lj")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m6pji"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dpkf5"]
 texture = ExtResource("13_bx8lj")
+region_rect = Rect2(16, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g8hx6"]
+texture = ExtResource("13_bx8lj")
+region_rect = Rect2(32, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hk8u3"]
+texture = ExtResource("13_bx8lj")
+region_rect = Rect2(48, 0, 16, 16)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yfwc0"]
+load_path = "res://.godot/imported/Icons.png-4d785d453b69aeea68713d49f0f02404.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m6pji"]
+texture = SubResource("CompressedTexture2D_yfwc0")
 region_rect = Rect2(0, 0, 16, 16)
 
 [sub_resource type="Theme" id="Theme_g8hx6"]
 Panel/styles/panel = SubResource("StyleBoxTexture_m6pji")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qhscv"]
+texture = ExtResource("13_bx8lj")
+region_rect = Rect2(64, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_krqwh"]
+texture = ExtResource("13_bx8lj")
+region_rect = Rect2(80, 0, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -1643,7 +1666,7 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel"]
+[node name="Castle" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1655,9 +1678,9 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel/MarginContainer"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel/Castle"]
 layout_mode = 2
-theme = SubResource("Theme_g8hx6")
+theme_override_styles/panel = SubResource("StyleBoxTexture_dpkf5")
 
 [node name="Panel2" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
 texture_filter = 1
@@ -1665,11 +1688,43 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
+[node name="Working" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel2/Working"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_g8hx6")
+
 [node name="Panel3" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
+
+[node name="Food" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel3/Food"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hk8u3")
 
 [node name="Panel4" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
 texture_filter = 1
@@ -1677,17 +1732,65 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
+[node name="house" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel4/house"]
+layout_mode = 2
+theme = SubResource("Theme_g8hx6")
+
 [node name="Panel5" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
+[node name="Armor" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel5/Armor"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qhscv")
+
 [node name="Panel6" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
+
+[node name="Food_2" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel6"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel6/Food_2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_krqwh")
 
 [node name="Panel2" type="Panel" parent="UI/GameUI/Control"]
 texture_filter = 1
