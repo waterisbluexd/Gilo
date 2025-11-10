@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bgwndy7h3wyii" path="res://UI/Resources/Textures/12 Border 03.png" id="1_tginl"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nbcdu"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tginl"]
 texture = ExtResource("1_tginl")
 texture_margin_left = 16.0
 texture_margin_top = 16.0
@@ -11,7 +11,6 @@ texture_margin_bottom = 16.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 region_rect = Rect2(256, 0, 64, 64)
-modulate_color = Color(0.8572468, 0.84044206, 0.6627142, 1)
 
 [resource]
-Panel/styles/panel = SubResource("StyleBoxTexture_nbcdu")
+Panel/styles/panel = SubResource("StyleBoxTexture_tginl")

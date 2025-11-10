@@ -1,7 +1,8 @@
-[gd_scene load_steps=37 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=41 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
+[ext_resource type="PackedScene" uid="uid://biwrr8qig8ma8" path="res://SCENES/sun_moon.tscn" id="2_11g8y"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
@@ -15,22 +16,9 @@
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
 [ext_resource type="Theme" uid="uid://blomivbftmil2" path="res://UI/Resources/Theme/UI_Panel_1.tres" id="11_7p5hq"]
 [ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
-[ext_resource type="Texture2D" uid="uid://b1qm7mafxipro" path="res://UI/Resources/Textures/Time & weather.png" id="12_dtswy"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_v0l8b"]
-sky_material = SubResource("ProceduralSkyMaterial_itxqv")
-
-[sub_resource type="Environment" id="Environment_wp4xf"]
-background_mode = 2
-sky = SubResource("Sky_v0l8b")
-tonemap_mode = 2
-glow_enabled = true
-glow_normalized = true
-glow_bloom = 0.09
+[ext_resource type="Texture2D" uid="uid://bgwndy7h3wyii" path="res://UI/Resources/Textures/12 Border 03.png" id="12_yfwc0"]
+[ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons.png" id="13_bx8lj"]
+[ext_resource type="Texture2D" uid="uid://364gbo3jxrwi" path="res://UI/Resources/Textures/12 Border 03_No ColorIN.png" id="18_yfwc0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
 content_margin_left = 0.0
@@ -61,11 +49,24 @@ bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceyew"]
 bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_11g8y"]
-texture = ExtResource("12_dtswy")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bx8lj"]
+texture = ExtResource("12_yfwc0")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
-region_rect = Rect2(224, 64, 48, 48)
+region_rect = Rect2(193, 193, 62, 48)
+
+[sub_resource type="Theme" id="Theme_m6pji"]
+Panel/styles/panel = SubResource("StyleBoxTexture_bx8lj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m6pji"]
+texture = ExtResource("13_bx8lj")
+region_rect = Rect2(0, 0, 16, 16)
+
+[sub_resource type="Theme" id="Theme_g8hx6"]
+Panel/styles/panel = SubResource("StyleBoxTexture_m6pji")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -124,23 +125,23 @@ fractal_octaves = 1
 [sub_resource type="ViewportTexture" id="ViewportTexture_5vkv0"]
 viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yfwc0"]
+texture = ExtResource("18_yfwc0")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(130, 66, 61, 61)
+draw_center = false
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_v5vvh")
 
 [node name="light" type="Node" parent="."]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="light"]
-transform = Transform3D(1, 0, 0, 0, 0.5679012, 0.82309675, 0, -0.82309675, 0.5679012, 0, 0.77491903, 0)
-light_color = Color(0.8110115, 0.7637827, 0.33891845, 1)
-shadow_enabled = true
-directional_shadow_split_1 = 0.096
-directional_shadow_split_2 = 0.096
-directional_shadow_split_3 = 0.096
-directional_shadow_max_distance = 8192.0
-directional_shadow_pancake_size = 1024.0
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="light/DirectionalLight3D"]
-environment = SubResource("Environment_wp4xf")
+[node name="Sun_Moon" parent="light" instance=ExtResource("2_11g8y")]
 
 [node name="assets" type="Node" parent="."]
 
@@ -1621,7 +1622,74 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/GameUI/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -384.0
+offset_top = -192.0
+offset_right = 11.384644
+offset_bottom = -165.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(2, 2)
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 9
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme = SubResource("Theme_g8hx6")
+
+[node name="Panel2" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="Panel3" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="Panel4" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="Panel5" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="Panel6" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = SubResource("Theme_m6pji")
+
+[node name="Panel2" type="Panel" parent="UI/GameUI/Control"]
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 7
@@ -1630,23 +1698,13 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -416.0
-offset_top = -151.0
+offset_top = -145.0
 offset_right = 0.666687
-offset_bottom = -90.166626
+offset_bottom = -87.166626
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(2, 2)
 theme = ExtResource("11_7p5hq")
-
-[node name="Panel2" type="Panel" parent="UI/GameUI/Control"]
-texture_filter = 1
-layout_mode = 0
-offset_left = 17.0
-offset_top = 9.0
-offset_right = 65.0
-offset_bottom = 57.0
-scale = Vector2(2.2, 2.2)
-theme_override_styles/panel = SubResource("StyleBoxTexture_11g8y")
 
 [node name="Pixelated" type="Node" parent="."]
 
@@ -1735,15 +1793,30 @@ mouse_filter = 2
 
 [node name="TextureRect" type="TextureRect" parent="Pixelated/Display"]
 texture_filter = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 1915.0
+offset_bottom = 1075.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("ViewportTexture_5vkv0")
 expand_mode = 1
+
+[node name="world Border" type="Panel" parent="Pixelated/Display"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -960.0
+offset_bottom = -540.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yfwc0")
 
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_toggle_functions_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
