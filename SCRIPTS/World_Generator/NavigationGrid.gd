@@ -25,6 +25,9 @@ var chunk_terrain
 var prop_blocked_cells: Dictionary = {}  # grid_pos -> prop_name
 var prop_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2}
 
+# NEW: Store building rotation metadata for future pathfinding
+var building_rotations: Dictionary = {}  # world_pos_key -> rotation (0-7 for 8 directions)
+
 # Cell states
 enum CellState { WALKABLE = 0, BLOCKED = 1 }
 
@@ -132,7 +135,7 @@ func grid_to_world(grid_pos: Vector2i) -> Vector3:
 		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
 	)
 
-# NEW: Generate unique key for world position (with rounding)
+# Generate unique key for world position (with rounding)
 func _world_pos_to_key(world_pos: Vector3) -> String:
 	var rounded_x = snapped(world_pos.x, 0.01)
 	var rounded_z = snapped(world_pos.z, 0.01)
@@ -281,6 +284,57 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 	
 	return result
 
+# NEW: Check area placement with rotation support (for 4 and future 8-directional)
+func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotation: int, building_name: String = "Unknown") -> Dictionary:
+	var result = {
+		"can_place": true,
+		"blocked_cells": [],
+		"blocking_props": [],
+		"grid_start": Vector2i.ZERO,
+		"grid_end": Vector2i.ZERO,
+		"total_cells": 0,
+		"rotation": rotation
+	}
+	
+	# For now, just use the rotated size directly (already swapped by BuildingPlacer)
+	# In the future, this can handle 45° rotations by checking diagonal cells
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
+	
+	result.grid_start = grid_start
+	result.grid_end = grid_end
+	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
+	
+	var blocking_props_set = {}
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var cell_pos = Vector2i(x, y)
+			if not is_walkable(cell_pos):
+				result.can_place = false
+				result.blocked_cells.append(cell_pos)
+				
+				if prop_blocked_cells.has(cell_pos):
+					var prop_name = prop_blocked_cells[cell_pos]
+					blocking_props_set[prop_name] = true
+	
+	for prop_name in blocking_props_set:
+		result.blocking_props.append(prop_name)
+	
+	if debug_mode:
+		print("=== PLACEMENT CHECK (WITH ROTATION) ===")
+		print("Building: %s" % building_name)
+		print("Rotation: %d degrees" % (rotation * 90))
+		print("World Position: %s" % world_pos)
+		print("Size (rotated): %s" % size)
+		print("Grid Range: %s to %s (%d cells)" % [grid_start, grid_end, result.total_cells])
+		print("Can place: %s" % ("YES" if result.can_place else "NO"))
+		if not result.can_place and result.blocking_props.size() > 0:
+			print("Blocked by props: %s" % ", ".join(result.blocking_props))
+		print("=====================================")
+	
+	return result
+
 # IMPROVED: Register environment prop with tracking
 func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: String):
 	var pos_key = _world_pos_to_key(world_pos)
@@ -336,7 +390,7 @@ func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
 	if debug_mode:
 		print("🪓 Unregistered prop at %s (%d cells freed)" % [world_pos, affected_cells.size()])
 
-# NEW: Clear all prop obstacles (useful for chunk unloading)
+# Clear all prop obstacles (useful for chunk unloading)
 func clear_prop_obstacles_in_area(world_start: Vector3, world_end: Vector3):
 	var grid_start = world_to_grid(world_start)
 	var grid_end = world_to_grid(world_end)
@@ -433,6 +487,18 @@ func remove_building(world_pos: Vector3, building_size: Vector2):
 		print("Removing building at: %s, size: %s" % [world_pos, building_size])
 	unblock_area(world_pos, building_size)
 
+# NEW: Place building with rotation tracking
+func place_building_with_rotation(world_pos: Vector3, building_size: Vector2, rotation: int):
+	if debug_mode:
+		print("Placing building at: %s, size: %s, rotation: %d°" % [world_pos, building_size, rotation * 90])
+	
+	# Block the area
+	block_area(world_pos, building_size)
+	
+	# Store rotation metadata for future pathfinding optimizations
+	var pos_key = _world_pos_to_key(world_pos)
+	building_rotations[pos_key] = rotation
+
 func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 	return find_path(start, end)
 
@@ -441,6 +507,7 @@ func clear_all():
 	chunk_access_times.clear()
 	prop_blocked_cells.clear()
 	prop_registrations.clear()
+	building_rotations.clear()
 	if debug_mode:
 		print("Cleared all navigation data")
 

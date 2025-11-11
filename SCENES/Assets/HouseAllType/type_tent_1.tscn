@@ -1,0 +1,90 @@
+[gd_scene load_steps=7 format=4 uid="uid://c3wesedi66mpv"]
+
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_nvxof"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u533l"]
+render_priority = 0
+shader = ExtResource("1_nvxof")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fx8ka"]
+resource_name = "Hovel_roof"
+next_pass = SubResource("ShaderMaterial_u533l")
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.80784315, 0.4117647, 0, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qs5t"]
+resource_name = "Tent_Base"
+cull_mode = 2
+albedo_color = Color(0.13923293, 0.13923293, 0.13923293, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_rnskg"]
+_surfaces = [{
+"aabb": AABB(-1, 7.1525574e-07, -1, 2, 0.44456878, 2),
+"format": 34359742465,
+"index_count": 15,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABQAAAAIABQACAAQA"),
+"name": "Tent_Color",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 6,
+"vertex_data": PackedByteArray("AACAv52e4z4AAACAAACAPwAAQDUAAIC/AACAP52e4z4AAACAAACAvwAAQDUAAIC/AACAPwAAQDUAAIA/AACAvwAAQDUAAIA/")
+}, {
+"aabb": AABB(-1, 7.1525574e-07, -1, 2, 1e-05, 2),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Tent_Base",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAP//AAD//wAAAAAAAAAAAAAAAAAA//8AAP//AAA=")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_da2vq"]
+resource_name = "Tents_Plane"
+_surfaces = [{
+"aabb": AABB(-1, 7.1525574e-07, -1, 2, 0.44456878, 2),
+"attribute_data": PackedByteArray("AAAAAAAAAD8AAIA/AAAAAAAAgD8AAAA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAA/AACAPwAAgD8AAAAAAAAAPwAAgD8AAAA/AACAPwAAAAAAAIA/AACAPw=="),
+"format": 34359742487,
+"index_count": 15,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoA"),
+"material": SubResource("StandardMaterial3D_fx8ka"),
+"name": "Tent_Color",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 11,
+"vertex_data": PackedByteArray("AACAv52e4z4AAACAAACAPwAAQDUAAIC/AACAP52e4z4AAACAAACAvwAAQDUAAIC/AACAvwAAQDUAAIA/AACAP52e4z4AAACAAACAPwAAQDUAAIA/AACAv52e4z4AAACAAACAP52e4z4AAACAAACAPwAAQDUAAIC/AACAPwAAQDUAAIA/Yqf//////79ip///////v2Kn//////+/Yqf//////7//f5vY////v/9/m9j///+//3+b2P///7//f5vY////v////3////+/////f////7////9/////vw==")
+}, {
+"aabb": AABB(-1, 7.1525574e-07, -1, 2, 1e-05, 2),
+"attribute_data": PackedByteArray("AAD/////AAAAAAAA/////w=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_7qs5t"),
+"name": "Tent_Base",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAP///z///wAAAAD/PwAAAAAAAP8///8AAP///z8AAP9/AAD/fwAA/38AAP9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_rnskg")
+
+[node name="Type_Tent_1" type="Node3D"]
+
+[node name="Tent1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 2.936, 0, 0, 0, 0.999, 0, 0.02825278, 0)
+mesh = SubResource("ArrayMesh_da2vq")
+skeleton = NodePath("")

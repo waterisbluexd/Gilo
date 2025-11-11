@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://x3noowtrybhq"]
+
+[ext_resource type="PackedScene" uid="uid://c3wesedi66mpv" path="res://SCENES/Assets/HouseAllType/type_tent_1.tscn" id="1_4w6k4"]
+[ext_resource type="PackedScene" uid="uid://fbf5ah44df1j" path="res://SCENES/Assets/HouseAllType/type_tent_2.tscn" id="2_uds5i"]
+[ext_resource type="PackedScene" uid="uid://kf3sankbjdad" path="res://SCENES/Assets/HouseAllType/type_tent_3.tscn" id="3_ttos0"]
+
+[node name="Tents" type="Node3D"]
+
+[node name="Type_Tent_1" parent="." instance=ExtResource("1_4w6k4")]
+
+[node name="Type_Tent_2" parent="." instance=ExtResource("2_uds5i")]
+
+[node name="Type_Tent_3" parent="." instance=ExtResource("3_ttos0")]

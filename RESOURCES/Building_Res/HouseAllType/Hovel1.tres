@@ -7,5 +7,6 @@
 [resource]
 script = ExtResource("2_ie7tg")
 name = "Hovel1"
+size = Vector2(2, 2)
 prefab = ExtResource("2_kobsp")
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

@@ -40,6 +40,7 @@ project/assembly_name="Gilo"
 Avoid_Building="Avoid Building with these collisionshape and groups"
 Rocks="Rocks are3D"
 Tree="Tree Only "
+building_placer=""
 
 [rendering]
 

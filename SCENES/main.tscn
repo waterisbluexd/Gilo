@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=56 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -16,8 +16,11 @@
 [ext_resource type="Script" uid="uid://dq1is085yyreb" path="res://SCRIPTS/debugger/linegraph_for_memory.gd" id="7_l28hy"]
 [ext_resource type="Theme" uid="uid://blomivbftmil2" path="res://UI/Resources/Theme/UI_Panel_1.tres" id="11_7p5hq"]
 [ext_resource type="Script" uid="uid://6di3av08jcx4" path="res://SCRIPTS/debugger/⯆_pivot.gd" id="11_v5vvh"]
+[ext_resource type="Script" uid="uid://cuqhvl6y7mr07" path="res://SCRIPTS/UI/Builders/builders_ui.gd" id="12_g8hx6"]
 [ext_resource type="Texture2D" uid="uid://bgwndy7h3wyii" path="res://UI/Resources/Textures/12 Border 03.png" id="12_yfwc0"]
-[ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons.png" id="13_bx8lj"]
+[ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons_User_UI.png" id="13_bx8lj"]
+[ext_resource type="Texture2D" uid="uid://cvqomon7n13hp" path="res://UI/Resources/Textures/Icon_Builds.png" id="15_m6pji"]
+[ext_resource type="Script" uid="uid://qgf1apiluk4w" path="res://SCRIPTS/UI/Builders/element_panel.gd" id="16_dpkf5"]
 [ext_resource type="Texture2D" uid="uid://364gbo3jxrwi" path="res://UI/Resources/Textures/12 Border 03_No ColorIN.png" id="18_yfwc0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
@@ -90,6 +93,30 @@ region_rect = Rect2(64, 0, 16, 16)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_krqwh"]
 texture = ExtResource("13_bx8lj")
 region_rect = Rect2(80, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_inuk2"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(0, 33, 16, 15)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h2h65"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(16, 32, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0gx6y"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(32, 32, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8nfwp"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(0, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tk6o3"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(17, 0, 14, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c8fif"]
+texture = ExtResource("15_m6pji")
+region_rect = Rect2(32, 0, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -1636,7 +1663,7 @@ text = "Copy"
 [node name="GameUI" type="CanvasLayer" parent="UI"]
 layer = 3
 
-[node name="Control" type="Control" parent="UI/GameUI"]
+[node name="Builders_UI" type="Control" parent="UI/GameUI"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1644,8 +1671,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("12_g8hx6")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/GameUI/Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/GameUI/Builders_UI"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1660,35 +1688,55 @@ grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(2, 2)
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="Castle_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="Castle" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel"]
+[node name="Castle_Panel_Button" type="Button" parent="UI/GameUI/Builders_UI/HBoxContainer/Castle_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+flat = true
+
+[node name="Castle" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/Castle_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 7
 theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel/Castle"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/Castle_Panel/Castle"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_dpkf5")
 
-[node name="Panel2" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="Crafts_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="Working" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel2"]
+[node name="Crafts_Panel_Button" type="Button" parent="UI/GameUI/Builders_UI/HBoxContainer/Crafts_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Crafts" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/Crafts_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1700,17 +1748,26 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel2/Working"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/Crafts_Panel/Crafts"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_g8hx6")
 
-[node name="Panel3" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="Farm_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="Food" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel3"]
+[node name="Farm_Panel_Button" type="Button" parent="UI/GameUI/Builders_UI/HBoxContainer/Farm_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Farm" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/Farm_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1722,39 +1779,50 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel3/Food"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/Farm_Panel/Farm"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hk8u3")
 
-[node name="Panel4" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="House_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="house" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel4"]
+[node name="House_Panel_Button" type="Button" parent="UI/GameUI/Builders_UI/HBoxContainer/House_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+flat = true
+
+[node name="house" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/House_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 7
 theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel4/house"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/House_Panel/house"]
 layout_mode = 2
+mouse_filter = 2
 theme = SubResource("Theme_g8hx6")
 
-[node name="Panel5" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="Armor_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="Armor" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel5"]
+[node name="Armor" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/Armor_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1766,17 +1834,17 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel5/Armor"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/Armor_Panel/Armor"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qhscv")
 
-[node name="Panel6" type="Panel" parent="UI/GameUI/Control/HBoxContainer"]
+[node name="Backery_Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer"]
 texture_filter = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme = SubResource("Theme_m6pji")
 
-[node name="Food_2" type="MarginContainer" parent="UI/GameUI/Control/HBoxContainer/Panel6"]
+[node name="Food_2" type="MarginContainer" parent="UI/GameUI/Builders_UI/HBoxContainer/Backery_Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1788,11 +1856,11 @@ theme_override_constants/margin_top = 9
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 2
 
-[node name="Panel" type="Panel" parent="UI/GameUI/Control/HBoxContainer/Panel6/Food_2"]
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/HBoxContainer/Backery_Panel/Food_2"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_krqwh")
 
-[node name="Panel2" type="Panel" parent="UI/GameUI/Control"]
+[node name="Element_Panel" type="Panel" parent="UI/GameUI/Builders_UI"]
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 7
@@ -1808,6 +1876,136 @@ grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(2, 2)
 theme = ExtResource("11_7p5hq")
+script = ExtResource("16_dpkf5")
+
+[node name="Castle_Select" type="Control" parent="UI/GameUI/Builders_UI/Element_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.083313
+offset_bottom = 3.083313
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer"]
+layout_mode = 2
+columns = 6
+
+[node name="Panel" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_inuk2")
+
+[node name="Type_Wall_1" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Panel2" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_h2h65")
+
+[node name="Type_Wall_2" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Panel3" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0gx6y")
+
+[node name="Type_Wall_3" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="House_Select" type="Control" parent="UI/GameUI/Builders_UI/Element_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.083313
+offset_bottom = 3.083313
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer"]
+layout_mode = 2
+columns = 6
+
+[node name="Tent_Panel" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8nfwp")
+
+[node name="Tent_Button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer/Tent_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Hovels_Panel" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tk6o3")
+
+[node name="Hovels_Button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer/Hovels_Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Panel3" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_c8fif")
 
 [node name="Pixelated" type="Node" parent="."]
 
@@ -1925,3 +2123,5 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_yfwc0")
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_camera_manipulation_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_console_pressed"]
+[connection signal="pressed" from="UI/GameUI/Builders_UI/HBoxContainer/Castle_Panel/Castle_Panel_Button" to="UI/GameUI/Builders_UI" method="_on_castle_panel_button_pressed"]
+[connection signal="pressed" from="UI/GameUI/Builders_UI/HBoxContainer/House_Panel/House_Panel_Button" to="UI/GameUI/Builders_UI" method="_on_house_panel_button_pressed"]
