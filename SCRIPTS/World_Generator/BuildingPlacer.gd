@@ -118,24 +118,20 @@ func _ready():
 
 
 func _input(event):
-	# Handle wall building mouse release
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_building_wall and is_mouse_held and not event.pressed:
-				# Finish wall placement on mouse release
 				_finish_wall_placement()
 				is_mouse_held = false
 				get_viewport().set_input_as_handled()
 				return
 	
-		# RIGHT CLICK - Cancel placement mode
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			if is_placing_mode or is_building_wall:
 				_cancel_placement_mode()
 				get_viewport().set_input_as_handled()
 			return
 		
-		# MOUSE SCROLL - Cycle through buildings
 		elif is_placing_mode and is_category_mode:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 				_cycle_building_previous()
@@ -146,7 +142,6 @@ func _input(event):
 				get_viewport().set_input_as_handled()
 				return
 
-	# KEY INPUTS
 	elif event is InputEventKey and event.pressed:
 		if event.keycode >= KEY_1 and event.keycode <= KEY_9:
 			select_building(event.keycode - KEY_1)
@@ -167,10 +162,8 @@ func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_o
 	
 	if is_building_wall:
 		if is_mouse_held:
-			# Update wall preview while dragging
 			_draw_wall_preview(wall_start_point, snapped_pos)
 	else:
-		# Regular building preview
 		_update_preview(snapped_pos)
 
 
@@ -184,19 +177,16 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 	
 	var snapped_pos = snap_to_grid_position(world_pos)
 	
-	# --- WALL BUILDING START ---
 	if building.is_wall():
 		is_building_wall = true
 		is_mouse_held = true
 		wall_start_point = snapped_pos
 		
-		# Hide single building preview, show wall preview
 		if preview_node:
 			preview_node.visible = false
 		
 		return
 	
-	# --- REGULAR BUILDING PLACEMENT ---
 	var current_time = Time.get_ticks_msec() / 1000.0
 	if current_time - last_click_time < click_cooldown:
 		return
@@ -229,28 +219,54 @@ func _can_place_at(world_pos: Vector3) -> bool:
 		return true
 
 	var building = get_current_building()
-	var building_name = building.name if building else "Unknown"
-	
-	# Walls always use their base size (no rotation)
+	if not building:
+		return false
+		
 	var building_size = building.size if building.is_wall() else get_rotated_building_size()
 
 	var check_result
 	if building.is_wall():
-		# Walls don't use rotation checks
 		if navigation_grid.has_method("check_area_placement_with_props"):
-			check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building_name)
+			check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building.name)
 		else:
-			check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
+			check_result = navigation_grid.check_area_placement(world_pos, building_size, building.name)
 	else:
-		# Regular buildings use rotation
 		if navigation_grid.has_method("check_area_placement_with_rotation"):
-			check_result = navigation_grid.check_area_placement_with_rotation(world_pos, building_size, current_rotation, building_name)
+			check_result = navigation_grid.check_area_placement_with_rotation(world_pos, building_size, current_rotation, building.name)
 		elif navigation_grid.has_method("check_area_placement_with_props"):
-			check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building_name)
+			check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building.name)
 		else:
-			check_result = navigation_grid.check_area_placement(world_pos, building_size, building_name)
+			check_result = navigation_grid.check_area_placement(world_pos, building_size, building.name)
 	
-	return check_result.can_place
+	# If placeable, return true
+	if check_result.can_place:
+		return true
+	
+	# If ignore list is empty, return false
+	if building.ignore_collision_with.is_empty():
+		return false
+
+	# Get the ignore list as building names (strings)
+	var ignore_names: Array[String] = []
+	for ignored_building in building.ignore_collision_with:
+		if ignored_building:
+			ignore_names.append(ignored_building.name)
+	
+	# Check if blocked by buildings we DON'T ignore
+	if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
+		for building_name_blocking in check_result.blocking_buildings:
+			if not ignore_names.has(building_name_blocking):
+				return false  # Blocked by a building we don't ignore
+	
+	# Check if blocked by props (environment objects)
+	if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
+		return false  # Props can't be ignored (trees, rocks, etc.)
+	
+	# Check if area itself is blocked (terrain)
+	if check_result.has("is_area_blocked") and check_result.is_area_blocked:
+		return false
+
+	return true
 
 
 func _place_building_at(world_pos: Vector3):
@@ -263,15 +279,15 @@ func _place_building_at(world_pos: Vector3):
 
 	var rotated_size = get_rotated_building_size()
 	
-	# Walls don't use rotation
+	# ALL buildings are now registered as "buildings" with their names
+	# This makes the system fully dynamic
 	if building.is_wall():
-		navigation_grid.place_building(world_pos, building.size)
+		navigation_grid.place_building_with_name(world_pos, building.size, building.name)
 	else:
-		# Regular buildings use rotation
-		if navigation_grid.has_method("place_building_with_rotation"):
-			navigation_grid.place_building_with_rotation(world_pos, rotated_size, current_rotation)
+		if navigation_grid.has_method("place_building_with_rotation_and_name"):
+			navigation_grid.place_building_with_rotation_and_name(world_pos, rotated_size, current_rotation, building.name)
 		else:
-			navigation_grid.place_building(world_pos, rotated_size)
+			navigation_grid.place_building_with_name(world_pos, rotated_size, building.name)
 	
 	_create_building_visual(world_pos, building)
 
@@ -347,6 +363,10 @@ func _update_preview(world_pos: Vector3):
 	if not preview_node or not is_placing_mode:
 		return
 
+	var building = get_current_building()
+	if not building:
+		return
+
 	var building_size = get_current_building_size()
 	preview_node.position = world_pos + Vector3(building_size.x * 0.5, preview_height, building_size.y * 0.5)
 
@@ -358,15 +378,42 @@ func _update_preview(world_pos: Vector3):
 		
 		if navigation_grid:
 			var check_result
-			if navigation_grid.has_method("check_area_placement_with_rotation"):
-				check_result = navigation_grid.check_area_placement_with_rotation(world_pos, rotated_size, current_rotation)
-			elif navigation_grid.has_method("check_area_placement_with_props"):
-				check_result = navigation_grid.check_area_placement_with_props(world_pos, rotated_size)
+			if building.is_wall():
+				if navigation_grid.has_method("check_area_placement_with_props"):
+					check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building.name)
+				else:
+					check_result = {"blocking_props": []}
 			else:
-				check_result = {"blocking_props": []}
+				if navigation_grid.has_method("check_area_placement_with_rotation"):
+					check_result = navigation_grid.check_area_placement_with_rotation(world_pos, rotated_size, current_rotation, building.name)
+				elif navigation_grid.has_method("check_area_placement_with_props"):
+					check_result = navigation_grid.check_area_placement_with_props(world_pos, rotated_size, building.name)
+				else:
+					check_result = {"blocking_props": []}
 			
-			if check_result.blocking_props.size() > 0:
-				color_tint = prop_blocked_color_tint
+			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
+				# NEW: Get ignore list as strings
+				var ignore_names: Array[String] = []
+				for ignored_building in building.ignore_collision_with:
+					if ignored_building:
+						ignore_names.append(ignored_building.name)
+				
+				var all_ignorable = true
+				if ignore_names.is_empty():
+					all_ignorable = false
+				else:
+					for prop_name in check_result.blocking_props:
+						if not ignore_names.has(prop_name):
+							all_ignorable = false
+							break
+				
+				if all_ignorable:
+					if check_result.has("is_area_blocked") and check_result.is_area_blocked:
+						color_tint = invalid_color_tint
+					else:
+						color_tint = valid_color_tint
+				else:
+					color_tint = prop_blocked_color_tint
 			else:
 				color_tint = invalid_color_tint
 		else:
@@ -409,21 +456,17 @@ func _create_building_visual(world_pos: Vector3, building: BuildingData):
 
 	building_node.position = world_pos + Vector3(building.size.x * 0.5, 0, building.size.y * 0.5)
 	
-	# Walls never rotate, regular buildings use current_rotation
 	if not building.is_wall():
 		building_node.rotation_degrees.y = current_rotation * rotation_snap_angle
 	
 	building_node.name = "Building_" + building.name + "_" + str(Time.get_ticks_msec())
 	get_parent().add_child(building_node)
 
-	# Configure spawner if present
 	var spawner = building_node.get_node("BuildingSpawner") if building_node.has_node("BuildingSpawner") else null
 	if spawner:
 		spawner.configure_building(building)
 		spawner.start_spawning()
 
-
-# ============ PUBLIC API FOR UI BUTTONS ============
 
 func select_building(index: int):
 	if index >= 0 and index < building_data.size():
@@ -460,8 +503,6 @@ func select_building_category(start_index: int, end_index: int):
 		emit_signal("placement_mode_changed", true)
 
 
-# ============ MOUSE SCROLL CYCLING ============
-
 func _cycle_building_next():
 	if is_category_mode:
 		current_building_index += 1
@@ -483,8 +524,6 @@ func _cycle_building_previous():
 	
 	_create_preview_node()
 
-
-# ============ ROTATION FUNCTIONS ============
 
 func rotate_building_left():
 	if not enable_rotation:
@@ -517,8 +556,6 @@ func _update_preview_rotation():
 	var rotation_degrees = current_rotation * rotation_snap_angle
 	preview_node.rotation_degrees.y = rotation_degrees
 
-
-# ============ WALL BUILDING FUNCTIONS ============
 
 func _get_grid_line(start_grid_pos: Vector2i, end_grid_pos: Vector2i) -> Array[Vector2i]:
 	var line_points: Array[Vector2i] = []
@@ -572,20 +609,47 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 		var placement_pos = center_pos - Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
 		var preview_instance = building.prefab.instantiate()
-		
-		# Add to scene FIRST before setting global_position
 		wall_preview_container.add_child(preview_instance)
-		
-		# Now set position (node is in tree)
 		preview_instance.global_position = placement_pos + Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		# Apply materials and colors
 		_apply_preview_materials(preview_instance, valid_color_tint)
 		
-		if _can_place_at(placement_pos):
+		var can_place_wall_segment = _can_place_at(placement_pos)
+		
+		if can_place_wall_segment:
 			_update_preview_color_for_node(preview_instance, valid_color_tint)
 		else:
-			_update_preview_color_for_node(preview_instance, invalid_color_tint)
+			var check_result
+			if navigation_grid.has_method("check_area_placement_with_props"):
+				check_result = navigation_grid.check_area_placement_with_props(placement_pos, building.size, building.name)
+			else:
+				check_result = {"can_place": false, "blocking_props": []}
+			
+			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
+				# NEW: Get ignore list as strings
+				var ignore_names: Array[String] = []
+				for ignored_building in building.ignore_collision_with:
+					if ignored_building:
+						ignore_names.append(ignored_building.name)
+				
+				var all_ignorable = true
+				if ignore_names.is_empty():
+					all_ignorable = false
+				else:
+					for prop_name in check_result.blocking_props:
+						if not ignore_names.has(prop_name):
+							all_ignorable = false
+							break
+				
+				if all_ignorable:
+					if check_result.has("is_area_blocked") and check_result.is_area_blocked:
+						_update_preview_color_for_node(preview_instance, invalid_color_tint)
+					else:
+						_update_preview_color_for_node(preview_instance, valid_color_tint)
+				else:
+					_update_preview_color_for_node(preview_instance, prop_blocked_color_tint)
+			else:
+				_update_preview_color_for_node(preview_instance, invalid_color_tint)
 
 
 func _update_preview_color_for_node(node: Node, color_tint: Color):
@@ -609,11 +673,9 @@ func _finish_wall_placement():
 	_build_wall_line(wall_start_point, last_hovered_snapped_pos)
 	_clear_wall_preview()
 	
-	# Reset wall state but keep placement mode active
 	is_building_wall = false
 	is_mouse_held = false
 	
-	# Show single building preview again
 	if preview_node:
 		preview_node.visible = true
 

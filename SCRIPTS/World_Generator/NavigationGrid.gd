@@ -21,11 +21,15 @@ var nav_chunks: Dictionary = {}
 var chunk_access_times: Dictionary = {}
 var chunk_terrain
 
-# Store prop blocking data with precise tracking
+# Store ALL buildings (including walls, towers, etc.) with their names
+var building_blocked_cells: Dictionary = {}  # grid_pos -> building_name
+var building_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2, name: String}
+
+# Store prop blocking data (for environment props like trees, rocks)
 var prop_blocked_cells: Dictionary = {}  # grid_pos -> prop_name
 var prop_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2}
 
-# NEW: Store building rotation metadata for future pathfinding
+# Store building rotation metadata for future pathfinding
 var building_rotations: Dictionary = {}  # world_pos_key -> rotation (0-7 for 8 directions)
 
 # Cell states
@@ -239,14 +243,17 @@ func check_area_placement(world_pos: Vector3, size: Vector2, building_name: Stri
 	
 	return result
 
+# NEW: Check area and return what's blocking it (buildings, props, or terrain)
 func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
 		"blocked_cells": [],
-		"blocking_props": [],
+		"blocking_props": [],  # Environment props (trees, rocks)
+		"blocking_buildings": [],  # Player-built buildings (walls, towers, etc.)
 		"grid_start": Vector2i.ZERO,
 		"grid_end": Vector2i.ZERO,
-		"total_cells": 0
+		"total_cells": 0,
+		"is_area_blocked": false
 	}
 	
 	var grid_start = world_to_grid(world_pos)
@@ -257,6 +264,7 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
 	
 	var blocking_props_set = {}
+	var blocking_buildings_set = {}
 	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
@@ -265,39 +273,55 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 				result.can_place = false
 				result.blocked_cells.append(cell_pos)
 				
-				if prop_blocked_cells.has(cell_pos):
+				# Check if it's a building
+				if building_blocked_cells.has(cell_pos):
+					var blocker_name = building_blocked_cells[cell_pos]
+					blocking_buildings_set[blocker_name] = true
+				# Check if it's a prop
+				elif prop_blocked_cells.has(cell_pos):
 					var prop_name = prop_blocked_cells[cell_pos]
 					blocking_props_set[prop_name] = true
+				else:
+					# It's terrain or something else
+					result.is_area_blocked = true
 	
 	for prop_name in blocking_props_set:
 		result.blocking_props.append(prop_name)
 	
+	for building_name_blocking in blocking_buildings_set:
+		result.blocking_buildings.append(building_name_blocking)
+	
 	if debug_mode:
-		print("=== PLACEMENT CHECK (WITH PROPS) ===")
+		print("=== PLACEMENT CHECK (WITH DETAILS) ===")
 		print("Building: %s" % building_name)
 		print("World Position: %s" % world_pos)
 		print("Grid Range: %s to %s (%d cells)" % [grid_start, grid_end, result.total_cells])
 		print("Can place: %s" % ("YES" if result.can_place else "NO"))
-		if not result.can_place and result.blocking_props.size() > 0:
-			print("Blocked by props: %s" % ", ".join(result.blocking_props))
-		print("====================================")
+		if not result.can_place:
+			if result.blocking_buildings.size() > 0:
+				print("Blocked by buildings: %s" % ", ".join(result.blocking_buildings))
+			if result.blocking_props.size() > 0:
+				print("Blocked by props: %s" % ", ".join(result.blocking_props))
+			if result.is_area_blocked:
+				print("Blocked by terrain/other")
+		print("======================================")
 	
 	return result
 
-# NEW: Check area placement with rotation support (for 4 and future 8-directional)
+# NEW: Check area placement with rotation support
 func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotation: int, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
 		"blocked_cells": [],
 		"blocking_props": [],
+		"blocking_buildings": [],
 		"grid_start": Vector2i.ZERO,
 		"grid_end": Vector2i.ZERO,
 		"total_cells": 0,
-		"rotation": rotation
+		"rotation": rotation,
+		"is_area_blocked": false
 	}
 	
-	# For now, just use the rotated size directly (already swapped by BuildingPlacer)
-	# In the future, this can handle 45° rotations by checking diagonal cells
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
 	
@@ -306,6 +330,7 @@ func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotat
 	result.total_cells = (grid_end.x - grid_start.x) * (grid_end.y - grid_start.y)
 	
 	var blocking_props_set = {}
+	var blocking_buildings_set = {}
 	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
@@ -314,12 +339,20 @@ func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotat
 				result.can_place = false
 				result.blocked_cells.append(cell_pos)
 				
-				if prop_blocked_cells.has(cell_pos):
+				if building_blocked_cells.has(cell_pos):
+					var blocker_name = building_blocked_cells[cell_pos]
+					blocking_buildings_set[blocker_name] = true
+				elif prop_blocked_cells.has(cell_pos):
 					var prop_name = prop_blocked_cells[cell_pos]
 					blocking_props_set[prop_name] = true
+				else:
+					result.is_area_blocked = true
 	
 	for prop_name in blocking_props_set:
 		result.blocking_props.append(prop_name)
+	
+	for building_name_blocking in blocking_buildings_set:
+		result.blocking_buildings.append(building_name_blocking)
 	
 	if debug_mode:
 		print("=== PLACEMENT CHECK (WITH ROTATION) ===")
@@ -329,17 +362,82 @@ func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotat
 		print("Size (rotated): %s" % size)
 		print("Grid Range: %s to %s (%d cells)" % [grid_start, grid_end, result.total_cells])
 		print("Can place: %s" % ("YES" if result.can_place else "NO"))
-		if not result.can_place and result.blocking_props.size() > 0:
-			print("Blocked by props: %s" % ", ".join(result.blocking_props))
+		if not result.can_place:
+			if result.blocking_buildings.size() > 0:
+				print("Blocked by buildings: %s" % ", ".join(result.blocking_buildings))
+			if result.blocking_props.size() > 0:
+				print("Blocked by props: %s" % ", ".join(result.blocking_props))
 		print("=====================================")
 	
 	return result
 
-# IMPROVED: Register environment prop with tracking
+# --- BUILDING PLACEMENT WITH NAME TRACKING ---
+# NEW: Place building with name tracking (for dynamic ignore system)
+func place_building_with_name(world_pos: Vector3, building_size: Vector2, building_name: String):
+	var pos_key = _world_pos_to_key(world_pos)
+	
+	if building_registrations.has(pos_key):
+		if debug_mode:
+			print("⚠️ Building already registered at %s" % world_pos)
+		return
+	
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(building_size.x, 0, building_size.y))
+	
+	var affected_cells = []
+	
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var grid_pos = Vector2i(x, y)
+			set_cell(grid_pos, CellState.BLOCKED)
+			building_blocked_cells[grid_pos] = building_name
+			affected_cells.append(grid_pos)
+	
+	building_registrations[pos_key] = {
+		"grid_cells": affected_cells,
+		"size": building_size,
+		"name": building_name
+	}
+	
+	if debug_mode:
+		print("🏗️ Placed building: %s at %s (%d cells)" % [building_name, world_pos, affected_cells.size()])
+
+# NEW: Place building with rotation and name
+func place_building_with_rotation_and_name(world_pos: Vector3, building_size: Vector2, rotation: int, building_name: String):
+	place_building_with_name(world_pos, building_size, building_name)
+	
+	var pos_key = _world_pos_to_key(world_pos)
+	building_rotations[pos_key] = rotation
+	
+	if debug_mode:
+		print("🔄 Building rotation: %d degrees" % (rotation * 90))
+
+# NEW: Remove building by name
+func remove_building_with_name(world_pos: Vector3, building_size: Vector2):
+	var pos_key = _world_pos_to_key(world_pos)
+	
+	if not building_registrations.has(pos_key):
+		if debug_mode:
+			print("⚠️ No building registration found at %s" % world_pos)
+		return
+	
+	var reg_data = building_registrations[pos_key]
+	var affected_cells = reg_data.grid_cells
+	
+	for grid_pos in affected_cells:
+		building_blocked_cells.erase(grid_pos)
+		set_cell(grid_pos, CellState.WALKABLE)
+	
+	building_registrations.erase(pos_key)
+	building_rotations.erase(pos_key)
+	
+	if debug_mode:
+		print("🪓 Removed building at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+
+# --- PROP REGISTRATION (for environment objects) ---
 func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: String):
 	var pos_key = _world_pos_to_key(world_pos)
 	
-	# Check if already registered
 	if prop_registrations.has(pos_key):
 		if debug_mode:
 			print("⚠️ Prop already registered at %s" % world_pos)
@@ -357,7 +455,6 @@ func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: S
 			prop_blocked_cells[grid_pos] = prop_name
 			affected_cells.append(grid_pos)
 	
-	# Store registration info for precise unregistration
 	prop_registrations[pos_key] = {
 		"grid_cells": affected_cells,
 		"size": prop_size,
@@ -367,20 +464,17 @@ func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: S
 	if debug_mode:
 		print("🌲 Registered prop: %s at %s (%d cells)" % [prop_name, world_pos, affected_cells.size()])
 
-# IMPROVED: Unregister prop with verification
 func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
 	var pos_key = _world_pos_to_key(world_pos)
 	
 	if not prop_registrations.has(pos_key):
 		if debug_mode:
-			print("⚠️ No prop registration found at %s (key: %s)" % [world_pos, pos_key])
-			print("   Available keys: %s" % prop_registrations.keys())
+			print("⚠️ No prop registration found at %s" % world_pos)
 		return
 	
 	var reg_data = prop_registrations[pos_key]
 	var affected_cells = reg_data.grid_cells
 	
-	# Clear the exact cells that were blocked
 	for grid_pos in affected_cells:
 		prop_blocked_cells.erase(grid_pos)
 		set_cell(grid_pos, CellState.WALKABLE)
@@ -390,7 +484,6 @@ func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
 	if debug_mode:
 		print("🪓 Unregistered prop at %s (%d cells freed)" % [world_pos, affected_cells.size()])
 
-# Clear all prop obstacles (useful for chunk unloading)
 func clear_prop_obstacles_in_area(world_start: Vector3, world_end: Vector3):
 	var grid_start = world_to_grid(world_start)
 	var grid_end = world_to_grid(world_end)
@@ -476,28 +569,15 @@ func _reconstruct_path(came_from: Dictionary, current: Vector2i) -> Array[Vector
 		current = came_from[current]
 	return path
 
-# --- PUBLIC API ---
+# --- PUBLIC API (LEGACY COMPATIBILITY) ---
 func place_building(world_pos: Vector3, building_size: Vector2):
-	if debug_mode:
-		print("Placing building at: %s, size: %s" % [world_pos, building_size])
-	block_area(world_pos, building_size)
+	place_building_with_name(world_pos, building_size, "Unknown")
 
 func remove_building(world_pos: Vector3, building_size: Vector2):
-	if debug_mode:
-		print("Removing building at: %s, size: %s" % [world_pos, building_size])
-	unblock_area(world_pos, building_size)
+	remove_building_with_name(world_pos, building_size)
 
-# NEW: Place building with rotation tracking
 func place_building_with_rotation(world_pos: Vector3, building_size: Vector2, rotation: int):
-	if debug_mode:
-		print("Placing building at: %s, size: %s, rotation: %d°" % [world_pos, building_size, rotation * 90])
-	
-	# Block the area
-	block_area(world_pos, building_size)
-	
-	# Store rotation metadata for future pathfinding optimizations
-	var pos_key = _world_pos_to_key(world_pos)
-	building_rotations[pos_key] = rotation
+	place_building_with_rotation_and_name(world_pos, building_size, rotation, "Unknown")
 
 func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 	return find_path(start, end)
@@ -507,6 +587,8 @@ func clear_all():
 	chunk_access_times.clear()
 	prop_blocked_cells.clear()
 	prop_registrations.clear()
+	building_blocked_cells.clear()
+	building_registrations.clear()
 	building_rotations.clear()
 	if debug_mode:
 		print("Cleared all navigation data")
@@ -529,3 +611,9 @@ func get_prop_blocked_count() -> int:
 
 func get_prop_registration_count() -> int:
 	return prop_registrations.size()
+
+func get_building_blocked_count() -> int:
+	return building_blocked_cells.size()
+
+func get_building_registration_count() -> int:
+	return building_registrations.size()

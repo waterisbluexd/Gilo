@@ -9,6 +9,8 @@ class_name BuildingData
 @export var prefab: PackedScene
 @export var cost: int = 100
 @export var build_time: float = 10.0
+# --- This is the new property ---
+@export var ignore_collision_with: Array[BuildingData] = []
 
 # --- BUILDING TYPE ---
 @export_group("Building Type")
@@ -19,7 +21,8 @@ enum BuildingType {
 	CASTLE,
 	QUARRY,
 	BARRACKS,
-	WALL
+	WALL,
+	TOWER
 }
 
 # --- CASTLE ONLY PROPERTIES ---

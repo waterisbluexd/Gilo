@@ -10,6 +10,5 @@ name = "Tower"
 size = Vector2(8, 8)
 prefab = ExtResource("2_fh1vi")
 building_type = 6
-ignored_building_types = Array[int]([5])
 max_peasants = 0
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"
