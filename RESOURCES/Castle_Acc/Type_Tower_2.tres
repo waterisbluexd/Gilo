@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://c01l7peavftm3"]
+
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="1_h0n7h"]
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="2_e7ofu"]
+[ext_resource type="PackedScene" uid="uid://47evamrgfcbf" path="res://SCENES/Assets/Castle_Acc/type_tower_2.tscn" id="3_e7ofu"]
+
+[resource]
+script = ExtResource("1_h0n7h")
+name = "Tower"
+size = Vector2(9, 9)
+prefab = ExtResource("3_e7ofu")
+cost = 0
+build_time = 0.0
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

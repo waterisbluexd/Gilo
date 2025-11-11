@@ -5,6 +5,7 @@ extends Panel
 @onready var type_wall_1_button: Button = $Castle_Select/MarginContainer/GridContainer/Panel/Type_Wall_1_button
 @onready var type_wall_2_button: Button = $Castle_Select/MarginContainer/GridContainer/Panel2/Type_Wall_2_button
 @onready var type_tower_1_button: Button = $Castle_Select/MarginContainer/GridContainer/Panel3/Type_Tower_1_button
+@onready var type_tower_2_button: Button = $Castle_Select/MarginContainer/GridContainer/Panel4/Type_Tower_2_button
 
 var building_placer: BuildingPlacer
 
@@ -20,6 +21,7 @@ func _ready():
 	type_wall_1_button.pressed.connect(_on_type_wall_1_pressed)
 	type_wall_2_button.pressed.connect(_on_type_wall_2_button_pressed)
 	type_tower_1_button.pressed.connect(_on_type_tower_1_pressed)
+	type_tower_2_button.pressed.connect(_on_type_tower_2_pressed)
 
 
 func _on_tent_pressed():
@@ -42,3 +44,7 @@ func _on_type_wall_2_button_pressed():
 func _on_type_tower_1_pressed():
 	if building_placer:
 		building_placer.select_building(20)
+
+func _on_type_tower_2_pressed():
+	if building_placer:
+		building_placer.select_building(21)

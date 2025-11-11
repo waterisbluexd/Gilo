@@ -1975,7 +1975,22 @@ grow_horizontal = 2
 grow_vertical = 2
 flat = true
 
+[node name="Panel4" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0gx6y")
+
+[node name="Type_Tower_2_button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
 [node name="House_Select" type="Control" parent="UI/GameUI/Builders_UI/Element_Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
