@@ -1,0 +1,25 @@
+[gd_scene load_steps=8 format=3 uid="uid://jps4m5sudmx5"]
+
+[ext_resource type="PackedScene" uid="uid://c87umx5x4kn64" path="res://SCENES/Assets/HouseAllType/type_house_1.tscn" id="1_4e43h"]
+[ext_resource type="PackedScene" uid="uid://cpg1mfsiy2le4" path="res://SCENES/Assets/HouseAllType/type_house_2.tscn" id="2_gq62d"]
+[ext_resource type="PackedScene" uid="uid://cxdak87hthgbn" path="res://SCENES/Assets/HouseAllType/type_house_3.tscn" id="3_rhj77"]
+[ext_resource type="PackedScene" uid="uid://bnbli11l4vds" path="res://SCENES/Assets/HouseAllType/type_house_4.tscn" id="4_7axa6"]
+[ext_resource type="PackedScene" uid="uid://b5tb2pti26dc7" path="res://SCENES/Assets/HouseAllType/type_house_5.tscn" id="5_a18lk"]
+[ext_resource type="PackedScene" uid="uid://ct603dpesclgv" path="res://SCENES/Assets/HouseAllType/type_house_6.tscn" id="6_wob66"]
+[ext_resource type="PackedScene" uid="uid://u6w4jhudo8sf" path="res://SCENES/Assets/HouseAllType/type_house_7.tscn" id="7_g01s1"]
+
+[node name="Hovels_v2" type="Node3D"]
+
+[node name="Type_House_1" parent="." instance=ExtResource("1_4e43h")]
+
+[node name="Type_House_2" parent="." instance=ExtResource("2_gq62d")]
+
+[node name="Type_House_3" parent="." instance=ExtResource("3_rhj77")]
+
+[node name="Type_House_4" parent="." instance=ExtResource("4_7axa6")]
+
+[node name="Type_House_5" parent="." instance=ExtResource("5_a18lk")]
+
+[node name="Type_House_6" parent="." instance=ExtResource("6_wob66")]
+
+[node name="Type_House_7" parent="." instance=ExtResource("7_g01s1")]

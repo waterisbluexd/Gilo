@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=47 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -34,6 +34,13 @@
 [ext_resource type="Resource" uid="uid://dfahoieg5psxs" path="res://RESOURCES/Castle_Acc/Type_Wall_1.tres" id="28_0jpg0"]
 [ext_resource type="Resource" uid="uid://cwbxae8o3ny3a" path="res://RESOURCES/Castle_Acc/Type_Wall_2.tres" id="29_3jrs1"]
 [ext_resource type="Resource" uid="uid://cebwatquh854p" path="res://SCRIPTS/enviorment/Type_env/Type_Rock_1.tres" id="29_cljw5"]
+[ext_resource type="Resource" uid="uid://c250qmx5r3cff" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_1.tres" id="30_kledd"]
+[ext_resource type="Resource" uid="uid://ieb6alee6tgo" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_2.tres" id="31_t0ggg"]
+[ext_resource type="Resource" uid="uid://ijbwst3boumn" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_3.tres" id="32_p1l53"]
+[ext_resource type="Resource" uid="uid://dyem32w53faki" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_4.tres" id="33_46brh"]
+[ext_resource type="Resource" uid="uid://bn2h7y6n0fgdt" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_5.tres" id="34_5yf05"]
+[ext_resource type="Resource" uid="uid://di68t7msrorng" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_6.tres" id="35_5t4om"]
+[ext_resource type="Resource" uid="uid://be7rmh5rkcnos" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_7.tres" id="36_fo4ex"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
 script = ExtResource("2_ul5h0")
@@ -84,10 +91,10 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex")])
 click_cooldown = 0.0
 use_8_directions = true
-prop_blocked_color_tint = Color(1, 0.70000815, 0.29951698, 0.60800004)
+preview_transparency = 0.3
 
 [node name="EnvironmentManager" type="Node3D" parent="." node_paths=PackedStringArray("NavigationGridNode")]
 transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0)

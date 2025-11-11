@@ -219,6 +219,7 @@ script = ExtResource("1_v5vvh")
 [node name="light" type="Node" parent="."]
 
 [node name="Sun_Moon" parent="light" instance=ExtResource("2_11g8y")]
+paused = true
 
 [node name="assets" type="Node" parent="."]
 

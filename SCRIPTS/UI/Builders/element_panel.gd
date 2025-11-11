@@ -27,7 +27,7 @@ func _on_tent_pressed():
 
 func _on_hovels_pressed():
 	if building_placer:
-		building_placer.select_building_category(0, 7)
+		building_placer.select_building_category(13, 19)
 
 func _on_type_wall_1_pressed():
 	if building_placer:
