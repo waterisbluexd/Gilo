@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=40 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -31,6 +31,8 @@
 [ext_resource type="Resource" uid="uid://pxd0d0d6wkkm" path="res://RESOURCES/Building_Res/HouseAllType/Type_Tent_2.tres" id="26_0jpg0"]
 [ext_resource type="Resource" uid="uid://bvkr6xm52sfp7" path="res://RESOURCES/Building_Res/HouseAllType/Type_Tent_3.tres" id="27_3jrs1"]
 [ext_resource type="Resource" uid="uid://b4xemj4vdgs1m" path="res://SCRIPTS/enviorment/Type_env/Type_Tree_3.tres" id="27_f0ktq"]
+[ext_resource type="Resource" uid="uid://dfahoieg5psxs" path="res://RESOURCES/Castle_Acc/Type_Wall_1.tres" id="28_0jpg0"]
+[ext_resource type="Resource" uid="uid://cwbxae8o3ny3a" path="res://RESOURCES/Castle_Acc/Type_Wall_2.tres" id="29_3jrs1"]
 [ext_resource type="Resource" uid="uid://cebwatquh854p" path="res://SCRIPTS/enviorment/Type_env/Type_Rock_1.tres" id="29_cljw5"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
@@ -82,7 +84,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1")])
 click_cooldown = 0.0
 use_8_directions = true
 prop_blocked_color_tint = Color(1, 0.70000815, 0.29951698, 0.60800004)

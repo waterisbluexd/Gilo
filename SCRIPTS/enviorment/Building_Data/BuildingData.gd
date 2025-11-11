@@ -18,7 +18,8 @@ enum BuildingType {
 	FARM,
 	CASTLE,
 	QUARRY,
-	BARRACKS
+	BARRACKS,
+	WALL
 }
 
 # --- CASTLE ONLY PROPERTIES ---
@@ -64,3 +65,6 @@ func is_housing() -> bool:
 
 func can_employ_job_type(job_type: String) -> bool:
 	return provides_jobs.has(job_type)
+
+func is_wall() -> bool:
+	return building_type == BuildingType.WALL

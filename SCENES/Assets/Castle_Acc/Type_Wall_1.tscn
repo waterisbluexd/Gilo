@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ude5a0fk3bw3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yg0id"]
+diffuse_mode = 3
+specular_mode = 1
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_kskx6"]
+material = SubResource("StandardMaterial3D_yg0id")
+size = Vector3(0.25, 1, 0.25)
+
+[node name="wall" type="Node3D"]
+
+[node name="Wall" type="MeshInstance3D" parent="."]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 2.0083077, 0)
+mesh = SubResource("BoxMesh_kskx6")
