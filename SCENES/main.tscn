@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=59 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons_User_UI.png" id="13_bx8lj"]
 [ext_resource type="Texture2D" uid="uid://cvqomon7n13hp" path="res://UI/Resources/Textures/Icon_Builds.png" id="15_m6pji"]
 [ext_resource type="Script" uid="uid://qgf1apiluk4w" path="res://SCRIPTS/UI/Builders/element_panel.gd" id="16_dpkf5"]
+[ext_resource type="Shader" uid="uid://d12mf46jkat7n" path="res://SHADER/color_swap.gdshader" id="18_hk8u3"]
 [ext_resource type="Texture2D" uid="uid://364gbo3jxrwi" path="res://UI/Resources/Textures/12 Border 03_No ColorIN.png" id="18_yfwc0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
@@ -106,9 +107,35 @@ region_rect = Rect2(16, 32, 16, 16)
 texture = ExtResource("15_m6pji")
 region_rect = Rect2(32, 32, 16, 16)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qhscv"]
+shader = ExtResource("18_hk8u3")
+shader_parameter/tolerance = 0.3430000162925
+shader_parameter/swap_1_enabled = true
+shader_parameter/color_to_swap_1 = Color(0.6627451, 0.003921569, 0.5921569, 1)
+shader_parameter/new_color_1 = Color(0.80784315, 0.4117647, 0, 1)
+shader_parameter/swap_2_enabled = true
+shader_parameter/color_to_swap_2 = Color(0.52156866, 0, 0.39215687, 1)
+shader_parameter/new_color_2 = Color(0.61765826, 0.30888218, 5.7756904e-07, 1)
+shader_parameter/swap_3_enabled = true
+shader_parameter/color_to_swap_3 = Color(0.79607844, 0.047058824, 0.70980394, 1)
+shader_parameter/new_color_3 = Color(0.7079339, 0.35771775, 4.813075e-07, 1)
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8nfwp"]
 texture = ExtResource("15_m6pji")
 region_rect = Rect2(0, 0, 16, 16)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hk8u3"]
+shader = ExtResource("18_hk8u3")
+shader_parameter/tolerance = 0.30000001425
+shader_parameter/swap_1_enabled = true
+shader_parameter/color_to_swap_1 = Color(0.6627451, 0.003921569, 0.5921569, 1)
+shader_parameter/new_color_1 = Color(0.80784315, 0.4117647, 0, 1)
+shader_parameter/swap_2_enabled = true
+shader_parameter/color_to_swap_2 = Color(0.52156866, 0, 0.39215687, 1)
+shader_parameter/new_color_2 = Color(0.61765826, 0.30888218, 5.7756904e-07, 1)
+shader_parameter/swap_3_enabled = true
+shader_parameter/color_to_swap_3 = Color(0.79607844, 0.047058824, 0.70980394, 1)
+shader_parameter/new_color_3 = Color(0.7079339, 0.35771775, 4.813075e-07, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tk6o3"]
 texture = ExtResource("15_m6pji")
@@ -1975,6 +2002,7 @@ layout_mode = 2
 columns = 6
 
 [node name="Tent_Panel" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+material = SubResource("ShaderMaterial_qhscv")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_8nfwp")
@@ -1989,6 +2017,7 @@ grow_vertical = 2
 flat = true
 
 [node name="Hovels_Panel" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+material = SubResource("ShaderMaterial_hk8u3")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_tk6o3")

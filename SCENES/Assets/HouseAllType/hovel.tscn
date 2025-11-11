@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://d3uxaa8ikhrsv"]
+[gd_scene load_steps=11 format=4 uid="uid://d3uxaa8ikhrsv"]
 
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_1ndhk"]
 
@@ -132,9 +132,30 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_rxa7m")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ndhk"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_u533l"]
+material = SubResource("StandardMaterial3D_1ndhk")
+size = Vector2(0.255, 0.13)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1ndhk"]
+material = SubResource("StandardMaterial3D_1ndhk")
+size = Vector2(0.105, 0.13)
+
 [node name="Hovel" type="Node3D"]
 
 [node name="Hovel1" type="MeshInstance3D" parent="."]
 transform = Transform3D(3, 0, 0, 0, -1.3113416e-07, -3, 0, 3, -1.3113416e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_auqax")
 skeleton = NodePath("")
+
+[node name="Door" type="MeshInstance3D" parent="Hovel1"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.25313306, -4.4408916e-16, -0.12723936)
+mesh = SubResource("QuadMesh_u533l")
+
+[node name="Window" type="MeshInstance3D" parent="Hovel1"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.25313303, -4.4408916e-16, -0.53937984)
+mesh = SubResource("QuadMesh_1ndhk")
