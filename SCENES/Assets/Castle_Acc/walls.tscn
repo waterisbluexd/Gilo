@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://dso0njl2tfj2w"]
+
+[ext_resource type="PackedScene" uid="uid://dcckxfstdtm6c" path="res://SCENES/Assets/Castle_Acc/type_tower_1.tscn" id="1_1kkoe"]
+[ext_resource type="PackedScene" uid="uid://ude5a0fk3bw3" path="res://SCENES/Assets/Castle_Acc/Type_Wall_1.tscn" id="2_w1d43"]
+[ext_resource type="PackedScene" uid="uid://bm2vair24warg" path="res://SCENES/Assets/Castle_Acc/Type_Wall_2.tscn" id="3_3bmor"]
+
+[node name="Walls" type="Node3D"]
+
+[node name="Type_Tower_1" parent="." instance=ExtResource("1_1kkoe")]
+
+[node name="Type_Wall_1" parent="." instance=ExtResource("2_w1d43")]
+
+[node name="Type_Wall_2" parent="." instance=ExtResource("3_3bmor")]

@@ -1966,7 +1966,7 @@ custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_0gx6y")
 
-[node name="Type_Wall_3" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel3"]
+[node name="Type_Tower_1_button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel3"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

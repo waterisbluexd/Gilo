@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://dfahoieg5psxs"]
+[gd_resource type="Resource" script_class="BuildingData" load_steps=3 format=3 uid="uid://dfahoieg5psxs"]
 
-[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_7pbdp"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_0wi3k"]
 [ext_resource type="PackedScene" uid="uid://ude5a0fk3bw3" path="res://SCENES/Assets/Castle_Acc/Type_Wall_1.tscn" id="2_cmann"]
 
@@ -8,8 +7,25 @@
 script = ExtResource("2_0wi3k")
 name = "Wall"
 size = Vector2(1, 1)
+color = null
 prefab = ExtResource("2_cmann")
 cost = 0
 build_time = 0.0
 building_type = 5
+allowed_overlaps = null
+allow_self_stacking = null
+enable_overlap_rules = null
+ignored_building_types = Array[int]([6])
+owner = null
+max_peasants = null
+peasant_types = null
+provides_jobs = null
+max_workers = null
+work_positions = null
+required_resources = null
+produces_resources = null
+provides_housing = null
+max_residents = null
+housing_comfort = null
+storage_capacity = null
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=48 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -41,6 +41,7 @@
 [ext_resource type="Resource" uid="uid://bn2h7y6n0fgdt" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_5.tres" id="34_5yf05"]
 [ext_resource type="Resource" uid="uid://di68t7msrorng" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_6.tres" id="35_5t4om"]
 [ext_resource type="Resource" uid="uid://be7rmh5rkcnos" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_7.tres" id="36_fo4ex"]
+[ext_resource type="Resource" uid="uid://babgbxxja74f4" path="res://RESOURCES/Castle_Acc/Type_Tower_1.tres" id="37_t0ggg"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
 script = ExtResource("2_ul5h0")
@@ -91,7 +92,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg")])
 click_cooldown = 0.0
 use_8_directions = true
 preview_transparency = 0.3
