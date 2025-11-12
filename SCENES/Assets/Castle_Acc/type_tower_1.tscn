@@ -18,16 +18,12 @@ shader_parameter/is_perspective_camera = true
 resource_name = "Tower_Simple"
 next_pass = SubResource("ShaderMaterial_p4kis")
 cull_mode = 2
-diffuse_mode = 3
-specular_mode = 1
 albedo_texture = ExtResource("1_v35cg")
 roughness = 0.80454546
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4sd4u"]
 resource_name = "Tower_1"
 cull_mode = 2
-diffuse_mode = 3
-specular_mode = 1
 albedo_color = Color(0.9768949, 0.9245715, 0.64225847, 1)
 roughness = 0.5
 

@@ -9,8 +9,12 @@ class_name BuildingData
 @export var prefab: PackedScene
 @export var cost: int = 100
 @export var build_time: float = 10.0
-# --- This is the new property ---
-@export var ignore_collision_with: Array[BuildingData] = []
+
+# --- COLLISION IGNORE SYSTEM (String-based to avoid circular dependencies) ---
+## List of building NAMES (not resources) that this building can be placed on top of
+## Example: For a Tower, you might add "Wall" to allow towers on walls
+## Example: For a Wall, you might add "Tower" to allow walls through towers
+@export var ignore_collision_with_names: Array[String] = []
 
 # --- BUILDING TYPE ---
 @export_group("Building Type")
@@ -44,6 +48,7 @@ func can_spawn_peasant_type(peasant_type: NPCType) -> bool:
 	if not is_castle():
 		return false
 	return peasant_types.has(peasant_type)
+
 @export_group("Work Site")
 @export var provides_jobs: Array[String] = []  # Job types this building provides
 @export var max_workers: int = 0  # 0 = no jobs, >0 = workplace
@@ -71,3 +76,7 @@ func can_employ_job_type(job_type: String) -> bool:
 
 func is_wall() -> bool:
 	return building_type == BuildingType.WALL
+
+# NEW: Check if this building can ignore collision with another building
+func can_ignore_collision_with(other_building_name: String) -> bool:
+	return ignore_collision_with_names.has(other_building_name)

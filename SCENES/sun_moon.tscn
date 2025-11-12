@@ -38,8 +38,10 @@ background_mode = 2
 sky = SubResource("Sky_v0l8b")
 tonemap_mode = 2
 glow_enabled = true
-glow_normalized = true
-glow_bloom = 0.09
+glow_bloom = 0.01
+glow_blend_mode = 0
+glow_hdr_threshold = 0.06
+glow_hdr_scale = 2.6
 
 [node name="Sun_Moon" type="Node3D"]
 script = ExtResource("1_a2k5s")

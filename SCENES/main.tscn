@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=62 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons_User_UI.png" id="13_bx8lj"]
 [ext_resource type="Texture2D" uid="uid://cvqomon7n13hp" path="res://UI/Resources/Textures/Icon_Builds.png" id="15_m6pji"]
 [ext_resource type="Script" uid="uid://qgf1apiluk4w" path="res://SCRIPTS/UI/Builders/element_panel.gd" id="16_dpkf5"]
+[ext_resource type="Texture2D" uid="uid://dutqw8rh41xvx" path="res://UI/Resources/Textures/Icon_Builds_v2.png" id="17_qhscv"]
 [ext_resource type="Shader" uid="uid://d12mf46jkat7n" path="res://SHADER/color_swap.gdshader" id="18_hk8u3"]
 [ext_resource type="Texture2D" uid="uid://364gbo3jxrwi" path="res://UI/Resources/Textures/12 Border 03_No ColorIN.png" id="18_yfwc0"]
 
@@ -96,16 +97,33 @@ texture = ExtResource("13_bx8lj")
 region_rect = Rect2(80, 0, 16, 16)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_inuk2"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(0, 33, 16, 15)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(0, 0, 16, 16)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h2h65"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(16, 32, 16, 16)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(16, 0, 16, 16)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0gx6y"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(32, 32, 16, 16)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(32, 0, 16, 16)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_krqwh"]
+shader = ExtResource("18_hk8u3")
+shader_parameter/tolerance = 0.05
+shader_parameter/swap_1_enabled = true
+shader_parameter/color_to_swap_1 = Color(0.7137255, 0.101960786, 0.68235296, 1)
+shader_parameter/new_color_1 = Color(0.8586215, 0.38709083, 0.15594886, 1)
+shader_parameter/swap_2_enabled = true
+shader_parameter/color_to_swap_2 = Color(0.42745098, 0, 0.44705883, 1)
+shader_parameter/new_color_2 = Color(0.61586136, 0.25787467, 0.0718173, 1)
+shader_parameter/swap_3_enabled = true
+shader_parameter/color_to_swap_3 = Color(0.59607846, 0.05882353, 0.5803922, 1)
+shader_parameter/new_color_3 = Color(0.7026829, 0.30016282, 0.09272175, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wyael"]
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(49, 0, 15, 16)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qhscv"]
 shader = ExtResource("18_hk8u3")
@@ -250,6 +268,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0u8pi")
 
 [node name="Control" type="Control" parent="UI/Debugger/Control/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1976,9 +1995,10 @@ grow_vertical = 2
 flat = true
 
 [node name="Panel4" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer"]
+material = SubResource("ShaderMaterial_krqwh")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_0gx6y")
+theme_override_styles/panel = SubResource("StyleBoxTexture_wyael")
 
 [node name="Type_Tower_2_button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/Castle_Select/MarginContainer/GridContainer/Panel4"]
 layout_mode = 1
@@ -2101,7 +2121,7 @@ projection = 1
 current = true
 size = 100.0
 near = 0.001
-far = 6980.75
+far = 10000.0
 script = ExtResource("3_i3vxn")
 zoom_speed = 10.0
 show_debug_print = false

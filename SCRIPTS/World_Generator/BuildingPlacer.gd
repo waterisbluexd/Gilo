@@ -242,20 +242,14 @@ func _can_place_at(world_pos: Vector3) -> bool:
 	if check_result.can_place:
 		return true
 	
-	# If ignore list is empty, return false
-	if building.ignore_collision_with.is_empty():
+	# Check if building has the ignore_collision_with_names property
+	if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
 		return false
-
-	# Get the ignore list as building names (strings)
-	var ignore_names: Array[String] = []
-	for ignored_building in building.ignore_collision_with:
-		if ignored_building:
-			ignore_names.append(ignored_building.name)
 	
 	# Check if blocked by buildings we DON'T ignore
 	if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
 		for building_name_blocking in check_result.blocking_buildings:
-			if not ignore_names.has(building_name_blocking):
+			if not building.ignore_collision_with_names.has(building_name_blocking):
 				return false  # Blocked by a building we don't ignore
 	
 	# Check if blocked by props (environment objects)
@@ -392,20 +386,17 @@ func _update_preview(world_pos: Vector3):
 					check_result = {"blocking_props": []}
 			
 			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
-				# NEW: Get ignore list as strings
-				var ignore_names: Array[String] = []
-				for ignored_building in building.ignore_collision_with:
-					if ignored_building:
-						ignore_names.append(ignored_building.name)
-				
 				var all_ignorable = true
-				if ignore_names.is_empty():
+				# Check if building has the property and if it's not empty
+				if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
 					all_ignorable = false
 				else:
-					for prop_name in check_result.blocking_props:
-						if not ignore_names.has(prop_name):
-							all_ignorable = false
-							break
+					# Check blocking buildings (not props!)
+					if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
+						for building_name_blocking in check_result.blocking_buildings:
+							if not building.ignore_collision_with_names.has(building_name_blocking):
+								all_ignorable = false
+								break
 				
 				if all_ignorable:
 					if check_result.has("is_area_blocked") and check_result.is_area_blocked:
@@ -626,20 +617,16 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 				check_result = {"can_place": false, "blocking_props": []}
 			
 			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
-				# NEW: Get ignore list as strings
-				var ignore_names: Array[String] = []
-				for ignored_building in building.ignore_collision_with:
-					if ignored_building:
-						ignore_names.append(ignored_building.name)
-				
 				var all_ignorable = true
-				if ignore_names.is_empty():
+				if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
 					all_ignorable = false
 				else:
-					for prop_name in check_result.blocking_props:
-						if not ignore_names.has(prop_name):
-							all_ignorable = false
-							break
+					# Check blocking buildings (not props!)
+					if check_result.has("blocking_buildings"):
+						for building_name_blocking in check_result.blocking_buildings:
+							if not building.ignore_collision_with_names.has(building_name_blocking):
+								all_ignorable = false
+								break
 				
 				if all_ignorable:
 					if check_result.has("is_area_blocked") and check_result.is_area_blocked:

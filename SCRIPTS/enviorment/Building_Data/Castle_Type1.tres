@@ -11,6 +11,5 @@ name = "Castle"
 size = Vector2(10, 10)
 prefab = ExtResource("2_hr7go")
 building_type = 2
-max_peasants = 50
 peasant_types = Array[ExtResource("1_hr7go")]([ExtResource("2_24tjx")])
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

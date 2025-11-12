@@ -29,8 +29,8 @@
 [ext_resource type="Resource" uid="uid://cdjijj82op454" path="res://RESOURCES/WorkHouse/WoordCutter/WoodCutter1.tres" id="15_ul5h0"]
 [ext_resource type="Resource" uid="uid://00h2pe0ox7u4" path="res://RESOURCES/Building_Res/HouseAllType/Type_Tent_1.tres" id="25_4p0f6"]
 [ext_resource type="Resource" uid="uid://pxd0d0d6wkkm" path="res://RESOURCES/Building_Res/HouseAllType/Type_Tent_2.tres" id="26_0jpg0"]
-[ext_resource type="Resource" uid="uid://bvkr6xm52sfp7" path="res://RESOURCES/Building_Res/HouseAllType/Type_Tent_3.tres" id="27_3jrs1"]
 [ext_resource type="Resource" uid="uid://b4xemj4vdgs1m" path="res://SCRIPTS/enviorment/Type_env/Type_Tree_3.tres" id="27_f0ktq"]
+[ext_resource type="Resource" uid="uid://h405nckjcs32" path="res://SCRIPTS/enviorment/Building_Data/Castle_Type1.tres" id="27_p1l53"]
 [ext_resource type="Resource" uid="uid://dfahoieg5psxs" path="res://RESOURCES/Castle_Acc/Type_Wall_1.tres" id="28_0jpg0"]
 [ext_resource type="Resource" uid="uid://cwbxae8o3ny3a" path="res://RESOURCES/Castle_Acc/Type_Wall_2.tres" id="29_3jrs1"]
 [ext_resource type="Resource" uid="uid://cebwatquh854p" path="res://SCRIPTS/enviorment/Type_env/Type_Rock_1.tres" id="29_cljw5"]
@@ -53,19 +53,16 @@ metadata/_custom_type_script = "uid://boy4f1ocq8nmv"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ndvok"]
 noise_type = 3
-seed = 21
 frequency = 0.08
 fractal_octaves = 2
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_a4esh"]
 noise_type = 3
-seed = 21
 frequency = 0.03
 fractal_octaves = 2
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m1pdk"]
 noise_type = 3
-seed = 21
 frequency = 0.15
 fractal_octaves = 1
 
@@ -93,7 +90,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_3jrs1"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg"), ExtResource("38_p1l53")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("15_ul5h0"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_p1l53"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg"), ExtResource("38_p1l53")])
 click_cooldown = 0.0
 use_8_directions = true
 preview_transparency = 0.3

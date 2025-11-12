@@ -6,9 +6,10 @@
 
 [resource]
 script = ExtResource("2_ov3ho")
-name = "Tower"
-size = Vector2(8, 8)
+name = "Tower_1"
+size = Vector2(12, 12)
 prefab = ExtResource("2_fh1vi")
+ignore_collision_with_names = Array[String](["Wall_1", "Wall_2"])
 building_type = 6
 max_peasants = 0
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"
