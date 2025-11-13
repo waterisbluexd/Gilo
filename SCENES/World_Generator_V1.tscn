@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=51 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -62,6 +62,14 @@ noise_type = 3
 frequency = 0.03
 fractal_octaves = 2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_46brh"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.2, 0.4, 0.8, 1)
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m1pdk"]
 noise_type = 3
 frequency = 0.15
@@ -83,6 +91,7 @@ SecondaryNoiseWeight = 0.585
 NoiseContrast = 0.8
 HeightInfluence = 0.03
 WaterColor = Color(0.2, 0.4, 0.8, 1)
+CustomWaterMaterial = SubResource("StandardMaterial3D_46brh")
 BeachNoise = SubResource("FastNoiseLite_m1pdk")
 CustomMaterial = SubResource("StandardMaterial3D_a4esh")
 EnableFrustumCulling = false

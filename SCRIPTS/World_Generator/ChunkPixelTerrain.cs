@@ -58,7 +58,7 @@ public partial class ChunkPixelTerrain : Node3D
     [Export(PropertyHint.Range, "-1.0,1.0")] public float WaterThreshold { get; set; } = -0.3f;
     [Export] public Color WaterColor { get; set; } = new Color(0.2f, 0.4f, 0.8f, 0.7f);
     [Export] public float WaterHeight { get; set; } = -0.5f;
-    [Export] public Shader CustomWaterShader { get; set; }
+    [Export] public StandardMaterial3D CustomWaterMaterial { get; set; }
 
     [ExportGroup("Beach/Sand Settings")]
     [Export] public bool EnableBeaches { get; set; } = true;
@@ -205,10 +205,7 @@ public partial class ChunkPixelTerrain : Node3D
 
     private void InitializeWaterSystem()
     {
-        if (EnableWater)
-        {
-            WaterChunk.InitializeDefaultShader();
-        }
+        // No initialization needed for StandardMaterial3D approach
     }
 
     public override void _ExitTree()
@@ -475,7 +472,7 @@ public partial class ChunkPixelTerrain : Node3D
         
         var waterChunk = new WaterChunk(data.ChunkCoord);
         waterChunk.CreateWaterMesh(ChunkSize, PixelSize, data.WaterHeight, 
-                                   CustomWaterShader, WaterColor, data.WaterMask);
+                                   CustomWaterMaterial, WaterColor, data.WaterMask);
         
         var pos = ChunkToWorld(data.ChunkCoord);
         waterChunk.WaterMesh.Position = new Vector3(pos.X + ChunkSize * PixelSize * 0.5f, 0, pos.Y + ChunkSize * PixelSize * 0.5f);
