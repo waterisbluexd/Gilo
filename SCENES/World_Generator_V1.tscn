@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=50 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -43,6 +43,7 @@
 [ext_resource type="Resource" uid="uid://be7rmh5rkcnos" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_7.tres" id="36_fo4ex"]
 [ext_resource type="Resource" uid="uid://babgbxxja74f4" path="res://RESOURCES/Castle_Acc/Type_Tower_1.tres" id="37_t0ggg"]
 [ext_resource type="Resource" uid="uid://c01l7peavftm3" path="res://RESOURCES/Castle_Acc/Type_Tower_2.tres" id="38_p1l53"]
+[ext_resource type="Script" uid="uid://dp6dberhafga5" path="res://SCRIPTS/World_Generator/WaterChunk.cs" id="44_46brh"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
 script = ExtResource("2_ul5h0")
@@ -81,6 +82,7 @@ PrimaryNoiseWeight = 0.85
 SecondaryNoiseWeight = 0.585
 NoiseContrast = 0.8
 HeightInfluence = 0.03
+WaterColor = Color(0.2, 0.4, 0.8, 1)
 BeachNoise = SubResource("FastNoiseLite_m1pdk")
 CustomMaterial = SubResource("StandardMaterial3D_a4esh")
 EnableFrustumCulling = false
@@ -104,3 +106,7 @@ EnablePropCulling = false
 NavigationGridNode = NodePath("../NavigationGrid")
 DefaultPropCollisionSize = Vector2(2, 2)
 EnableDebugLogging = false
+
+[node name="water" type="Node3D" parent="."]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, -6.6752224, 0)
+script = ExtResource("44_46brh")

@@ -46,6 +46,7 @@ public partial class TerrainChunk
                 float worldX = (chunkWorldOrigin.X + halfChunkWorldSize) + localX;
                 float worldZ = (chunkWorldOrigin.Y + halfChunkWorldSize) + localZ;
 
+                // Check if this pixel is water - if so, skip it (water is now handled separately)
                 bool isWater = false;
                 if (enableWater && waterNoise != null)
                 {
@@ -53,69 +54,64 @@ public partial class TerrainChunk
                     isWater = waterValue < waterThreshold;
                 }
 
-                Color pixelColor;
-                float yPosition;
-
+                // Skip water pixels entirely - they're handled by WaterChunk now
                 if (isWater)
                 {
-                    pixelColor = waterColor;
-                    yPosition = waterHeight;
+                    continue;
+                }
+
+                // Check for beaches
+                bool isBeach = false;
+                if (enableBeaches && beachNoise != null && enableWater && waterNoise != null)
+                {
+                    bool hasWaterNearby = false;
+                    float checkRadius = beachWidth * pixelSize;
+                    for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
+                    {
+                        float checkX = worldX + Mathf.Cos(angle) * checkRadius;
+                        float checkZ = worldZ + Mathf.Sin(angle) * checkRadius;
+                        
+                        float checkWaterValue = waterNoise.GetNoise2D(checkX, checkZ);
+                        if (checkWaterValue < waterThreshold)
+                        {
+                            hasWaterNearby = true;
+                            break;
+                        }
+                    }
+                    
+                    if (hasWaterNearby)
+                    {
+                        float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
+                        if (beachNoiseValue > beachThreshold && Mathf.Abs(waterHeight) < beachWidth)
+                        {
+                            isBeach = true;
+                        }
+                    }
+                }
+                
+                // Determine pixel color
+                Color pixelColor;
+                if (isBeach)
+                {
+                    pixelColor = sandColor;
                 }
                 else
                 {
-                    bool isBeach = false;
-                    if (enableBeaches && beachNoise != null)
-                    {
-                        bool hasWaterNearby = false;
-                        float checkRadius = beachWidth * pixelSize;
-                        for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
-                        {
-                            float checkX = worldX + Mathf.Cos(angle) * checkRadius;
-                            float checkZ = worldZ + Mathf.Sin(angle) * checkRadius;
-                            
-                            if (waterNoise != null)
-                            {
-                                float checkWaterValue = waterNoise.GetNoise2D(checkX, checkZ);
-                                if (checkWaterValue < waterThreshold)
-                                {
-                                    hasWaterNearby = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (hasWaterNearby)
-                        {
-                            float beachNoiseValue = beachNoise.GetNoise2D(worldX, worldZ);
-                            if (beachNoiseValue > beachThreshold && Mathf.Abs(waterHeight) < beachWidth)
-                            {
-                                isBeach = true;
-                            }
-                        }
-                    }
-                    
-                    if (isBeach)
-                    {
-                        pixelColor = sandColor;
-                    }
-                    else
-                    {
-                        pixelColor = GetPixelColor(worldX, worldZ,
-                            primaryNoise, secondaryNoise, primaryWeight, secondaryWeight, 
-                            contrast, colors, thresholds);
-                    }
-                    
-                    yPosition = 0.0f;
-                    
-                    // Apply height variation after determining color
-                    if (enableHeight && heightNoise != null)
-                    {
-                        float heightValue = heightNoise.GetNoise2D(worldX, worldZ);
-                        yPosition += heightValue * heightVariation * heightInfluence;
-                    }
+                    pixelColor = GetPixelColor(worldX, worldZ,
+                        primaryNoise, secondaryNoise, primaryWeight, secondaryWeight, 
+                        contrast, colors, thresholds);
+                }
+                
+                // Calculate height
+                float yPosition = 0.0f;
+                if (enableHeight && heightNoise != null)
+                {
+                    float heightValue = heightNoise.GetNoise2D(worldX, worldZ);
+                    yPosition += heightValue * heightVariation * heightInfluence;
                 }
 
+                // Create transform
                 var transform = Transform3D.Identity;
-                // Scale is now 1.0f on the Y-axis, height is controlled by yPosition
                 transform.Origin = new Vector3(localX, yPosition, localZ);
                 transform = transform.Scaled(new Vector3(pixelSize, 1.0f, pixelSize));
 
@@ -153,13 +149,10 @@ public partial class TerrainChunk
 
     #region Mesh Creation (Main Thread)
     
-    // REMOVED: The static CreateQuadMesh method is gone.
-    // OPTIMIZATION: Updated signature to accept the pre-created mesh (pixelMesh)
     public void CreateMesh(int chunkSize, float pixelSize, StandardMaterial3D customMaterial, ArrayMesh pixelMesh)
     {
         if (Data.Transforms == null || Data.Transforms.Length == 0)
         {
-            GD.PushError($"Chunk {ChunkCoord} has no instance data!");
             return;
         }
 
@@ -169,10 +162,9 @@ public partial class TerrainChunk
             return;
         }
         
-        // OPTIMIZATION: Use the passed-in mesh, eliminating the creation lag.
         var multiMesh = new MultiMesh();
         multiMesh.TransformFormat = MultiMesh.TransformFormatEnum.Transform3D;
-        multiMesh.Mesh = pixelMesh; // <- The key optimization
+        multiMesh.Mesh = pixelMesh;
         multiMesh.UseColors = true;
         multiMesh.InstanceCount = Data.Transforms.Length;
 

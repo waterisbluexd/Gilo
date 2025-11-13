@@ -56,8 +56,9 @@ public partial class ChunkPixelTerrain : Node3D
     [ExportGroup("Water Settings")]
     [Export] public bool EnableWater { get; set; } = true;
     [Export(PropertyHint.Range, "-1.0,1.0")] public float WaterThreshold { get; set; } = -0.3f;
-    [Export] public Color WaterColor { get; set; } = new Color(0.2f, 0.4f, 0.8f, 1.0f);
+    [Export] public Color WaterColor { get; set; } = new Color(0.2f, 0.4f, 0.8f, 0.7f);
     [Export] public float WaterHeight { get; set; } = -0.5f;
+    [Export] public Shader CustomWaterShader { get; set; }
 
     [ExportGroup("Beach/Sand Settings")]
     [Export] public bool EnableBeaches { get; set; } = true;
@@ -78,13 +79,15 @@ public partial class ChunkPixelTerrain : Node3D
 
     private bool _worldActive;
     private Dictionary<Vector2I, TerrainChunk> _loadedChunks = new();
+    private Dictionary<Vector2I, WaterChunk> _waterChunks = new();
     private HashSet<Vector2I> _loadingChunks = new();
     private ConcurrentQueue<ChunkData> _meshCreationQueue = new();
+    private ConcurrentQueue<WaterChunkData> _waterCreationQueue = new();
     private SemaphoreSlim _threadSemaphore;
     private CancellationTokenSource _cancellationTokenSource;
     private Color[] _biomeColors;
     private float[] _biomeThresholds;
-    private string[] _biomeNames; // <-- MODIFICATION: Added to store biome names
+    private string[] _biomeNames;
     private Vector2I _lastPlayerChunk = new Vector2I(99999, 99999);
     private Camera3D _camera;
     private ArrayMesh _pixelMesh; 
@@ -93,13 +96,11 @@ public partial class ChunkPixelTerrain : Node3D
     {
         SetProcess(true);
         
-        // Initialize default biomes if needed
         if (UseDefaultBiomes && (Biomes == null || Biomes.Count == 0))
         {
             InitializeDefaultBiomes();
         }
         
-        // Extract colors and thresholds from BiomeData array
         UpdateBiomeArrays();
         
         if (AutoCreateDefaultNoise)
@@ -112,7 +113,8 @@ public partial class ChunkPixelTerrain : Node3D
         }
 
         ApplyWorldSeedToNoise();
-        
+        InitializeWaterSystem();
+
         _camera = GetViewport()?.GetCamera3D();
         Player ??= FindPlayer() ?? _camera;
         
@@ -153,18 +155,16 @@ public partial class ChunkPixelTerrain : Node3D
             GD.PushError("No biomes defined!");
             _biomeColors = new Color[] { Colors.Green };
             _biomeThresholds = new float[] { 1.0f };
-            _biomeNames = new string[] { "Default" }; // <-- MODIFICATION: Add fallback name
+            _biomeNames = new string[] { "Default" };
             return;
         }
 
-        // Sort biomes by threshold
         var sortedBiomes = Biomes.OrderBy(b => b.Threshold).ToList();
         
         _biomeColors = sortedBiomes.Select(b => b.BiomeColor).ToArray();
-        _biomeNames = sortedBiomes.Select(b => b.BiomeName).ToArray(); // <-- MODIFICATION: Populate names array
+        _biomeNames = sortedBiomes.Select(b => b.BiomeName).ToArray();
         _biomeThresholds = sortedBiomes.Take(sortedBiomes.Count - 1).Select(b => b.Threshold).ToArray();
         
-        // <-- MODIFICATION: Use _biomeNames for the count in the log
         GD.Print($"🌍 Loaded {_biomeNames.Length} biomes with {_biomeThresholds.Length} thresholds");
     }
     
@@ -196,20 +196,19 @@ public partial class ChunkPixelTerrain : Node3D
 
     private void ApplyWorldSeedToNoise()
     {
-        if (PrimaryBiomeNoise != null)
-            PrimaryBiomeNoise.Seed = _worldSeed;
-        
-        if (SecondaryBiomeNoise != null)
-            SecondaryBiomeNoise.Seed = _worldSeed;
-        
-        if (HeightNoise != null)
-            HeightNoise.Seed = _worldSeed;
-        
-        if (WaterNoise != null)
-            WaterNoise.Seed = _worldSeed;
-        
-        if (BeachNoise != null)
-            BeachNoise.Seed = _worldSeed;
+        if (PrimaryBiomeNoise != null) PrimaryBiomeNoise.Seed = _worldSeed;
+        if (SecondaryBiomeNoise != null) SecondaryBiomeNoise.Seed = _worldSeed;
+        if (HeightNoise != null) HeightNoise.Seed = _worldSeed;
+        if (WaterNoise != null) WaterNoise.Seed = _worldSeed;
+        if (BeachNoise != null) BeachNoise.Seed = _worldSeed;
+    }
+
+    private void InitializeWaterSystem()
+    {
+        if (EnableWater)
+        {
+            WaterChunk.InitializeDefaultShader();
+        }
     }
 
     public override void _ExitTree()
@@ -238,8 +237,16 @@ public partial class ChunkPixelTerrain : Node3D
         int processed = 0;
         while (processed++ < MaxChunksPerFrame && _meshCreationQueue.TryDequeue(out var data))
             CreateChunkObject(data);
+        
+        processed = 0;
+        while (processed++ < MaxChunksPerFrame && _waterCreationQueue.TryDequeue(out var waterData))
+            CreateWaterChunkObject(waterData);
 
-        if (EnableFrustumCulling && _camera != null) UpdateChunkVisibility();
+        if (EnableFrustumCulling && _camera != null) 
+        {
+            UpdateChunkVisibility();
+            UpdateWaterVisibility();
+        }
     }
 
     private void SetWorldActive(bool value)
@@ -296,7 +303,7 @@ public partial class ChunkPixelTerrain : Node3D
         }
 
         var chunksToUnload = new List<Vector2I>();
-        foreach (var coord in _loadedChunks.Keys)
+        foreach (var coord in _loadedChunks.Keys.Concat(_waterChunks.Keys).Distinct())
         {
             int dist = Math.Max(Math.Abs(coord.X - playerChunk.X), Math.Abs(coord.Y - playerChunk.Y));
             if (dist > UnloadDistance) 
@@ -321,6 +328,23 @@ public partial class ChunkPixelTerrain : Node3D
             var aabb = new Aabb(new Vector3(pos.X, -TerrainHeightVariation, pos.Y),
                                new Vector3(size, TerrainHeightVariation * 2, size));
             chunk.MultiMeshInstance.Visible = IsInFrustum(aabb, frustum);
+        }
+    }
+
+    private void UpdateWaterVisibility()
+    {
+        if (_camera == null || !EnableWater) return;
+        var frustum = _camera.GetFrustum();
+        float size = ChunkSize * PixelSize;
+
+        foreach (var waterChunk in _waterChunks.Values)
+        {
+            if (waterChunk.WaterMesh == null) continue;
+            
+            var pos = ChunkToWorld(waterChunk.ChunkCoord);
+            var aabb = new Aabb(new Vector3(pos.X, WaterHeight - 1, pos.Y),
+                               new Vector3(size, 2, size));
+            waterChunk.WaterMesh.Visible = IsInFrustum(aabb, frustum);
         }
     }
 
@@ -351,16 +375,41 @@ public partial class ChunkPixelTerrain : Node3D
                 try
                 {
                     if (_cancellationTokenSource?.IsCancellationRequested ?? true) return;
+                    
                     var data = await Task.Run(() => GenerateChunk(coord), _cancellationTokenSource.Token);
+                    
+                    WaterChunkData waterData = null;
+                    if (EnableWater)
+                    {
+                        waterData = await Task.Run(() => GenerateWaterChunk(coord), _cancellationTokenSource.Token);
+                    }
+                    
                     if (_worldActive && !_cancellationTokenSource.IsCancellationRequested)
+                    {
                         CallDeferred(nameof(OnChunkGenerated), data);
+                        if (waterData != null && waterData.HasWater)
+                        {
+                            // Enqueue directly instead of using CallDeferred
+                            _waterCreationQueue.Enqueue(waterData);
+                        }
+                    }
                 }
                 finally { _threadSemaphore?.Release(); }
             }
             catch { _loadingChunks.Remove(coord); }
         }
         else if (!(_cancellationTokenSource?.IsCancellationRequested ?? true))
+        {
             OnChunkGenerated(GenerateChunk(coord));
+            if (EnableWater)
+            {
+                var waterData = GenerateWaterChunk(coord);
+                if (waterData.HasWater)
+                {
+                    OnWaterChunkGenerated(waterData);
+                }
+            }
+        }
         else
             _loadingChunks.Remove(coord);
     }
@@ -378,11 +427,25 @@ public partial class ChunkPixelTerrain : Node3D
         return data;
     }
 
+    private WaterChunkData GenerateWaterChunk(Vector2I coord)
+    {
+        return WaterChunk.GenerateWaterChunk(
+            coord, ChunkSize, PixelSize,
+            WaterNoise, WaterThreshold, WaterHeight);
+    }
+
     private void OnChunkGenerated(ChunkData data)
     {
         if (!_worldActive) return;
         if (Engine.IsEditorHint()) CreateChunkObject(data);
         else _meshCreationQueue.Enqueue(data);
+    }
+    
+    private void OnWaterChunkGenerated(WaterChunkData data)
+    {
+        if (!_worldActive || !EnableWater) return;
+        if (Engine.IsEditorHint()) CreateWaterChunkObject(data);
+        else _waterCreationQueue.Enqueue(data);
     }
 
     private void CreateChunkObject(ChunkData data)
@@ -393,7 +456,6 @@ public partial class ChunkPixelTerrain : Node3D
         if (_pixelMesh == null)
         {
             GD.PushError("Pixel mesh was not created! Cannot load chunk.");
-            _loadingChunks.Remove(data.ChunkCoord);
             return;
         }
 
@@ -407,12 +469,33 @@ public partial class ChunkPixelTerrain : Node3D
         _loadedChunks[data.ChunkCoord] = chunk;
     }
 
+    private void CreateWaterChunkObject(WaterChunkData data)
+    {
+        if (_waterChunks.ContainsKey(data.ChunkCoord) || !_worldActive || !data.HasWater) return;
+        
+        var waterChunk = new WaterChunk(data.ChunkCoord);
+        waterChunk.CreateWaterMesh(ChunkSize, PixelSize, data.WaterHeight, 
+                                   CustomWaterShader, WaterColor, data.WaterMask);
+        
+        var pos = ChunkToWorld(data.ChunkCoord);
+        waterChunk.WaterMesh.Position = new Vector3(pos.X + ChunkSize * PixelSize * 0.5f, 0, pos.Y + ChunkSize * PixelSize * 0.5f);
+        
+        AddChild(waterChunk.WaterMesh);
+        _waterChunks[data.ChunkCoord] = waterChunk;
+    }
+
     private void UnloadChunk(Vector2I coord)
     {
         if (_loadedChunks.TryGetValue(coord, out var chunk))
         {
             chunk.MultiMeshInstance.QueueFree();
             _loadedChunks.Remove(coord);
+        }
+        
+        if (_waterChunks.TryGetValue(coord, out var waterChunk))
+        {
+            waterChunk.WaterMesh.QueueFree();
+            _waterChunks.Remove(coord);
         }
     }
 
@@ -423,6 +506,16 @@ public partial class ChunkPixelTerrain : Node3D
         _loadedChunks.Clear();
         _loadingChunks.Clear();
         _meshCreationQueue = new ConcurrentQueue<ChunkData>();
+        
+        foreach (var coord in new List<Vector2I>(_waterChunks.Keys))
+        {
+            if (_waterChunks.TryGetValue(coord, out var waterChunk))
+            {
+                waterChunk.WaterMesh.QueueFree();
+            }
+        }
+        _waterChunks.Clear();
+        _waterCreationQueue = new ConcurrentQueue<WaterChunkData>();
     }
 
     private Vector2I WorldToChunk(Vector3 pos) => new(
@@ -474,12 +567,63 @@ public partial class ChunkPixelTerrain : Node3D
     {
         return GetTerrainInfoAt(worldX, worldZ).isWater;
     }
+
     public int GetBiomeCount() => _biomeNames?.Length ?? 0;
+
     public string GetBiomeName(int biomeIndex)
     {
         if (_biomeNames != null && biomeIndex >= 0 && biomeIndex < _biomeNames.Length)
             return _biomeNames[biomeIndex];
         
         return "Unknown";
+    }
+
+    // Get water depth at a specific position (returns 0 if no water)
+    public float GetWaterDepthAt(float worldX, float worldZ)
+    {
+        if (!EnableWater || WaterNoise == null) return 0f;
+        
+        float waterValue = WaterNoise.GetNoise2D(worldX, worldZ);
+        if (waterValue < WaterThreshold)
+        {
+            // Water exists - calculate depth based on how far below threshold
+            // Normalized between 0 (just at threshold) and 1 (deepest water)
+            float depth = (WaterThreshold - waterValue) / (WaterThreshold + 1.0f);
+            return Mathf.Clamp(depth, 0f, 1f);
+        }
+        
+        return 0f;
+    }
+
+    // Check if position is near water (useful for beach generation)
+    public bool IsNearWater(float worldX, float worldZ, float radius)
+    {
+        if (!EnableWater || WaterNoise == null) return false;
+        
+        // Check 8 points around the position
+        for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
+        {
+            float checkX = worldX + Mathf.Cos(angle) * radius;
+            float checkZ = worldZ + Mathf.Sin(angle) * radius;
+            
+            float waterValue = WaterNoise.GetNoise2D(checkX, checkZ);
+            if (waterValue < WaterThreshold)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // Get water coverage for a chunk (0.0 to 1.0)
+    public float GetChunkWaterCoverage(Vector2I chunkCoord)
+    {
+        if (_waterChunks.TryGetValue(chunkCoord, out var waterChunk))
+        {
+            // This would require storing coverage in WaterChunk - for now return estimate
+            return 1.0f; // Chunk has water
+        }
+        return 0f;
     }
 }
