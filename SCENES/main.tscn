@@ -268,7 +268,6 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0u8pi")
 
 [node name="Control" type="Control" parent="UI/Debugger/Control/panel"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -282,7 +281,6 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
-visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
