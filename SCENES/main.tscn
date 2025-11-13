@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=64 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -19,11 +19,12 @@
 [ext_resource type="Script" uid="uid://cuqhvl6y7mr07" path="res://SCRIPTS/UI/Builders/builders_ui.gd" id="12_g8hx6"]
 [ext_resource type="Texture2D" uid="uid://bgwndy7h3wyii" path="res://UI/Resources/Textures/12 Border 03.png" id="12_yfwc0"]
 [ext_resource type="Texture2D" uid="uid://ce6752a413l8x" path="res://UI/Resources/Textures/Icons_User_UI.png" id="13_bx8lj"]
-[ext_resource type="Texture2D" uid="uid://cvqomon7n13hp" path="res://UI/Resources/Textures/Icon_Builds.png" id="15_m6pji"]
 [ext_resource type="Script" uid="uid://qgf1apiluk4w" path="res://SCRIPTS/UI/Builders/element_panel.gd" id="16_dpkf5"]
 [ext_resource type="Texture2D" uid="uid://dutqw8rh41xvx" path="res://UI/Resources/Textures/Icon_Builds_v2.png" id="17_qhscv"]
 [ext_resource type="Shader" uid="uid://d12mf46jkat7n" path="res://SHADER/color_swap.gdshader" id="18_hk8u3"]
 [ext_resource type="Texture2D" uid="uid://364gbo3jxrwi" path="res://UI/Resources/Textures/12 Border 03_No ColorIN.png" id="18_yfwc0"]
+[ext_resource type="Script" uid="uid://cfhokybcic0" path="res://SCRIPTS/UI/Builders/Panel_color_swap.gd" id="19_krqwh"]
+[ext_resource type="Script" uid="uid://ckgjn3iylh2fs" path="res://SCRIPTS/UI/Builders/castle_color.gd" id="20_krqwh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
 content_margin_left = 0.0
@@ -111,57 +112,70 @@ region_rect = Rect2(32, 0, 16, 16)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_krqwh"]
 shader = ExtResource("18_hk8u3")
 shader_parameter/tolerance = 0.05
+shader_parameter/color_to_swap_1 = Color(0.7137, 0.102, 0.6824, 1)
+shader_parameter/color_to_swap_2 = Color(0.5961, 0.0588, 0.5804, 1)
+shader_parameter/color_to_swap_3 = Color(0.4275, 0, 0.4471, 1)
 shader_parameter/swap_1_enabled = true
-shader_parameter/color_to_swap_1 = Color(0.7137255, 0.101960786, 0.68235296, 1)
-shader_parameter/new_color_1 = Color(0.8586215, 0.38709083, 0.15594886, 1)
+shader_parameter/new_color_1 = Color(0.7137, 0.102, 0.6824, 1)
 shader_parameter/swap_2_enabled = true
-shader_parameter/color_to_swap_2 = Color(0.42745098, 0, 0.44705883, 1)
-shader_parameter/new_color_2 = Color(0.61586136, 0.25787467, 0.0718173, 1)
+shader_parameter/new_color_2 = Color(0.5961, 0.0588, 0.5804, 1)
 shader_parameter/swap_3_enabled = true
-shader_parameter/color_to_swap_3 = Color(0.59607846, 0.05882353, 0.5803922, 1)
-shader_parameter/new_color_3 = Color(0.7026829, 0.30016282, 0.09272175, 1)
+shader_parameter/new_color_3 = Color(0.4275, 0, 0.4471, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wyael"]
 texture = ExtResource("17_qhscv")
-region_rect = Rect2(49, 0, 15, 16)
+region_rect = Rect2(48, 0, 16, 15)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qhscv"]
 shader = ExtResource("18_hk8u3")
-shader_parameter/tolerance = 0.3430000162925
+shader_parameter/tolerance = 0.05
+shader_parameter/color_to_swap_1 = Color(0.7137, 0.102, 0.6824, 1)
+shader_parameter/color_to_swap_2 = Color(0.5961, 0.0588, 0.5804, 1)
+shader_parameter/color_to_swap_3 = Color(0.4275, 0, 0.4471, 1)
 shader_parameter/swap_1_enabled = true
-shader_parameter/color_to_swap_1 = Color(0.6627451, 0.003921569, 0.5921569, 1)
-shader_parameter/new_color_1 = Color(0.80784315, 0.4117647, 0, 1)
+shader_parameter/new_color_1 = Color(0.7137, 0.102, 0.6824, 1)
 shader_parameter/swap_2_enabled = true
-shader_parameter/color_to_swap_2 = Color(0.52156866, 0, 0.39215687, 1)
-shader_parameter/new_color_2 = Color(0.61765826, 0.30888218, 5.7756904e-07, 1)
+shader_parameter/new_color_2 = Color(0.5961, 0.0588, 0.5804, 1)
 shader_parameter/swap_3_enabled = true
-shader_parameter/color_to_swap_3 = Color(0.79607844, 0.047058824, 0.70980394, 1)
-shader_parameter/new_color_3 = Color(0.7079339, 0.35771775, 4.813075e-07, 1)
+shader_parameter/new_color_3 = Color(0.4275, 0, 0.4471, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8nfwp"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(0, 0, 16, 16)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(0, 32, 17, 16)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hk8u3"]
 shader = ExtResource("18_hk8u3")
-shader_parameter/tolerance = 0.30000001425
+shader_parameter/tolerance = 0.05
+shader_parameter/color_to_swap_1 = Color(0.7137, 0.102, 0.6824, 1)
+shader_parameter/color_to_swap_2 = Color(0.5961, 0.0588, 0.5804, 1)
+shader_parameter/color_to_swap_3 = Color(0.4275, 0, 0.4471, 1)
 shader_parameter/swap_1_enabled = true
-shader_parameter/color_to_swap_1 = Color(0.6627451, 0.003921569, 0.5921569, 1)
-shader_parameter/new_color_1 = Color(0.80784315, 0.4117647, 0, 1)
+shader_parameter/new_color_1 = Color(0.7137, 0.102, 0.6824, 1)
 shader_parameter/swap_2_enabled = true
-shader_parameter/color_to_swap_2 = Color(0.52156866, 0, 0.39215687, 1)
-shader_parameter/new_color_2 = Color(0.61765826, 0.30888218, 5.7756904e-07, 1)
+shader_parameter/new_color_2 = Color(0.5961, 0.0588, 0.5804, 1)
 shader_parameter/swap_3_enabled = true
-shader_parameter/color_to_swap_3 = Color(0.79607844, 0.047058824, 0.70980394, 1)
-shader_parameter/new_color_3 = Color(0.7079339, 0.35771775, 4.813075e-07, 1)
+shader_parameter/new_color_3 = Color(0.4275, 0, 0.4471, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tk6o3"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(17, 0, 14, 16)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(17, 32, 14, 16)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8nfwp"]
+shader = ExtResource("18_hk8u3")
+shader_parameter/tolerance = 0.05
+shader_parameter/color_to_swap_1 = Color(0.7137, 0.102, 0.6824, 1)
+shader_parameter/color_to_swap_2 = Color(0.5961, 0.0588, 0.5804, 1)
+shader_parameter/color_to_swap_3 = Color(0.4275, 0, 0.4471, 1)
+shader_parameter/swap_1_enabled = true
+shader_parameter/new_color_1 = Color(0.7137, 0.102, 0.6824, 1)
+shader_parameter/swap_2_enabled = true
+shader_parameter/new_color_2 = Color(0.5961, 0.0588, 0.5804, 1)
+shader_parameter/swap_3_enabled = true
+shader_parameter/new_color_3 = Color(0.4275, 0, 0.4471, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c8fif"]
-texture = ExtResource("15_m6pji")
-region_rect = Rect2(32, 0, 16, 16)
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(32, 32, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -281,6 +295,7 @@ oversampling_override = 1.0
 title = "Debugger"
 position = Vector2i(8, 36)
 size = Vector2i(689, 1039)
+visible = false
 always_on_top = true
 sharp_corners = true
 min_size = Vector2i(689, 1039)
@@ -1718,6 +1733,20 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("12_g8hx6")
 
+[node name="CastleColor" type="ColorPickerButton" parent="UI/GameUI/Builders_UI"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 44.0
+offset_top = -4.0
+offset_right = 116.0
+offset_bottom = 55.0
+grow_vertical = 2
+edit_alpha = false
+edit_intensity = false
+script = ExtResource("20_krqwh")
+
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/GameUI/Builders_UI"]
 layout_mode = 1
 anchors_preset = 7
@@ -2040,6 +2069,7 @@ material = SubResource("ShaderMaterial_qhscv")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_8nfwp")
+script = ExtResource("19_krqwh")
 
 [node name="Tent_Button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer/Tent_Panel"]
 layout_mode = 1
@@ -2055,6 +2085,7 @@ material = SubResource("ShaderMaterial_hk8u3")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_tk6o3")
+script = ExtResource("19_krqwh")
 
 [node name="Hovels_Button" type="Button" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer/Hovels_Panel"]
 layout_mode = 1
@@ -2066,9 +2097,11 @@ grow_vertical = 2
 flat = true
 
 [node name="Panel3" type="Panel" parent="UI/GameUI/Builders_UI/Element_Panel/House_Select/MarginContainer/GridContainer"]
+material = SubResource("ShaderMaterial_8nfwp")
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_c8fif")
+script = ExtResource("19_krqwh")
 
 [node name="Pixelated" type="Node" parent="."]
 
@@ -2186,5 +2219,6 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_yfwc0")
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Camera Manipulation" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_camera_manipulation_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Console" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_console_pressed"]
+[connection signal="color_changed" from="UI/GameUI/Builders_UI/CastleColor" to="UI/GameUI/Builders_UI/CastleColor" method="_on_color_changed"]
 [connection signal="pressed" from="UI/GameUI/Builders_UI/HBoxContainer/Castle_Panel/Castle_Panel_Button" to="UI/GameUI/Builders_UI" method="_on_castle_panel_button_pressed"]
 [connection signal="pressed" from="UI/GameUI/Builders_UI/HBoxContainer/House_Panel/House_Panel_Button" to="UI/GameUI/Builders_UI" method="_on_house_panel_button_pressed"]
