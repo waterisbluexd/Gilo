@@ -8,13 +8,14 @@ extends Control
 # Selectors
 @onready var castle_select: Control = $Element_Panel/Castle_Select
 @onready var house_select: Control = $Element_Panel/House_Select
-@onready var crafts_select: Control = $Element_Panel/Crafts_Select  # Added if you have this
+@onready var craft_select: Control = $Element_Panel/Craft_Select
+
 
 # Array to store all selectors
 var selectors: Array[Control] = []
 
 func _ready() -> void:
-	selectors = [castle_select, house_select, crafts_select]
+	selectors = [castle_select, house_select, craft_select]
 	
 	hide_all_selectors()
 
@@ -36,4 +37,4 @@ func _on_house_panel_button_pressed() -> void:
 	show_selector(house_select)
 
 func _on_crafts_panel_button_pressed() -> void:
-	show_selector(crafts_select)
+	show_selector(craft_select)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://dcckxfstdtm6c"]
+[gd_scene load_steps=9 format=4 uid="uid://dcckxfstdtm6c"]
 
 [ext_resource type="Texture2D" uid="uid://cf64jm80q86d5" path="res://MODLES/assetsmodel/Castle/Walls/Walls_Tower_Simple.png" id="1_v35cg"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_uht57"]
@@ -7,9 +7,9 @@
 render_priority = 0
 shader = ExtResource("2_uht57")
 shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
+shader_parameter/highlights_enabled = false
 shader_parameter/shadow_strength = 0.4
-shader_parameter/highlight_strength = 0.0
+shader_parameter/highlight_strength = 0.1
 shader_parameter/highlight_color = Color(1, 1, 1, 1)
 shader_parameter/shadow_color = Color(0, 0, 0, 1)
 shader_parameter/is_perspective_camera = true
@@ -21,8 +21,20 @@ cull_mode = 2
 albedo_texture = ExtResource("1_v35cg")
 roughness = 0.80454546
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uht57"]
+render_priority = 0
+shader = ExtResource("2_uht57")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = false
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.1
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4sd4u"]
 resource_name = "Tower_1"
+next_pass = SubResource("ShaderMaterial_uht57")
 cull_mode = 2
 albedo_color = Color(0.9768949, 0.9245715, 0.64225847, 1)
 roughness = 0.5

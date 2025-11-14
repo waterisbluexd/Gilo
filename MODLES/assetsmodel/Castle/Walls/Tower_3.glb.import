@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://upso8nbn4hv3"
-path="res://.godot/imported/WoodCutterglb.glb-e0936f24e20a523dd24d84924c769f9d.scn"
+uid="uid://dauf02jpdg7l3"
+path="res://.godot/imported/Tower_3.glb-849aa80eb6dbdd650a70023932f587e7.scn"
 
 [deps]
 
-source_file="res://MODLES/assetsmodel/WorkHouse/WoodCutter/WoodCutterglb.glb"
-dest_files=["res://.godot/imported/WoodCutterglb.glb-e0936f24e20a523dd24d84924c769f9d.scn"]
+source_file="res://MODLES/assetsmodel/Castle/Walls/Tower_3.glb"
+dest_files=["res://.godot/imported/Tower_3.glb-849aa80eb6dbdd650a70023932f587e7.scn"]
 
 [params]
 
