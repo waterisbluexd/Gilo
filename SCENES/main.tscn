@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=90 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -55,6 +55,17 @@ bg_color = Color(0.1764706, 0.13333334, 0.12156863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceyew"]
 bg_color = Color(0.26190996, 0.20449966, 0.19063923, 0.929)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yfwc0"]
+texture = ExtResource("18_yfwc0")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(130, 66, 61, 61)
+draw_center = false
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bx8lj"]
 texture = ExtResource("12_yfwc0")
@@ -210,6 +221,118 @@ region_rect = Rect2(775, 71, 31, 27)
 texture = ExtResource("18_yfwc0")
 region_rect = Rect2(257, 129, 62, 62)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t553v"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(32, 400, 16, 22)
+modulate_color = Color(0.94704145, 0.86143094, 0.7283962, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8uk3p"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(16, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o35op"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(96, 400, 16, 22)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b8obx"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(32, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ujl5"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(176, 400, 16, 22)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xx36u"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(64, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gwcrb"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(304, 400, 16, 22)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jbb8a"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(0, 0, 16, 16)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c8fif"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tk6o3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8nfwp"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gsjd7"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(368, 400, 16, 22)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k6ua1"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(48, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gtqjp"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 3.0
+texture_margin_top = 10.0
+texture_margin_right = 3.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(32, 400, 16, 22)
+modulate_color = Color(0.35087612, 0.69765663, 0.88553154, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x4qvy"]
+texture = ExtResource("13_bx8lj")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+region_rect = Rect2(80, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bt5hj"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 11.0
+texture_margin_top = 35.0
+texture_margin_right = 12.0
+region_rect = Rect2(16, 31, 48, 35)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_opu3v"]
+texture = ExtResource("21_8nfwp")
+texture_margin_left = 37.0
+texture_margin_top = 35.0
+texture_margin_right = 36.0
+region_rect = Rect2(64, 31, 48, 35)
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
 
@@ -266,30 +389,6 @@ fractal_octaves = 1
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_5vkv0"]
 viewport_path = NodePath("Pixelated/Main/SubViewportContainer/SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pjl0f"]
-shader = ExtResource("18_hk8u3")
-shader_parameter/tolerance = 0.05
-shader_parameter/color_to_swap_1 = Color(0.7137, 0.102, 0.6824, 1)
-shader_parameter/color_to_swap_2 = Color(0.5961, 0.0588, 0.5804, 1)
-shader_parameter/color_to_swap_3 = Color(0.4275, 0, 0.4471, 1)
-shader_parameter/swap_1_enabled = true
-shader_parameter/new_color_1 = Color(0.7137, 0.102, 0.6824, 1)
-shader_parameter/swap_2_enabled = true
-shader_parameter/new_color_2 = Color(0.5961, 0.0588, 0.5804, 1)
-shader_parameter/swap_3_enabled = true
-shader_parameter/new_color_3 = Color(0.4275, 0, 0.4471, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yfwc0"]
-texture = ExtResource("18_yfwc0")
-texture_margin_left = 12.0
-texture_margin_top = 12.0
-texture_margin_right = 13.0
-texture_margin_bottom = 13.0
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-region_rect = Rect2(130, 66, 61, 61)
-draw_center = false
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_v5vvh")
@@ -1770,6 +1869,7 @@ text = "Copy"
 
 [node name="GameUI" type="CanvasLayer" parent="UI"]
 layer = 3
+visible = false
 
 [node name="Builders_UI" type="Control" parent="UI/GameUI"]
 layout_mode = 3
@@ -1780,6 +1880,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("12_g8hx6")
+
+[node name="world Border" type="Panel" parent="UI/GameUI/Builders_UI"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yfwc0")
 
 [node name="CastleColor" type="ColorPickerButton" parent="UI/GameUI/Builders_UI"]
 layout_mode = 1
@@ -2272,6 +2384,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_c8fif")
 script = ExtResource("19_krqwh")
 
 [node name="Resources_Panel" type="Panel" parent="UI/GameUI/Builders_UI"]
+visible = false
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 7
@@ -2302,6 +2415,269 @@ offset_bottom = 7.544983
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_mdwxg")
+
+[node name="GameUIv2" type="CanvasLayer" parent="UI"]
+
+[node name="UI" type="Control" parent="UI/GameUIv2"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="UI/GameUIv2/UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -402.0
+offset_top = -173.0
+offset_right = 407.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Clips" type="HBoxContainer" parent="UI/GameUIv2/UI/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -359.5
+offset_top = -166.0
+offset_right = -0.5
+offset_bottom = -83.5
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(2, 2)
+
+[node name="Castle" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_t553v")
+
+[node name="Castle_Panel" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Castle"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Castle/Castle_Panel"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8uk3p")
+
+[node name="Crafts" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_o35op")
+
+[node name="Crafts" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Crafts"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Crafts_Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Crafts/Crafts"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_b8obx")
+
+[node name="Armors" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_3ujl5")
+
+[node name="Armors" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Armors"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Armors_Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Armors/Armors"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_xx36u")
+
+[node name="Houses" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_gwcrb")
+
+[node name="Houses" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Houses"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Houses_Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Houses/Houses"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_jbb8a")
+
+[node name="-" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(24.855, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c8fif")
+
+[node name="--" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(24.855, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tk6o3")
+
+[node name="---" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(24.855, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8nfwp")
+
+[node name="Farm" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_gsjd7")
+
+[node name="Houses" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Farm"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Houses_Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Farm/Houses"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_k6ua1")
+
+[node name="Bakery" type="Panel" parent="UI/GameUIv2/UI/Control/Clips"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_gtqjp")
+
+[node name="Bakery" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Clips/Bakery"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 55
+
+[node name="Bakery_Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Clips/Bakery/Bakery"]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_x4qvy")
+
+[node name="Book" type="HBoxContainer" parent="UI/GameUIv2/UI/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -407.5
+offset_top = -111.00003
+offset_right = -137.16663
+offset_bottom = -73.33331
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(3, 3)
+theme_override_constants/separation = 0
+
+[node name="LeftPage" type="Panel" parent="UI/GameUIv2/UI/Control/Book"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_bt5hj")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Book/LeftPage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RightPage" type="Panel" parent="UI/GameUIv2/UI/Control/Book"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_opu3v")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Pixelated" type="Node" parent="."]
 
@@ -2390,31 +2766,15 @@ mouse_filter = 2
 
 [node name="TextureRect" type="TextureRect" parent="Pixelated/Display"]
 texture_filter = 1
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 1915.0
-offset_bottom = 1075.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("ViewportTexture_5vkv0")
 expand_mode = 1
-
-[node name="world Border" type="Panel" parent="Pixelated/Display"]
-texture_filter = 1
-material = SubResource("ShaderMaterial_pjl0f")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -960.0
-offset_bottom = -540.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_yfwc0")
 
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Toggle_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_toggle_functions_pressed"]
 [connection signal="pressed" from="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera/MarginContainer/VBoxContainer/Setter_Functions" to="UI/Debugger/Control/panel/Control/Window/TabContainer/⯆ Camera" method="_on_setter_functions_pressed"]
