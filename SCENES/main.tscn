@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=86 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -326,7 +326,43 @@ shader_parameter/speed = 0.002000000095
 shader_parameter/brightness = 0.6000000285
 shader_parameter/threshold = 1.0350000491625
 shader_parameter/fluffiness = 0.626000029735
-shader_parameter/tile_size = 3615.5151712619627
+shader_parameter/tile_size = 3615.515171261962
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hk8u3"]
+emission_shape_scale = Vector3(60, 60, 60)
+emission_shape = 3
+emission_box_extents = Vector3(8, 2, 8)
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, -5.5, 0)
+radial_accel_min = -4.0000024
+radial_accel_max = -4.0000024
+tangential_accel_min = -8.000002
+tangential_accel_max = 7.9999976
+damping_max = 4.0
+scale_min = 0.29999998
+scale_max = 0.7
+
+[sub_resource type="Gradient" id="Gradient_qhscv"]
+offsets = PackedFloat32Array(0.23076923, 0.5608974)
+colors = PackedColorArray(1, 1, 1, 1, 0.33333334, 0.33333334, 0.33333334, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_krqwh"]
+gradient = SubResource("Gradient_qhscv")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8nfwp"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_krqwh")
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_tk6o3"]
+material = SubResource("StandardMaterial3D_8nfwp")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dtswy"]
 noise_type = 3
@@ -2614,11 +2650,20 @@ show_debug_print = false
 show_raycast_debug = false
 show_visual_debug = false
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
+[node name="Clouds" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 transform = Transform3D(0.99999934, 0, 0, 0, 1, 0, 0, 0, 0.99999934, 9.779424, 286.23193, -19.975433)
 mesh = SubResource("PlaneMesh_h2jjw")
 skeleton = NodePath("../../../../../../assets")
 surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
+
+[node name="snow" type="GPUParticles3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Clouds"]
+transform = Transform3D(1.0000007, 0, 0, 0, 1, 0, 0, 0, 1.0000007, 0, -149.97372, 0)
+amount = 20000
+lifetime = 3.5
+fixed_fps = 60
+visibility_aabb = AABB(-972.1384, -170.45824, -968.82904, 1938.7869, 291.37982, 1938.988)
+process_material = SubResource("ParticleProcessMaterial_hk8u3")
+draw_pass_1 = SubResource("QuadMesh_tk6o3")
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

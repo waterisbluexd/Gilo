@@ -20,8 +20,8 @@ public partial class EnvironmentManager : Node3D
     public int PixelSkipInterval { get; set; } = 1;
 
     [ExportGroup("Area3D Collision Settings")]
-    [Export] public float Area3DCheckRadius { get; set; } = 5.0f;  // NEW: Radius for Area3D overlap checks
-    [Export] public bool EnableArea3DVisualization { get; set; } = false;  // NEW: Debug visualization
+    [Export] public float Area3DCheckRadius { get; set; } = 5.0f;
+    [Export] public bool EnableArea3DVisualization { get; set; } = false;
 
     [ExportGroup("Performance")]
     [Export] public bool EnablePropCulling { get; set; } = true;
@@ -44,9 +44,8 @@ public partial class EnvironmentManager : Node3D
     private int _biomeCount = 8;
     private Dictionary<EnvironmentPropData, HashSet<int>> _propBiomeIndexCache = new();
 
-    // NEW: Track ALL prop instances for collision checking (both Area3D and grid-based)
     private Dictionary<Vector2I, List<PropPlacementData>> _chunkPlacedProps = new();
-    private List<EnvironmentPropData> _sortedPropDatabase = new();  // Sorted by priority
+    private List<EnvironmentPropData> _sortedPropDatabase = new();
 
     public override void _Ready()
     {
@@ -105,11 +104,9 @@ public partial class EnvironmentManager : Node3D
             return;
         }
 
-        // NEW: Sort props by priority (higher priority spawns first)
         _sortedPropDatabase = new List<EnvironmentPropData>(PropDatabase);
         _sortedPropDatabase.Sort((a, b) => b.SpawnPriority.CompareTo(a.SpawnPriority));
 
-        // Build biome name-to-index lookup cache
         _propBiomeIndexCache.Clear();
         var biomeNameLookup = new Dictionary<string, int>();
         for (int i = 0; i < _terrain.GetBiomeCount(); i++)
@@ -236,7 +233,6 @@ public partial class EnvironmentManager : Node3D
         if (!_chunkPlacedProps.ContainsKey(chunkCoord))
             _chunkPlacedProps[chunkCoord] = new List<PropPlacementData>();
 
-        // NEW: Process props in priority order (HIGHEST FIRST)
         foreach (var propData in _sortedPropDatabase)
         {
             if (propData == null) continue;
@@ -266,34 +262,27 @@ public partial class EnvironmentManager : Node3D
         }
     }
 
-    // NEW: Check if a position overlaps with ANY existing props (Area3D or grid-based)
     private bool CheckPropCollision(Vector3 worldPos, EnvironmentPropData propData, Vector2I chunkCoord)
     {
         if (!_chunkPlacedProps.TryGetValue(chunkCoord, out var existingProps))
-            return false;  // No props to collide with
+            return false;
 
-        // Get the groups this prop should avoid
         var avoidGroups = propData.AvoidGroupNames ?? new Godot.Collections.Array<string>();
         
         if (avoidGroups.Count == 0)
-            return false;  // Not avoiding anything
+            return false;
 
-        // Check against all existing props in this chunk
         foreach (var existingProp in existingProps)
         {
-            // Check if this prop should avoid the existing prop's group
             if (avoidGroups.Contains(existingProp.GroupName))
             {
                 float distance = worldPos.DistanceTo(existingProp.WorldPosition);
                 
-                // Calculate minimum distance needed
                 float minDist = Area3DCheckRadius;
                 
-                // Use custom distance if specified
                 if (propData.HasMultipleScenes() && propData.MinDistanceBetweenVariants > 0)
                     minDist = propData.MinDistanceBetweenVariants;
                 
-                // Also consider the existing prop's collision size
                 if (existingProp.CollisionRadius > 0)
                     minDist = Mathf.Max(minDist, existingProp.CollisionRadius);
 
@@ -301,24 +290,21 @@ public partial class EnvironmentManager : Node3D
                 {
                     if (EnableDebugLogging)
                         GD.Print($"  ❌ {propData.Name} blocked by {existingProp.PropName} (group: {existingProp.GroupName}, dist: {distance:F2}m < {minDist:F2}m required)");
-                    return true;  // Collision detected
+                    return true;
                 }
             }
         }
 
-        return false;  // No collision
+        return false;
     }
 
-    // NEW: Register a placed prop for future collision checks
     private void RegisterPlacedProp(Vector3 worldPos, EnvironmentPropData propData, Vector2I chunkCoord)
     {
         if (!_chunkPlacedProps.ContainsKey(chunkCoord))
             _chunkPlacedProps[chunkCoord] = new List<PropPlacementData>();
 
-        // Get the group name from prop data
         string groupName = propData.CollisionGroupName;
 
-        // Calculate collision radius from collision size
         float collisionRadius = 0;
         if (propData.UsesArea3DCollision())
         {
@@ -328,7 +314,7 @@ public partial class EnvironmentManager : Node3D
         {
             var collisionSize = propData.GetCollisionSize();
             collisionRadius = Mathf.Max(collisionSize.X, collisionSize.Y) * 0.5f;
-            if (collisionRadius == 0) collisionRadius = 1.0f; // Default for grid props
+            if (collisionRadius == 0) collisionRadius = 1.0f;
         }
 
         _chunkPlacedProps[chunkCoord].Add(new PropPlacementData
@@ -398,11 +384,10 @@ public partial class EnvironmentManager : Node3D
                 {
                     Vector3 worldPos = new Vector3(pixel.WorldX, 0, pixel.WorldZ);
 
-                    // NEW: Check collision with ALL existing props (not just Area3D)
                     if (CheckPropCollision(worldPos, propData, chunkCoord))
                     {
                         instanceIndex++;
-                        continue;  // Skip this placement
+                        continue;
                     }
 
                     var instance = CreatePropInstance(
@@ -415,7 +400,6 @@ public partial class EnvironmentManager : Node3D
                     );
                     propInstances.Add(instance);
 
-                    // NEW: Register this prop for future collision checks
                     RegisterPlacedProp(instance.WorldPosition, propData, chunkCoord);
 
                     if (propData.IsHarvestable && _resourceSystemReady) 
@@ -443,7 +427,6 @@ public partial class EnvironmentManager : Node3D
 
         if (propInstances.Count > 0)
         {
-            // Handle multiple scene variants
             if (propData.HasMultipleScenes())
             {
                 CreateMultipleSceneInstances(propInstances, propData, chunkCoord, chunkPropData);
@@ -458,7 +441,6 @@ public partial class EnvironmentManager : Node3D
         }
     }
 
-    // NEW: Create individual scene instances for multiple scene variants
     private void CreateMultipleSceneInstances(
         List<PropInstance> instances, 
         EnvironmentPropData propData, 
@@ -475,16 +457,19 @@ public partial class EnvironmentManager : Node3D
             try
             {
                 var sceneInstance = scene.Instantiate<Node3D>();
-                sceneInstance.GlobalPosition = instance.WorldPosition;
-                sceneInstance.Rotation = new Vector3(0, instance.Transform.Basis.GetEuler().Y, 0);
-                sceneInstance.Scale = instance.Transform.Basis.Scale;
                 sceneInstance.Name = $"{propData.Name}_{chunkCoord}_{instances.IndexOf(instance)}";
 
-                // Add to collision group
                 string groupName = propData.CollisionGroupName;
                 sceneInstance.AddToGroup(groupName);
 
+                // Add to tree FIRST before setting global properties
                 AddChild(sceneInstance);
+                
+                // NOW set global position and rotation (after being added to tree)
+                sceneInstance.GlobalPosition = instance.WorldPosition;
+                sceneInstance.Rotation = new Vector3(0, instance.Transform.Basis.GetEuler().Y, 0);
+                sceneInstance.Scale = instance.Transform.Basis.Scale;
+
                 chunkPropData.SceneInstances.Add(sceneInstance);
             }
             catch (Exception ex)
@@ -541,7 +526,6 @@ public partial class EnvironmentManager : Node3D
 
                 Vector3 seedWorldPos = new Vector3(kvp.Value.WorldX, 0, kvp.Value.WorldZ);
                 
-                // NEW: Check collision for cluster seed
                 if (CheckPropCollision(seedWorldPos, propData, chunkCoord))
                     continue;
 
@@ -556,7 +540,6 @@ public partial class EnvironmentManager : Node3D
 
                     foreach (var instance in cluster)
                     {
-                        // NEW: Register clustered props
                         RegisterPlacedProp(instance.WorldPosition, propData, chunkCoord);
 
                         if (propData.IsHarvestable && _resourceSystemReady) 
@@ -623,7 +606,6 @@ public partial class EnvironmentManager : Node3D
 
             Vector3 worldPos = new Vector3(pixel.WorldX, 0, pixel.WorldZ);
 
-            // NEW: Check collision for cluster members
             if (CheckPropCollision(worldPos, propData, chunkCoord))
                 continue;
 
@@ -716,7 +698,6 @@ public partial class EnvironmentManager : Node3D
     {
         if (_navigationGrid == null) return;
 
-        // Use Area3D for navigation if available, otherwise use grid-based
         Vector2 collisionSize = propData.UsesArea3DCollision() ? 
             DefaultPropCollisionSize : propData.GetCollisionSize();
         
@@ -864,7 +845,6 @@ public partial class EnvironmentManager : Node3D
     {
         _biomePixelCache.Remove(coord);
         
-        // Clear prop placement tracking
         _chunkPlacedProps.Remove(coord);
 
         if (_chunkPropNavData.TryGetValue(coord, out var navDataList))
@@ -893,7 +873,6 @@ public partial class EnvironmentManager : Node3D
                     mmi.QueueFree();
             }
 
-            // NEW: Free scene instances
             foreach (var sceneInstance in chunkData.SceneInstances)
             {
                 if (IsInstanceValid(sceneInstance))
@@ -975,7 +954,7 @@ public class ChunkPropData
 {
     public Vector2I ChunkCoord { get; set; }
     public List<MultiMeshInstance3D> MultiMeshInstances { get; set; } = new();
-    public List<Node3D> SceneInstances { get; set; } = new();  // NEW: For multiple scene support
+    public List<Node3D> SceneInstances { get; set; } = new();
 }
 
 public class PropInstance
@@ -999,12 +978,11 @@ public class PropNavigationData
     public string PropName { get; set; }
 }
 
-// NEW: Universal prop tracking for collision detection
 public class PropPlacementData
 {
     public Vector3 WorldPosition { get; set; }
     public string PropName { get; set; }
-    public string GroupName { get; set; }  // The group this prop belongs to (e.g., "tree_collision", "rock_collision")
-    public float CollisionRadius { get; set; }  // Radius for distance checks
+    public string GroupName { get; set; }
+    public float CollisionRadius { get; set; }
     public bool UsesArea3D { get; set; }
 }
