@@ -2,21 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl6tahvri5283"
-path.s3tc="res://.godot/imported/Tower_3_Tower_#.png-38ea3aed9039d689b73d2c99e2b11954.s3tc.ctex"
-path.etc2="res://.godot/imported/Tower_3_Tower_#.png-38ea3aed9039d689b73d2c99e2b11954.etc2.ctex"
+uid="uid://8feclwtj3v3t"
+path.s3tc="res://.godot/imported/Walls_V2_oak_planks.png-21f0858f5a614417d97459908c37b224.s3tc.ctex"
+path.etc2="res://.godot/imported/Walls_V2_oak_planks.png-21f0858f5a614417d97459908c37b224.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "4b1b42891f48fb033995832b2494b23d"
+"md5": "38e1ca2a780cea69442e4b9341a193d2"
 }
 
 [deps]
 
-source_file="res://MODLES/assetsmodel/Castle/Walls/Tower_3_Tower_#.png"
-dest_files=["res://.godot/imported/Tower_3_Tower_#.png-38ea3aed9039d689b73d2c99e2b11954.s3tc.ctex", "res://.godot/imported/Tower_3_Tower_#.png-38ea3aed9039d689b73d2c99e2b11954.etc2.ctex"]
+source_file="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_oak_planks.png"
+dest_files=["res://.godot/imported/Walls_V2_oak_planks.png-21f0858f5a614417d97459908c37b224.s3tc.ctex", "res://.godot/imported/Walls_V2_oak_planks.png-21f0858f5a614417d97459908c37b224.etc2.ctex"]
 
 [params]
 

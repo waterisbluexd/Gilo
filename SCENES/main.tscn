@@ -324,9 +324,9 @@ shader_parameter/noiseTexture = SubResource("NoiseTexture2D_l28hy")
 shader_parameter/isSoft = false
 shader_parameter/speed = 0.002000000095
 shader_parameter/brightness = 0.6000000285
-shader_parameter/threshold = 1.214000057665
+shader_parameter/threshold = 1.0350000491625
 shader_parameter/fluffiness = 0.626000029735
-shader_parameter/tile_size = 1826.2610862723975
+shader_parameter/tile_size = 3615.5151712619627
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dtswy"]
 noise_type = 3
@@ -2384,6 +2384,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
 script = ExtResource("19_krqwh")
 
 [node name="Houses_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/LeftPage/MarginContainer"]
+visible = false
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/LeftPage/MarginContainer/Houses_Item_Selector"]

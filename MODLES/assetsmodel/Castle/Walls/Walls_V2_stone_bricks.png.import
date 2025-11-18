@@ -2,21 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwpcb0cdng07e"
-path.s3tc="res://.godot/imported/Tower_2_Tower_Simple.png-a28888b3f4c3d3bb6d5fa7cfaea2b7ee.s3tc.ctex"
-path.etc2="res://.godot/imported/Tower_2_Tower_Simple.png-a28888b3f4c3d3bb6d5fa7cfaea2b7ee.etc2.ctex"
+uid="uid://d15v5ndyywsp5"
+path.s3tc="res://.godot/imported/Walls_V2_stone_bricks.png-828b36f7d178c8e335ac67e5dc42c5b5.s3tc.ctex"
+path.etc2="res://.godot/imported/Walls_V2_stone_bricks.png-828b36f7d178c8e335ac67e5dc42c5b5.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "6e1dda22f602132900977acc9618b817"
+"md5": "d279e66de06a1b90e4dec1b68c0b86ae"
 }
 
 [deps]
 
-source_file="res://MODLES/assetsmodel/Castle/Walls/Tower_2_Tower_Simple.png"
-dest_files=["res://.godot/imported/Tower_2_Tower_Simple.png-a28888b3f4c3d3bb6d5fa7cfaea2b7ee.s3tc.ctex", "res://.godot/imported/Tower_2_Tower_Simple.png-a28888b3f4c3d3bb6d5fa7cfaea2b7ee.etc2.ctex"]
+source_file="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_stone_bricks.png"
+dest_files=["res://.godot/imported/Walls_V2_stone_bricks.png-828b36f7d178c8e335ac67e5dc42c5b5.s3tc.ctex", "res://.godot/imported/Walls_V2_stone_bricks.png-828b36f7d178c8e335ac67e5dc42c5b5.etc2.ctex"]
 
 [params]
 

@@ -1,0 +1,44 @@
+[gd_scene load_steps=11 format=3 uid="uid://dbj8gcljmxapj"]
+
+[ext_resource type="PackedScene" uid="uid://c0y3ew7ynopkp" path="res://SCENES/Assets/Castle_Acc/wall_1_v2.tscn" id="1_b6gaq"]
+[ext_resource type="PackedScene" uid="uid://ksnu0gknjv8y" path="res://SCENES/Assets/Castle_Acc/wall_2.tscn" id="2_e8cam"]
+[ext_resource type="PackedScene" uid="uid://c6x8wfewyalo7" path="res://SCENES/Assets/Castle_Acc/wall_3.tscn" id="3_6dkfr"]
+[ext_resource type="PackedScene" uid="uid://nb46mc3aq4jy" path="res://SCENES/Assets/Castle_Acc/wall_4.tscn" id="4_t5ddh"]
+[ext_resource type="PackedScene" uid="uid://crtdvj56ipn7l" path="res://SCENES/Assets/Castle_Acc/wall_5.tscn" id="5_r52ko"]
+[ext_resource type="PackedScene" uid="uid://ptll3y4smc22" path="res://SCENES/Assets/Castle_Acc/wall_6.tscn" id="6_4js27"]
+[ext_resource type="PackedScene" uid="uid://bjxwornqw54xy" path="res://SCENES/Assets/Castle_Acc/tower_3.tscn" id="7_fos57"]
+[ext_resource type="PackedScene" uid="uid://sxr4s8jbdoru" path="res://SCENES/Assets/Castle_Acc/tower_2.tscn" id="8_f7yj7"]
+[ext_resource type="PackedScene" uid="uid://d4dqu6xmuwih0" path="res://SCENES/Assets/Castle_Acc/tower_1.tscn" id="9_sy5ma"]
+[ext_resource type="PackedScene" uid="uid://d2yvqxuu2bfkn" path="res://SCENES/Assets/Castle_Acc/tower_4.tscn" id="10_fmh34"]
+
+[node name="Walls_V2" type="Node3D"]
+
+[node name="Wall_1" parent="." instance=ExtResource("1_b6gaq")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_2" parent="." instance=ExtResource("2_e8cam")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_3" parent="." instance=ExtResource("3_6dkfr")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_4" parent="." instance=ExtResource("4_t5ddh")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_5" parent="." instance=ExtResource("5_r52ko")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_6" parent="." instance=ExtResource("6_4js27")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Tower_3" parent="." instance=ExtResource("7_fos57")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Tower_2" parent="." instance=ExtResource("8_f7yj7")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Tower_1" parent="." instance=ExtResource("9_sy5ma")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Tower_4" parent="." instance=ExtResource("10_fmh34")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)

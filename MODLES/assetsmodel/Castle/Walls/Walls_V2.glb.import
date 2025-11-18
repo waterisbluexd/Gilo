@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dwvrdjeattiix"
-path="res://.godot/imported/Walls.glb-f3ab2f8cf316f8065aded697d4e05ec6.scn"
+uid="uid://luvnaq3ebnoe"
+path="res://.godot/imported/Walls_V2.glb-ed1cfbad46b73e78385349044f22a5f9.scn"
 
 [deps]
 
-source_file="res://MODLES/assetsmodel/Castle/Walls/Walls.glb"
-dest_files=["res://.godot/imported/Walls.glb-f3ab2f8cf316f8065aded697d4e05ec6.scn"]
+source_file="res://MODLES/assetsmodel/Castle/Walls/Walls_V2.glb"
+dest_files=["res://.godot/imported/Walls_V2.glb-ed1cfbad46b73e78385349044f22a5f9.scn"]
 
 [params]
 

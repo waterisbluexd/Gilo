@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_3el3s")
 BiomeName = "Biome_3"
-BiomeColor = Color(0.48235294, 0.62352943, 0.2, 1)
+BiomeColor = Color(1, 1, 1, 1)
 Threshold = -0.383
 metadata/_custom_type_script = "uid://boy4f1ocq8nmv"
