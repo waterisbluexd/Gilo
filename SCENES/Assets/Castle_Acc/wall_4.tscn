@@ -18,6 +18,8 @@ shader_parameter/is_perspective_camera = true
 resource_name = "stone_bricks"
 next_pass = SubResource("ShaderMaterial_jsdef")
 cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
 albedo_texture = ExtResource("1_b6mge")
 texture_filter = 2
 

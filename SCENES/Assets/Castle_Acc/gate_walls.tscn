@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://bpbbftnj2o3sc"]
+
+[ext_resource type="PackedScene" uid="uid://daehka2ardsgl" path="res://SCENES/Assets/Castle_Acc/gate_1.tscn" id="1_nrtdc"]
+[ext_resource type="PackedScene" uid="uid://d2b6t3q0sv14o" path="res://SCENES/Assets/Castle_Acc/wall_9.tscn" id="2_r2x6a"]
+[ext_resource type="PackedScene" uid="uid://sc1uj8w45qpq" path="res://SCENES/Assets/Castle_Acc/wall_8.tscn" id="3_n5km5"]
+[ext_resource type="PackedScene" uid="uid://i1y4r7f5p56e" path="res://SCENES/Assets/Castle_Acc/wall_7.tscn" id="4_tkh0s"]
+[ext_resource type="PackedScene" uid="uid://vf0jufucttx4" path="res://SCENES/Assets/Castle_Acc/gate_cage.tscn" id="5_l2q2q"]
+[ext_resource type="PackedScene" uid="uid://bk5s0st06sofs" path="res://SCENES/Assets/Castle_Acc/gate_2.tscn" id="6_8ur22"]
+
+[node name="Gate_walls" type="Node3D"]
+
+[node name="Gate_1" parent="." instance=ExtResource("1_nrtdc")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+visible = false
+
+[node name="Wall_9" parent="." instance=ExtResource("2_r2x6a")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_8" parent="." instance=ExtResource("3_n5km5")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+
+[node name="Wall_7" parent="." instance=ExtResource("4_tkh0s")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+visible = false
+
+[node name="Gate_Cage" parent="." instance=ExtResource("5_l2q2q")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+visible = false
+
+[node name="Gate_2" parent="." instance=ExtResource("6_8ur22")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+visible = false

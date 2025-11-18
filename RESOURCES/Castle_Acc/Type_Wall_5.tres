@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://rcmoi4x2tt2w"]
+
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_kw1xp"]
+[ext_resource type="PackedScene" uid="uid://sc1uj8w45qpq" path="res://SCENES/Assets/Castle_Acc/wall_8.tscn" id="2_kw1xp"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="3_6duyo"]
+
+[resource]
+script = ExtResource("3_6duyo")
+name = "Wall_4"
+size = Vector2(1, 1)
+prefab = ExtResource("2_kw1xp")
+cost = 0
+build_time = 0.0
+ignore_collision_with_names = Array[String](["Tower_1", "Tower_2"])
+building_type = 5
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

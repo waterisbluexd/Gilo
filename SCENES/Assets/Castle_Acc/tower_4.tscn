@@ -1,20 +1,49 @@
-[gd_scene load_steps=8 format=4 uid="uid://d2yvqxuu2bfkn"]
+[gd_scene load_steps=11 format=4 uid="uid://d2yvqxuu2bfkn"]
 
 [ext_resource type="Texture2D" uid="uid://8feclwtj3v3t" path="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_oak_planks.png" id="1_hsr0m"]
 [ext_resource type="Texture2D" uid="uid://d15v5ndyywsp5" path="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_stone_bricks.png" id="2_dv2jd"]
+[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_teian"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r4f1f"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cq2ru"]
+render_priority = 0
+shader = ExtResource("2_teian")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = false
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.1
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q2pt1"]
 resource_name = "oak_planks"
+next_pass = SubResource("ShaderMaterial_cq2ru")
 cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
 albedo_texture = ExtResource("1_hsr0m")
 roughness = 0.6429286
 texture_filter = 2
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dv2jd"]
+render_priority = 0
+shader = ExtResource("2_teian")
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = false
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.1
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
+shader_parameter/is_perspective_camera = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frg0a"]
 resource_name = "stone_bricks"
+next_pass = SubResource("ShaderMaterial_dv2jd")
 cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
 albedo_texture = ExtResource("2_dv2jd")
 texture_filter = 2
 
@@ -93,6 +122,6 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dnuqf")
 
 [node name="Tower_4" type="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+transform = Transform3D(0.8, 0, 0, 0, -3.4969112e-08, -0.8, 0, 0.8, -3.4969112e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_m8vee")
 skeleton = NodePath("")
