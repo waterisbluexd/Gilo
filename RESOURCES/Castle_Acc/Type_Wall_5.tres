@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_6duyo")
-name = "Wall_4"
+name = "Wall_5"
 size = Vector2(1, 1)
 prefab = ExtResource("2_kw1xp")
 cost = 0

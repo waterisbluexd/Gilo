@@ -8,6 +8,8 @@ extends HBoxContainer
 @onready var tower_2_button: Button = $LeftPage/MarginContainer/Castle_Item_Selector/GridContainer/Tower_2/Button
 @onready var tower_3_button: Button = $LeftPage/MarginContainer/Castle_Item_Selector/GridContainer/Tower_3/Button
 @onready var tower_4_button: Button = $LeftPage/MarginContainer/Castle_Item_Selector/GridContainer/Tower_4/Button
+@onready var gate_1_button: Button = $RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_1/Gate_1_Button
+@onready var gate_2_button: Button = $RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_2/Gate_2_Button
 
 # Crafts buttons
 @onready var stock_pile_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/StockPile/Button
@@ -41,7 +43,6 @@ func _ready():
 	else:
 		print("wall_2_button value not set")
 	
-	# ⭐ CORRECTED: Added connection for wall_3_button
 	if wall_3_button:
 		wall_3_button.pressed.connect(_on_wall_3_pressed)
 	else:
@@ -62,11 +63,22 @@ func _ready():
 	else:
 		print("tower_3_button value not set")
 	
-	# ✅ ADDED: Connection for tower_4_button
 	if tower_4_button:
 		tower_4_button.pressed.connect(_on_tower_4_pressed)
 	else:
 		print("tower_4_button value not set")
+		
+	# ✅ ADDED: Connection for gate_1_button
+	if gate_1_button:
+		gate_1_button.pressed.connect(_on_gate_1_pressed)
+	else:
+		print("gate_1_button value not set")
+		
+	# ✅ ADDED: Connection for gate_2_button
+	if gate_2_button:
+		gate_2_button.pressed.connect(_on_gate_2_pressed)
+	else:
+		print("gate_2_button value not set")
 	
 	## Connect Crafts buttons
 	if stock_pile_button:
@@ -138,6 +150,16 @@ func _on_tower_3_pressed():
 func _on_tower_4_pressed():
 	if building_placer:
 		building_placer.select_building_category([27, 28, 29])
+
+# ✅ ADDED: Gate 1 signal function
+func _on_gate_1_pressed():
+	if building_placer:
+		building_placer.select_building(28)
+
+# ✅ ADDED: Gate 2 signal function
+func _on_gate_2_pressed():
+	if building_placer:
+		building_placer.select_building(29)
 
 func _on_stock_pile_pressed():
 	if building_placer:

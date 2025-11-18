@@ -10,6 +10,6 @@ name = "Tower_4"
 prefab = ExtResource("2_vva4r")
 cost = 0
 build_time = 0.0
-ignore_collision_with_names = Array[String](["Wall_1", "Wall_2"])
+ignore_collision_with_names = Array[String](["Wall_1", "Wall_2", "Wall_3", "Wall_4", "Wall_5", "Wall_6"])
 building_type = 6
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=89 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=91 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -316,6 +316,14 @@ texture_margin_left = 37.0
 texture_margin_top = 35.0
 texture_margin_right = 36.0
 region_rect = Rect2(64, 31, 48, 35)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wyael"]
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(112, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3id5y"]
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(128, 0, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -2233,7 +2241,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/h_separation = 1
+theme_override_constants/h_separation = 2
 columns = 7
 
 [node name="Wall_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/LeftPage/MarginContainer/Castle_Item_Selector/GridContainer"]
@@ -2643,6 +2651,341 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 10
+
+[node name="Castle_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 2
+columns = 7
+
+[node name="Gate_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wyael")
+
+[node name="Gate_1_Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Gate_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_3id5y")
+
+[node name="Gate_2_Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Crafts_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 1
+columns = 6
+
+[node name="StockPile" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_dpkf5")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer/StockPile"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="WoodCutter" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hk8u3")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer/WoodCutter"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="StoneCutter" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qhscv")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer/StoneCutter"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Bulk" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer"]
+material = SubResource("ShaderMaterial_dpkf5")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_krqwh")
+script = ExtResource("19_krqwh")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer/Bulk"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="IronMine" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_tk6o3")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8nfwp")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Crafts_Item_Selector/GridContainer/IronMine"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Armors_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 1
+columns = 6
+
+[node name="Wall_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(8, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_fadcr")
+
+[node name="Wall_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(10, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_pfn6h")
+
+[node name="Tower_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_84fi8")
+
+[node name="Tower_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_eha84")
+
+[node name="Tower_3" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Armors_Item_Selector/GridContainer"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_tk6o3")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
+script = ExtResource("19_krqwh")
+
+[node name="Houses_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 1
+columns = 6
+
+[node name="Tent" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer"]
+material = SubResource("ShaderMaterial_hk8u3")
+custom_minimum_size = Vector2(8, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tk6o3")
+script = ExtResource("19_krqwh")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer/Tent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Houses" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer"]
+material = SubResource("ShaderMaterial_qhscv")
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_c8fif")
+script = ExtResource("19_krqwh")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer/Houses"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="well" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer"]
+material = SubResource("ShaderMaterial_krqwh")
+custom_minimum_size = Vector2(9, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_inuk2")
+script = ExtResource("19_krqwh")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer/well"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Tower_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer"]
+visible = false
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_eha84")
+
+[node name="Tower_3" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Houses_Item_Selector/GridContainer"]
+visible = false
+texture_filter = 1
+material = SubResource("ShaderMaterial_tk6o3")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
+script = ExtResource("19_krqwh")
+
+[node name="Farm_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 1
+columns = 6
+
+[node name="Wall_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(8, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_fadcr")
+
+[node name="Wall_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(10, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_pfn6h")
+
+[node name="Tower_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_84fi8")
+
+[node name="Tower_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_eha84")
+
+[node name="Tower_3" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Farm_Item_Selector/GridContainer"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_tk6o3")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
+script = ExtResource("19_krqwh")
+
+[node name="Bakery_Item_Selector" type="Control" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer"]
+visible = false
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 1
+columns = 6
+
+[node name="Wall_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(8, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_fadcr")
+
+[node name="Wall_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(10, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_pfn6h")
+
+[node name="Tower_1" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_84fi8")
+
+[node name="Tower_2" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_eha84")
+
+[node name="Tower_3" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Bakery_Item_Selector/GridContainer"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_tk6o3")
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
+script = ExtResource("19_krqwh")
 
 [node name="Pixelated" type="Node" parent="."]
 

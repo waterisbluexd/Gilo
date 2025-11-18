@@ -11,6 +11,6 @@ size = Vector2(1, 1)
 prefab = ExtResource("2_cmann")
 cost = 0
 build_time = 0.0
-ignore_collision_with_names = Array[String](["Tower_1", "Tower_2"])
+ignore_collision_with_names = Array[String](["Tower_1", "Tower_2", "Tower_3", "Tower_4"])
 building_type = 5
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"
