@@ -40,13 +40,17 @@ var last_hovered_snapped_pos: Vector3 = Vector3.ZERO
 var grid_cell_size: float = 1.0
 @onready var wall_preview_container: Node3D = Node3D.new()
 
+# --- ALTERNATING WALL SYSTEM ---
+var is_shift_held: bool = false
+var wall_type_1_index: int = -1  # Primary wall type
+var wall_type_2_index: int = -1  # Secondary wall type (for alternating)
+
 # Rotation variables
 var current_rotation: int = 0
 var max_rotations: int = 4
 
 # Building category cycling
-var category_start_index: int = -1
-var category_end_index: int = -1
+var category_indices: Array[int] = []  # Array of specific building indices
 var is_category_mode: bool = false
 
 signal placement_mode_changed(is_active: bool)
@@ -56,6 +60,12 @@ func get_current_building() -> BuildingData:
 	if building_data.is_empty() or current_building_index >= building_data.size():
 		return null
 	return building_data[current_building_index]
+
+
+func get_building_by_index(index: int) -> BuildingData:
+	if building_data.is_empty() or index < 0 or index >= building_data.size():
+		return null
+	return building_data[index]
 
 
 func get_current_building_size() -> Vector2:
@@ -118,6 +128,40 @@ func _ready():
 
 
 func _input(event):
+	# Track Shift key state (both left and right shift)
+	if event is InputEventKey:
+		if event.keycode == KEY_SHIFT or event.physical_keycode == KEY_SHIFT:
+			is_shift_held = event.pressed
+			
+			# Auto-initialize second wall type when shift is first pressed
+			if is_shift_held and is_building_wall and is_mouse_held and wall_type_2_index == -1:
+				# If in category mode, use category indices, otherwise use all walls
+				var available_wall_indices: Array[int] = []
+				
+				if is_category_mode:
+					# Only use walls from the current category
+					for idx in category_indices:
+						var building = get_building_by_index(idx)
+						if building and building.is_wall():
+							available_wall_indices.append(idx)
+				else:
+					# Use all wall-type buildings
+					available_wall_indices = _get_all_wall_building_indices()
+				
+				if available_wall_indices.size() > 1:
+					# Find current wall in the list and pick the next one
+					var current_pos = available_wall_indices.find(wall_type_1_index)
+					if current_pos != -1:
+						wall_type_2_index = available_wall_indices[(current_pos + 1) % available_wall_indices.size()]
+					else:
+						wall_type_2_index = available_wall_indices[0]
+					print("Auto-selected Type2: %s (from category: %s)" % [get_building_by_index(wall_type_2_index).name, is_category_mode])
+			
+			# Update wall preview when shift state changes
+			if is_building_wall and is_mouse_held:
+				_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
+			return
+	
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_building_wall and is_mouse_held and not event.pressed:
@@ -132,6 +176,18 @@ func _input(event):
 				get_viewport().set_input_as_handled()
 			return
 		
+		# Scroll wheel for wall type selection (when building walls)
+		elif is_building_wall:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+				_cycle_wall_type_up()
+				get_viewport().set_input_as_handled()
+				return
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+				_cycle_wall_type_down()
+				get_viewport().set_input_as_handled()
+				return
+		
+		# Scroll wheel for category cycling (when not building walls)
 		elif is_placing_mode and is_category_mode:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 				_cycle_building_previous()
@@ -151,6 +207,73 @@ func _input(event):
 		elif event.keycode == KEY_E and is_placing_mode and not is_building_wall:
 			rotate_building_right()
 			get_viewport().set_input_as_handled()
+
+
+func _cycle_wall_type_up():
+	"""Cycle to the next wall type when scrolling up"""
+	var all_wall_indices = _get_all_wall_building_indices()
+	if all_wall_indices.is_empty():
+		return
+	
+	# If shift is held, update secondary wall type
+	if is_shift_held:
+		if wall_type_2_index == -1:
+			# Initialize to next wall after type 1
+			var type1_pos = all_wall_indices.find(wall_type_1_index)
+			if type1_pos != -1:
+				wall_type_2_index = all_wall_indices[(type1_pos + 1) % all_wall_indices.size()]
+			else:
+				wall_type_2_index = all_wall_indices[0]
+		else:
+			var current_pos = all_wall_indices.find(wall_type_2_index)
+			wall_type_2_index = all_wall_indices[(current_pos + 1) % all_wall_indices.size()]
+	else:
+		# Update primary wall type
+		var current_pos = all_wall_indices.find(wall_type_1_index)
+		wall_type_1_index = all_wall_indices[(current_pos + 1) % all_wall_indices.size()]
+		current_building_index = wall_type_1_index
+	
+	# Redraw preview
+	if is_mouse_held:
+		_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
+
+
+func _cycle_wall_type_down():
+	"""Cycle to the previous wall type when scrolling down"""
+	var all_wall_indices = _get_all_wall_building_indices()
+	if all_wall_indices.is_empty():
+		return
+	
+	# If shift is held, update secondary wall type
+	if is_shift_held:
+		if wall_type_2_index == -1:
+			# Initialize to previous wall before type 1
+			var type1_pos = all_wall_indices.find(wall_type_1_index)
+			if type1_pos != -1:
+				wall_type_2_index = all_wall_indices[(type1_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
+			else:
+				wall_type_2_index = all_wall_indices[all_wall_indices.size() - 1]
+		else:
+			var current_pos = all_wall_indices.find(wall_type_2_index)
+			wall_type_2_index = all_wall_indices[(current_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
+	else:
+		# Update primary wall type
+		var current_pos = all_wall_indices.find(wall_type_1_index)
+		wall_type_1_index = all_wall_indices[(current_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
+		current_building_index = wall_type_1_index
+	
+	# Redraw preview
+	if is_mouse_held:
+		_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
+
+
+func _get_all_wall_building_indices() -> Array[int]:
+	"""Returns indices of all wall-type buildings"""
+	var wall_indices: Array[int] = []
+	for i in range(building_data.size()):
+		if building_data[i].is_wall():
+			wall_indices.append(i)
+	return wall_indices
 
 
 func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_object: Node3D):
@@ -182,6 +305,10 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 		is_mouse_held = true
 		wall_start_point = snapped_pos
 		
+		# Initialize wall types
+		wall_type_1_index = current_building_index
+		wall_type_2_index = -1  # Reset secondary type
+		
 		if preview_node:
 			preview_node.visible = false
 		
@@ -205,20 +332,27 @@ func snap_to_grid_position(world_pos: Vector3) -> Vector3:
 	return Vector3(snapped_x, 0, snapped_z)
 
 
-func _try_place_building(world_pos: Vector3):
-	var building = get_current_building()
+func _try_place_building(world_pos: Vector3, override_building_index: int = -1):
+	var building: BuildingData
+	if override_building_index >= 0:
+		building = get_building_by_index(override_building_index)
+	else:
+		building = get_current_building()
+	
 	if not building:
 		return
 
-	if _can_place_at(world_pos):
-		_place_building_at(world_pos)
+	if _can_place_at(world_pos, building):
+		_place_building_at(world_pos, building)
 
 
-func _can_place_at(world_pos: Vector3) -> bool:
+func _can_place_at(world_pos: Vector3, building: BuildingData = null) -> bool:
 	if not navigation_grid:
 		return true
 
-	var building = get_current_building()
+	if not building:
+		building = get_current_building()
+	
 	if not building:
 		return false
 		
@@ -238,43 +372,38 @@ func _can_place_at(world_pos: Vector3) -> bool:
 		else:
 			check_result = navigation_grid.check_area_placement(world_pos, building_size, building.name)
 	
-	# If placeable, return true
 	if check_result.can_place:
 		return true
 	
-	# Check if building has the ignore_collision_with_names property
 	if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
 		return false
 	
-	# Check if blocked by buildings we DON'T ignore
 	if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
 		for building_name_blocking in check_result.blocking_buildings:
 			if not building.ignore_collision_with_names.has(building_name_blocking):
-				return false  # Blocked by a building we don't ignore
+				return false
 	
-	# Check if blocked by props (environment objects)
 	if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
-		return false  # Props can't be ignored (trees, rocks, etc.)
+		return false
 	
-	# Check if area itself is blocked (terrain)
 	if check_result.has("is_area_blocked") and check_result.is_area_blocked:
 		return false
 
 	return true
 
 
-func _place_building_at(world_pos: Vector3):
-	var building = get_current_building()
+func _place_building_at(world_pos: Vector3, building: BuildingData = null):
+	if not building:
+		building = get_current_building()
+	
 	if not building:
 		return
 
-	if not _can_place_at(world_pos):
+	if not _can_place_at(world_pos, building):
 		return
 
 	var rotated_size = get_rotated_building_size()
 	
-	# ALL buildings are now registered as "buildings" with their names
-	# This makes the system fully dynamic
 	if building.is_wall():
 		navigation_grid.place_building_with_name(world_pos, building.size, building.name)
 	else:
@@ -387,11 +516,9 @@ func _update_preview(world_pos: Vector3):
 			
 			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
 				var all_ignorable = true
-				# Check if building has the property and if it's not empty
 				if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
 					all_ignorable = false
 				else:
-					# Check blocking buildings (not props!)
 					if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
 						for building_name_blocking in check_result.blocking_buildings:
 							if not building.ignore_collision_with_names.has(building_name_blocking):
@@ -418,8 +545,10 @@ func _cancel_placement_mode():
 	is_building_wall = false
 	is_mouse_held = false
 	is_category_mode = false
-	category_start_index = -1
-	category_end_index = -1
+	is_shift_held = false
+	category_indices.clear()
+	wall_type_1_index = -1
+	wall_type_2_index = -1
 	
 	if preview_node:
 		preview_node.visible = false
@@ -463,8 +592,7 @@ func select_building(index: int):
 	if index >= 0 and index < building_data.size():
 		current_building_index = index
 		is_category_mode = false
-		category_start_index = -1
-		category_end_index = -1
+		category_indices.clear()
 		
 		_create_preview_node()
 		
@@ -475,15 +603,25 @@ func select_building(index: int):
 			emit_signal("placement_mode_changed", true)
 
 
-func select_building_category(start_index: int, end_index: int):
-	if start_index < 0 or end_index >= building_data.size() or start_index > end_index:
-		push_error("Invalid building category range: %d to %d" % [start_index, end_index])
+func select_building_category(indices: Array[int]):
+	"""
+	Select a category of buildings using specific indices.
+	Example: select_building_category([10, 11, 12, 13])
+	This makes it safe when deleting assets - just update the array!
+	"""
+	if indices.is_empty():
+		push_error("Building category cannot be empty!")
 		return
 	
+	# Validate all indices
+	for idx in indices:
+		if idx < 0 or idx >= building_data.size():
+			push_error("Invalid building index in category: %d" % idx)
+			return
+	
 	is_category_mode = true
-	category_start_index = start_index
-	category_end_index = end_index
-	current_building_index = start_index
+	category_indices = indices.duplicate()
+	current_building_index = category_indices[0]
 	
 	_create_preview_node()
 	
@@ -496,9 +634,11 @@ func select_building_category(start_index: int, end_index: int):
 
 func _cycle_building_next():
 	if is_category_mode:
-		current_building_index += 1
-		if current_building_index > category_end_index:
-			current_building_index = category_start_index
+		var current_pos = category_indices.find(current_building_index)
+		if current_pos == -1:
+			current_building_index = category_indices[0]
+		else:
+			current_building_index = category_indices[(current_pos + 1) % category_indices.size()]
 	else:
 		current_building_index = (current_building_index + 1) % building_data.size()
 	
@@ -507,9 +647,11 @@ func _cycle_building_next():
 
 func _cycle_building_previous():
 	if is_category_mode:
-		current_building_index -= 1
-		if current_building_index < category_start_index:
-			current_building_index = category_end_index
+		var current_pos = category_indices.find(current_building_index)
+		if current_pos == -1:
+			current_building_index = category_indices[category_indices.size() - 1]
+		else:
+			current_building_index = category_indices[(current_pos - 1 + category_indices.size()) % category_indices.size()]
 	else:
 		current_building_index = (current_building_index - 1 + building_data.size()) % building_data.size()
 	
@@ -591,40 +733,60 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 	var end_grid = navigation_grid.world_to_grid(to_world)
 	var wall_points = _get_grid_line(start_grid, end_grid)
 	
-	var building = get_current_building()
-	if not building or not building.prefab:
+	var building_type_1 = get_building_by_index(wall_type_1_index)
+	var building_type_2 = get_building_by_index(wall_type_2_index) if is_shift_held and wall_type_2_index >= 0 else null
+	
+	if not building_type_1:
 		return
+	
+	# Debug: Show what mode we're in
+	if is_shift_held and building_type_2:
+		print("ALTERNATING MODE: Type1='%s' Type2='%s'" % [building_type_1.name, building_type_2.name])
+	else:
+		print("NORMAL MODE: Type='%s' (Shift: %s, Type2Index: %d)" % [building_type_1.name, is_shift_held, wall_type_2_index])
 
-	for grid_pos in wall_points:
+	for i in range(wall_points.size()):
+		var grid_pos = wall_points[i]
 		var center_pos = navigation_grid.grid_to_world(grid_pos)
 		var placement_pos = center_pos - Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		var preview_instance = building.prefab.instantiate()
+		# Determine which building type to use
+		var current_building: BuildingData
+		if is_shift_held and building_type_2:
+			# Alternating pattern: even indices = type 1, odd indices = type 2
+			current_building = building_type_1 if i % 2 == 0 else building_type_2
+		else:
+			# Normal mode: all same type
+			current_building = building_type_1
+		
+		if not current_building or not current_building.prefab:
+			continue
+		
+		var preview_instance = current_building.prefab.instantiate()
 		wall_preview_container.add_child(preview_instance)
 		preview_instance.global_position = placement_pos + Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
 		_apply_preview_materials(preview_instance, valid_color_tint)
 		
-		var can_place_wall_segment = _can_place_at(placement_pos)
+		var can_place_wall_segment = _can_place_at(placement_pos, current_building)
 		
 		if can_place_wall_segment:
 			_update_preview_color_for_node(preview_instance, valid_color_tint)
 		else:
 			var check_result
 			if navigation_grid.has_method("check_area_placement_with_props"):
-				check_result = navigation_grid.check_area_placement_with_props(placement_pos, building.size, building.name)
+				check_result = navigation_grid.check_area_placement_with_props(placement_pos, current_building.size, current_building.name)
 			else:
 				check_result = {"can_place": false, "blocking_props": []}
 			
 			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
 				var all_ignorable = true
-				if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
+				if not "ignore_collision_with_names" in current_building or current_building.ignore_collision_with_names.is_empty():
 					all_ignorable = false
 				else:
-					# Check blocking buildings (not props!)
 					if check_result.has("blocking_buildings"):
 						for building_name_blocking in check_result.blocking_buildings:
-							if not building.ignore_collision_with_names.has(building_name_blocking):
+							if not current_building.ignore_collision_with_names.has(building_name_blocking):
 								all_ignorable = false
 								break
 				
@@ -674,8 +836,26 @@ func _build_wall_line(from_world: Vector3, to_world: Vector3):
 	var start_grid = navigation_grid.world_to_grid(from_world)
 	var end_grid = navigation_grid.world_to_grid(to_world)
 	var wall_points = _get_grid_line(start_grid, end_grid)
+	
+	var building_type_1 = get_building_by_index(wall_type_1_index)
+	var building_type_2 = get_building_by_index(wall_type_2_index) if is_shift_held and wall_type_2_index >= 0 else null
 
-	for grid_pos in wall_points:
+	for i in range(wall_points.size()):
+		var grid_pos = wall_points[i]
 		var center_pos = navigation_grid.grid_to_world(grid_pos)
 		var placement_pos = center_pos - Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
-		_try_place_building(placement_pos)
+		
+		# Determine which building type to use
+		var current_building: BuildingData
+		if is_shift_held and building_type_2:
+			# Alternating pattern: even indices = type 1, odd indices = type 2
+			current_building = building_type_1 if i % 2 == 0 else building_type_2
+		else:
+			# Normal mode: all same type
+			current_building = building_type_1
+		
+		if not current_building:
+			continue
+		
+		# Place with the specific building type
+		_try_place_building(placement_pos, current_building_index if current_building == building_type_1 else wall_type_2_index)

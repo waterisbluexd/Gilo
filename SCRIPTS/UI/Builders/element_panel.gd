@@ -98,11 +98,12 @@ func _ready():
 # Castle callbacks
 func _on_wall_1_pressed():
 	if building_placer:
-		building_placer.select_building(10)
+		# NEW: Use array syntax [10, 11] instead of (10, 11)
+		building_placer.select_building_category([10, 11])
 
 func _on_wall_2_pressed():
 	if building_placer:
-		building_placer.select_building(11)
+		building_placer.select_building_category([23, 24])
 
 func _on_tower_1_pressed():
 	if building_placer:
@@ -135,11 +136,13 @@ func _on_iron_mine_pressed():
 # Houses callbacks
 func _on_tent_pressed():
 	if building_placer:
-		building_placer.select_building_category(7, 9)
+		# NEW: Use array syntax [7, 8, 9] instead of (7, 9)
+		building_placer.select_building_category([7, 8, 9])
 
 func _on_houses_pressed():
 	if building_placer:
-		building_placer.select_building_category(12, 17)
+		# NEW: Use array syntax [12, 13, 14, 15, 16, 17] instead of (12, 17)
+		building_placer.select_building_category([12, 13, 14, 15, 16, 17])
 
 func _on_well_pressed():
 	print("well value not set")

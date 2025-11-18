@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://dn7khush7j3"]
+[gd_scene load_steps=54 format=3 uid="uid://dn7khush7j3"]
 
 [ext_resource type="Script" uid="uid://do2om7ju0h55h" path="res://SCRIPTS/World_Generator/ChunkPixelTerrain.cs" id="1_bsi5x"]
 [ext_resource type="FastNoiseLite" uid="uid://bi57uv8jdf0ya" path="res://SHADER/resources/worldgennoise/PrimaryBiomeNoise.tres" id="2_gx6qx"]
@@ -44,6 +44,8 @@
 [ext_resource type="Resource" uid="uid://babgbxxja74f4" path="res://RESOURCES/Castle_Acc/Type_Tower_1.tres" id="37_t0ggg"]
 [ext_resource type="Resource" uid="uid://c01l7peavftm3" path="res://RESOURCES/Castle_Acc/Type_Tower_2.tres" id="38_p1l53"]
 [ext_resource type="Resource" uid="uid://36k31j0moaai" path="res://RESOURCES/Castle_Acc/Type_Tower_3.tres" id="39_5yf05"]
+[ext_resource type="Resource" uid="uid://c1wge3t2rnhr1" path="res://RESOURCES/Castle_Acc/Type_Wall_3.tres" id="40_fo4ex"]
+[ext_resource type="Resource" uid="uid://dxoekiwahkt1x" path="res://RESOURCES/Castle_Acc/Type_Wall_4.tres" id="41_h75an"]
 [ext_resource type="Script" uid="uid://dp6dberhafga5" path="res://SCRIPTS/World_Generator/WaterChunk.cs" id="44_46brh"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
@@ -102,7 +104,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_p1l53"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg"), ExtResource("38_p1l53"), ExtResource("15_ul5h0"), ExtResource("39_5yf05")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_p1l53"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg"), ExtResource("38_p1l53"), ExtResource("15_ul5h0"), ExtResource("39_5yf05"), ExtResource("40_fo4ex"), ExtResource("41_h75an")])
 click_cooldown = 0.0
 use_8_directions = true
 use_emission = false
