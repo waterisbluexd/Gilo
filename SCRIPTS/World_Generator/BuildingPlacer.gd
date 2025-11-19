@@ -18,12 +18,13 @@ class_name BuildingPlacer
 
 @export_group("Preview Settings - RTS Style")
 @export var preview_height: float = 0.0
-@export var preview_transparency: float = 0.6
+@export var preview_transparency: float = 0.5
+@export var use_original_colors: bool = true
 @export var valid_color_tint: Color = Color(0.5, 1.0, 0.5, 1.0)
 @export var invalid_color_tint: Color = Color(1.0, 0.3, 0.3, 1.0)
 @export var prop_blocked_color_tint: Color = Color(1.0, 0.7, 0.3, 1.0)
 @export var use_emission: bool = true
-@export var emission_strength: float = 0.3
+@export var emission_strength: float = 0.1
 
 # --- INTERNAL ---
 var navigation_grid: NavigationGrid

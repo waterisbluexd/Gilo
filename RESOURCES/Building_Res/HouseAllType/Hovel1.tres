@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_4qbhq"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_ie7tg"]
-[ext_resource type="PackedScene" uid="uid://d3uxaa8ikhrsv" path="res://SCENES/Assets/HouseAllType/hovel.tscn" id="2_kobsp"]
+[ext_resource type="PackedScene" uid="uid://bg4i7sv815hls" path="res://SCENES/Assets/HouseAllType/hovel_v_2_1.tscn" id="2_o5o6i"]
 
 [resource]
 script = ExtResource("2_ie7tg")
 name = "Hovel1"
 size = Vector2(2, 2)
-prefab = ExtResource("2_kobsp")
+prefab = ExtResource("2_o5o6i")
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

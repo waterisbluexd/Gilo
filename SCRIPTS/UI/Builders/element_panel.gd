@@ -10,10 +10,11 @@ extends HBoxContainer
 @onready var tower_4_button: Button = $LeftPage/MarginContainer/Castle_Item_Selector/GridContainer/Tower_4/Button
 @onready var gate_1_button: Button = $RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_1/Gate_1_Button
 @onready var gate_2_button: Button = $RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_2/Gate_2_Button
+@onready var stone_bridge_button: Button = $RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Stone_Bridge/Stone_Bridge_Button
 
 # Crafts buttons
 @onready var stock_pile_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/StockPile/Button
-@onready var wood_cutter_button: Button = $LeftPage/MarginContainer/Crafts_Item_selector/GridContainer/WoodCutter/Button
+@onready var wood_cutter_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/WoodCutter/Button
 @onready var stone_cutter_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/StoneCutter/Button
 @onready var bulk_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/Bulk/Button
 @onready var iron_mine_button: Button = $LeftPage/MarginContainer/Crafts_Item_Selector/GridContainer/IronMine/Button
@@ -32,7 +33,6 @@ func _ready():
 		print("BuildingPlacer node not found.")
 		return
 	
-	## Connect Castle buttons
 	if wall_1_button:
 		wall_1_button.pressed.connect(_on_wall_1_pressed)
 	else:
@@ -68,19 +68,21 @@ func _ready():
 	else:
 		print("tower_4_button value not set")
 		
-	# ✅ ADDED: Connection for gate_1_button
 	if gate_1_button:
 		gate_1_button.pressed.connect(_on_gate_1_pressed)
 	else:
 		print("gate_1_button value not set")
 		
-	# ✅ ADDED: Connection for gate_2_button
 	if gate_2_button:
 		gate_2_button.pressed.connect(_on_gate_2_pressed)
 	else:
 		print("gate_2_button value not set")
+
+	if stone_bridge_button:
+		stone_bridge_button.pressed.connect(_on_stone_bridge_button_pressed)
+	else:
+		print("stone_bridge_button value not set")
 	
-	## Connect Crafts buttons
 	if stock_pile_button:
 		stock_pile_button.pressed.connect(_on_stock_pile_pressed)
 	else:
@@ -106,7 +108,6 @@ func _ready():
 	else:
 		print("iron_mine_button value not set")
 	
-	## Connect Houses buttons
 	if tent_button:
 		tent_button.pressed.connect(_on_tent_pressed)
 	else:
@@ -121,7 +122,6 @@ func _ready():
 		well_button.pressed.connect(_on_well_pressed)
 	else:
 		print("well_button value not set")
-
 
 func _on_wall_1_pressed():
 	if building_placer:
@@ -151,15 +151,17 @@ func _on_tower_4_pressed():
 	if building_placer:
 		building_placer.select_building_category([27, 28, 29])
 
-# ✅ ADDED: Gate 1 signal function
 func _on_gate_1_pressed():
 	if building_placer:
 		building_placer.select_building(28)
 
-# ✅ ADDED: Gate 2 signal function
 func _on_gate_2_pressed():
 	if building_placer:
 		building_placer.select_building(29)
+
+func _on_stone_bridge_button_pressed():
+	if building_placer:
+		building_placer.select_building_category([30, 31, 32])
 
 func _on_stock_pile_pressed():
 	if building_placer:
@@ -167,7 +169,7 @@ func _on_stock_pile_pressed():
 
 func _on_wood_cutter_pressed():
 	if building_placer:
-		building_placer.select_building(2)
+		building_placer.select_building(21)
 
 func _on_stone_cutter_pressed():
 	if building_placer:
@@ -191,4 +193,4 @@ func _on_houses_pressed():
 
 func _on_well_pressed():
 	if building_placer:
-		building_placer.select_building(6)
+		building_placer.select_building_category([33, 34])

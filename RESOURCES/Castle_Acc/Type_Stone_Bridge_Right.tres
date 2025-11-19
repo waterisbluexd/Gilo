@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://meotddooo6lb"]
+
+[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_4gd3v"]
+[ext_resource type="PackedScene" uid="uid://d0m5skogvn3ve" path="res://SCENES/Assets/Castle_Acc/bridge_stone_right.tscn" id="2_4gd3v"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="3_pplo2"]
+
+[resource]
+script = ExtResource("3_pplo2")
+name = "Type_Stone_Bridge_Right"
+size = Vector2(7, 10)
+prefab = ExtResource("2_4gd3v")
+cost = 0
+build_time = 0.0
+building_type = 6
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

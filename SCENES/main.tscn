@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=92 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -324,6 +324,10 @@ region_rect = Rect2(112, 0, 16, 16)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3id5y"]
 texture = ExtResource("17_qhscv")
 region_rect = Rect2(128, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_obhih"]
+texture = ExtResource("17_qhscv")
+region_rect = Rect2(144, 0, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -2688,6 +2692,20 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_3id5y")
 
 [node name="Gate_2_Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Gate_2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Stone_Bridge" type="Panel" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_obhih")
+
+[node name="Stone_Bridge_Button" type="Button" parent="UI/GameUIv2/UI/Control/Book/RightPage/MarginContainer/Castle_Item_Selector/GridContainer/Stone_Bridge"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

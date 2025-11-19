@@ -9,11 +9,6 @@ class_name BuildingData
 @export var prefab: PackedScene
 @export var cost: int = 100
 @export var build_time: float = 10.0
-
-# --- COLLISION IGNORE SYSTEM (String-based to avoid circular dependencies) ---
-## List of building NAMES (not resources) that this building can be placed on top of
-## Example: For a Tower, you might add "Wall" to allow towers on walls
-## Example: For a Wall, you might add "Tower" to allow walls through towers
 @export var ignore_collision_with_names: Array[String] = []
 
 # --- BUILDING TYPE ---
@@ -31,9 +26,9 @@ enum BuildingType {
 
 # --- CASTLE ONLY PROPERTIES ---
 @export_group("Castle Settings")
-@export var owner: String = "Player"  # Who owns this castle
-@export var max_peasants: int = 20  # Maximum peasants this castle can hold at one time
-@export var peasant_types: Array[NPCType] = []  # What types of peasants this castle can spawn
+@export var owner: String = "Player"
+@export var max_peasants: int = 20
+@export var peasant_types: Array[NPCType] = [] 
 
 # --- VALIDATION ---
 func is_castle() -> bool:
@@ -50,21 +45,19 @@ func can_spawn_peasant_type(peasant_type: NPCType) -> bool:
 	return peasant_types.has(peasant_type)
 
 @export_group("Work Site")
-@export var provides_jobs: Array[String] = []  # Job types this building provides
-@export var max_workers: int = 0  # 0 = no jobs, >0 = workplace
-@export var work_positions: Array[Vector3] = []  # Where NPCs work (relative to building)
-@export var required_resources: Dictionary = {}  # What resources needed to function
-@export var produces_resources: Dictionary = {}  # What this building produces
+@export var provides_jobs: Array[String] = []
+@export var max_workers: int = 0
+@export var work_positions: Array[Vector3] = []
+@export var required_resources: Dictionary = {}
+@export var produces_resources: Dictionary = {}
 
 @export_group("Housing")
 @export var provides_housing: bool = false
 @export var max_residents: int = 0
-@export var housing_comfort: int = 1  # 1-5 quality rating
+@export var housing_comfort: int = 1
 
 @export_group("Storage")
-@export var storage_capacity: Dictionary = {}  # {"wood": 100, "food": 50}
-
-# Helper functions for your existing system
+@export var storage_capacity: Dictionary = {}
 func is_workplace() -> bool:
 	return max_workers > 0
 
@@ -77,6 +70,5 @@ func can_employ_job_type(job_type: String) -> bool:
 func is_wall() -> bool:
 	return building_type == BuildingType.WALL
 
-# NEW: Check if this building can ignore collision with another building
 func can_ignore_collision_with(other_building_name: String) -> bool:
 	return ignore_collision_with_names.has(other_building_name)
