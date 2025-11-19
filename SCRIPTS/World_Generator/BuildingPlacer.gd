@@ -1,7 +1,6 @@
 extends Node3D
 class_name BuildingPlacer
 
-# --- INSPECTOR CONFIGURABLE PARAMETERS ---
 @export_group("References")
 @export var camera: Camera3D
 @export var building_data: Array[BuildingData] = []
@@ -16,24 +15,20 @@ class_name BuildingPlacer
 @export var use_8_directions: bool = false
 @export var rotation_snap_angle: float = 90.0
 
-@export_group("Preview Settings - Stronghold Style")
+@export_group("Preview Settings")
 @export var preview_height: float = 0.0
-@export var preview_transparency: float = 0.6  # Semi-transparent like Stronghold
-@export var show_invalid_overlay: bool = true  # Simple red X or indicator when invalid
-@export var invalid_modulate: Color = Color(1.0, 0.4, 0.4, 0.7)  # Subtle red tint when invalid
+@export var preview_transparency: float = 0.6
+@export var show_invalid_overlay: bool = true
+@export var invalid_modulate: Color = Color(1.0, 0.4, 0.4, 0.7)
 
-# --- INTERNAL ---
 var navigation_grid: NavigationGrid
 var is_placing_mode: bool = false
 var preview_node: Node3D
 var preview_materials: Array[Material] = []
 var last_click_time: float = 0.0
 var is_placement_valid: bool = true
-
-# Invalid indicator (simple mesh that appears when placement is invalid)
 var invalid_indicator: MeshInstance3D
 
-# --- WALL BUILDING STATE ---
 var is_building_wall: bool = false
 var wall_start_point: Vector3 = Vector3.ZERO
 var is_mouse_held: bool = false
@@ -41,16 +36,13 @@ var last_hovered_snapped_pos: Vector3 = Vector3.ZERO
 var grid_cell_size: float = 1.0
 @onready var wall_preview_container: Node3D = Node3D.new()
 
-# --- ALTERNATING WALL SYSTEM ---
 var is_shift_held: bool = false
 var wall_type_1_index: int = -1
 var wall_type_2_index: int = -1
 
-# Rotation variables
 var current_rotation: int = 0
 var max_rotations: int = 4
 
-# Building category cycling
 var category_indices: Array[int] = []
 var is_category_mode: bool = false
 
@@ -105,10 +97,6 @@ func _ready():
 
 	if not camera:
 		camera = get_viewport().get_camera_3d()
-
-	if not camera:
-		push_error("BuildingPlacer: No camera assigned!")
-		return
 
 	if not navigation_grid:
 		push_warning("BuildingPlacer: No NavigationGrid found.")
@@ -299,7 +287,10 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 		return
 
 	last_click_time = current_time
-	_try_place_building(snapped_pos)
+	
+	var rotated_size = get_rotated_building_size()
+	var corner_pos = snapped_pos - Vector3(rotated_size.x * 0.5, 0, rotated_size.y * 0.5)
+	_try_place_building(corner_pos)
 
 
 func snap_to_grid_position(world_pos: Vector3) -> Vector3:
@@ -412,10 +403,9 @@ func _create_preview_node():
 		mesh_instance.mesh = box_mesh
 		preview_node = mesh_instance
 	
-	preview_node.name = "BuildingPreview_Stronghold"
+	preview_node.name = "BuildingPreview"
 	add_child(preview_node)
 	
-	# Apply Stronghold-style transparency
 	_apply_stronghold_preview_materials(preview_node)
 	_update_preview_rotation()
 	
@@ -423,7 +413,6 @@ func _create_preview_node():
 
 
 func _create_invalid_indicator():
-	"""Create a simple red X or outline that appears when placement is invalid"""
 	if invalid_indicator:
 		invalid_indicator.queue_free()
 	
@@ -445,13 +434,11 @@ func _create_invalid_indicator():
 
 
 func _apply_stronghold_preview_materials(node: Node):
-	"""Apply simple semi-transparent materials like Stronghold Crusader"""
 	if node is MeshInstance3D:
 		var mesh_instance = node as MeshInstance3D
 		var original_material = mesh_instance.get_active_material(0)
 		var preview_material = StandardMaterial3D.new()
 		
-		# Keep the original look, just make it transparent
 		if original_material and original_material is StandardMaterial3D:
 			var orig = original_material as StandardMaterial3D
 			preview_material.albedo_texture = orig.albedo_texture
@@ -459,12 +446,9 @@ func _apply_stronghold_preview_materials(node: Node):
 		else:
 			preview_material.albedo_color = Color.WHITE
 		
-		# Simple transparency - the Stronghold way
 		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		preview_material.albedo_color.a = preview_transparency
 		preview_material.cull_mode = BaseMaterial3D.CULL_DISABLED
-		
-		# Keep it looking realistic (not unshaded)
 		preview_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 		
 		mesh_instance.material_override = preview_material
@@ -475,13 +459,11 @@ func _apply_stronghold_preview_materials(node: Node):
 
 
 func _update_preview_tint(node: Node, tint: Color):
-	"""Update the color tint of preview materials"""
 	if node is MeshInstance3D:
 		var mesh_instance = node as MeshInstance3D
 		var material = mesh_instance.material_override
 		if material and material is StandardMaterial3D:
 			var mat = material as StandardMaterial3D
-			# Store original color if not stored
 			if not mat.has_meta("original_color"):
 				mat.set_meta("original_color", mat.albedo_color)
 			
@@ -505,19 +487,18 @@ func _update_preview(world_pos: Vector3):
 	if not building:
 		return
 
-	var building_size = get_current_building_size()
-	preview_node.position = world_pos + Vector3(building_size.x * 0.5, preview_height, building_size.y * 0.5)
+	var rotated_size = get_rotated_building_size()
+	var centered_world_pos = world_pos - Vector3(rotated_size.x * 0.5, 0, rotated_size.y * 0.5)
+	preview_node.position = world_pos + Vector3(0, preview_height, 0)
 
-	var can_place = _can_place_at(world_pos)
+	var can_place = _can_place_at(centered_world_pos)
 	is_placement_valid = can_place
 	
-	# Simple Stronghold-style indication
 	if show_invalid_overlay and invalid_indicator:
 		invalid_indicator.visible = not can_place
 		if not can_place:
 			invalid_indicator.global_position = preview_node.global_position + Vector3(0, 0.1, 0)
 	
-	# Apply color tint to preview materials when invalid
 	_update_preview_tint(preview_node, invalid_modulate if not can_place else Color.WHITE)
 
 
@@ -589,12 +570,10 @@ func select_building(index: int):
 
 func select_building_category(indices: Array[int]):
 	if indices.is_empty():
-		push_error("Building category cannot be empty!")
 		return
 	
 	for idx in indices:
 		if idx < 0 or idx >= building_data.size():
-			push_error("Invalid building index in category: %d" % idx)
 			return
 	
 	is_category_mode = true
@@ -735,12 +714,9 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 		wall_preview_container.add_child(preview_instance)
 		preview_instance.global_position = placement_pos + Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		# Apply Stronghold-style transparency to wall previews
 		_apply_stronghold_preview_materials(preview_instance)
 		
 		var can_place_wall_segment = _can_place_at(placement_pos, current_building)
-		
-		# Simple valid/invalid indication
 		_update_preview_tint(preview_instance, invalid_modulate if not can_place_wall_segment else Color.WHITE)
 
 
