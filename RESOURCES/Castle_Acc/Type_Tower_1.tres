@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("2_ov3ho")
 name = "Tower_1"
-size = Vector2(12, 12)
+size = Vector2(5, 5)
 prefab = ExtResource("2_fh1vi")
 ignore_collision_with_names = Array[String](["Wall_1", "Wall_2", "Wall_3", "Wall_4", "Wall_5", "Wall_6"])
 building_type = 6

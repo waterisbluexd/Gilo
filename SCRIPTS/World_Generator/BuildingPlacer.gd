@@ -16,15 +16,11 @@ class_name BuildingPlacer
 @export var use_8_directions: bool = false
 @export var rotation_snap_angle: float = 90.0
 
-@export_group("Preview Settings - RTS Style")
+@export_group("Preview Settings - Stronghold Style")
 @export var preview_height: float = 0.0
-@export var preview_transparency: float = 0.5
-@export var use_original_colors: bool = true
-@export var valid_color_tint: Color = Color(0.5, 1.0, 0.5, 1.0)
-@export var invalid_color_tint: Color = Color(1.0, 0.3, 0.3, 1.0)
-@export var prop_blocked_color_tint: Color = Color(1.0, 0.7, 0.3, 1.0)
-@export var use_emission: bool = true
-@export var emission_strength: float = 0.1
+@export var preview_transparency: float = 0.6  # Semi-transparent like Stronghold
+@export var show_invalid_overlay: bool = true  # Simple red X or indicator when invalid
+@export var invalid_modulate: Color = Color(1.0, 0.4, 0.4, 0.7)  # Subtle red tint when invalid
 
 # --- INTERNAL ---
 var navigation_grid: NavigationGrid
@@ -32,6 +28,10 @@ var is_placing_mode: bool = false
 var preview_node: Node3D
 var preview_materials: Array[Material] = []
 var last_click_time: float = 0.0
+var is_placement_valid: bool = true
+
+# Invalid indicator (simple mesh that appears when placement is invalid)
+var invalid_indicator: MeshInstance3D
 
 # --- WALL BUILDING STATE ---
 var is_building_wall: bool = false
@@ -43,15 +43,15 @@ var grid_cell_size: float = 1.0
 
 # --- ALTERNATING WALL SYSTEM ---
 var is_shift_held: bool = false
-var wall_type_1_index: int = -1  # Primary wall type
-var wall_type_2_index: int = -1  # Secondary wall type (for alternating)
+var wall_type_1_index: int = -1
+var wall_type_2_index: int = -1
 
 # Rotation variables
 var current_rotation: int = 0
 var max_rotations: int = 4
 
 # Building category cycling
-var category_indices: Array[int] = []  # Array of specific building indices
+var category_indices: Array[int] = []
 var is_category_mode: bool = false
 
 signal placement_mode_changed(is_active: bool)
@@ -123,42 +123,35 @@ func _ready():
 			camera.mouse_world_position_clicked.connect(_on_world_position_clicked)
 
 	_create_preview_node()
+	_create_invalid_indicator()
 	
 	wall_preview_container.name = "WallPreviewContainer"
 	add_child(wall_preview_container)
 
 
 func _input(event):
-	# Track Shift key state (both left and right shift)
 	if event is InputEventKey:
 		if event.keycode == KEY_SHIFT or event.physical_keycode == KEY_SHIFT:
 			is_shift_held = event.pressed
 			
-			# Auto-initialize second wall type when shift is first pressed
 			if is_shift_held and is_building_wall and is_mouse_held and wall_type_2_index == -1:
-				# If in category mode, use category indices, otherwise use all walls
 				var available_wall_indices: Array[int] = []
 				
 				if is_category_mode:
-					# Only use walls from the current category
 					for idx in category_indices:
 						var building = get_building_by_index(idx)
 						if building and building.is_wall():
 							available_wall_indices.append(idx)
 				else:
-					# Use all wall-type buildings
 					available_wall_indices = _get_all_wall_building_indices()
 				
 				if available_wall_indices.size() > 1:
-					# Find current wall in the list and pick the next one
 					var current_pos = available_wall_indices.find(wall_type_1_index)
 					if current_pos != -1:
 						wall_type_2_index = available_wall_indices[(current_pos + 1) % available_wall_indices.size()]
 					else:
 						wall_type_2_index = available_wall_indices[0]
-					print("Auto-selected Type2: %s (from category: %s)" % [get_building_by_index(wall_type_2_index).name, is_category_mode])
 			
-			# Update wall preview when shift state changes
 			if is_building_wall and is_mouse_held:
 				_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
 			return
@@ -177,7 +170,6 @@ func _input(event):
 				get_viewport().set_input_as_handled()
 			return
 		
-		# Scroll wheel for wall type selection (when building walls)
 		elif is_building_wall:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 				_cycle_wall_type_up()
@@ -188,7 +180,6 @@ func _input(event):
 				get_viewport().set_input_as_handled()
 				return
 		
-		# Scroll wheel for category cycling (when not building walls)
 		elif is_placing_mode and is_category_mode:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 				_cycle_building_previous()
@@ -211,15 +202,12 @@ func _input(event):
 
 
 func _cycle_wall_type_up():
-	"""Cycle to the next wall type when scrolling up"""
 	var all_wall_indices = _get_all_wall_building_indices()
 	if all_wall_indices.is_empty():
 		return
 	
-	# If shift is held, update secondary wall type
 	if is_shift_held:
 		if wall_type_2_index == -1:
-			# Initialize to next wall after type 1
 			var type1_pos = all_wall_indices.find(wall_type_1_index)
 			if type1_pos != -1:
 				wall_type_2_index = all_wall_indices[(type1_pos + 1) % all_wall_indices.size()]
@@ -229,26 +217,21 @@ func _cycle_wall_type_up():
 			var current_pos = all_wall_indices.find(wall_type_2_index)
 			wall_type_2_index = all_wall_indices[(current_pos + 1) % all_wall_indices.size()]
 	else:
-		# Update primary wall type
 		var current_pos = all_wall_indices.find(wall_type_1_index)
 		wall_type_1_index = all_wall_indices[(current_pos + 1) % all_wall_indices.size()]
 		current_building_index = wall_type_1_index
 	
-	# Redraw preview
 	if is_mouse_held:
 		_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
 
 
 func _cycle_wall_type_down():
-	"""Cycle to the previous wall type when scrolling down"""
 	var all_wall_indices = _get_all_wall_building_indices()
 	if all_wall_indices.is_empty():
 		return
 	
-	# If shift is held, update secondary wall type
 	if is_shift_held:
 		if wall_type_2_index == -1:
-			# Initialize to previous wall before type 1
 			var type1_pos = all_wall_indices.find(wall_type_1_index)
 			if type1_pos != -1:
 				wall_type_2_index = all_wall_indices[(type1_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
@@ -258,18 +241,15 @@ func _cycle_wall_type_down():
 			var current_pos = all_wall_indices.find(wall_type_2_index)
 			wall_type_2_index = all_wall_indices[(current_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
 	else:
-		# Update primary wall type
 		var current_pos = all_wall_indices.find(wall_type_1_index)
 		wall_type_1_index = all_wall_indices[(current_pos - 1 + all_wall_indices.size()) % all_wall_indices.size()]
 		current_building_index = wall_type_1_index
 	
-	# Redraw preview
 	if is_mouse_held:
 		_draw_wall_preview(wall_start_point, last_hovered_snapped_pos)
 
 
 func _get_all_wall_building_indices() -> Array[int]:
-	"""Returns indices of all wall-type buildings"""
 	var wall_indices: Array[int] = []
 	for i in range(building_data.size()):
 		if building_data[i].is_wall():
@@ -306,9 +286,8 @@ func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
 		is_mouse_held = true
 		wall_start_point = snapped_pos
 		
-		# Initialize wall types
 		wall_type_1_index = current_building_index
-		wall_type_2_index = -1  # Reset secondary type
+		wall_type_2_index = -1
 		
 		if preview_node:
 			preview_node.visible = false
@@ -433,54 +412,89 @@ func _create_preview_node():
 		mesh_instance.mesh = box_mesh
 		preview_node = mesh_instance
 	
-	preview_node.name = "BuildingPreview_RTS"
+	preview_node.name = "BuildingPreview_Stronghold"
 	add_child(preview_node)
 	
-	_apply_preview_materials(preview_node, valid_color_tint)
+	# Apply Stronghold-style transparency
+	_apply_stronghold_preview_materials(preview_node)
 	_update_preview_rotation()
 	
 	preview_node.visible = is_placing_mode
 
 
-func _apply_preview_materials(node: Node, color_tint: Color):
-	preview_materials.clear()
+func _create_invalid_indicator():
+	"""Create a simple red X or outline that appears when placement is invalid"""
+	if invalid_indicator:
+		invalid_indicator.queue_free()
 	
+	invalid_indicator = MeshInstance3D.new()
+	var plane_mesh = PlaneMesh.new()
+	plane_mesh.size = Vector2(2.0, 2.0)
+	invalid_indicator.mesh = plane_mesh
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_color = Color(1.0, 0.0, 0.0, 0.7)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	
+	invalid_indicator.material_override = material
+	invalid_indicator.rotation_degrees.x = -90
+	invalid_indicator.visible = false
+	add_child(invalid_indicator)
+
+
+func _apply_stronghold_preview_materials(node: Node):
+	"""Apply simple semi-transparent materials like Stronghold Crusader"""
 	if node is MeshInstance3D:
 		var mesh_instance = node as MeshInstance3D
 		var original_material = mesh_instance.get_active_material(0)
 		var preview_material = StandardMaterial3D.new()
 		
+		# Keep the original look, just make it transparent
 		if original_material and original_material is StandardMaterial3D:
 			var orig = original_material as StandardMaterial3D
 			preview_material.albedo_texture = orig.albedo_texture
-			preview_material.albedo_color = orig.albedo_color * color_tint
+			preview_material.albedo_color = orig.albedo_color
 		else:
-			preview_material.albedo_color = color_tint
+			preview_material.albedo_color = Color.WHITE
 		
+		# Simple transparency - the Stronghold way
 		preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		preview_material.albedo_color.a = preview_transparency
 		preview_material.cull_mode = BaseMaterial3D.CULL_DISABLED
-		preview_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		
-		if use_emission:
-			preview_material.emission_enabled = true
-			preview_material.emission = Color(color_tint.r, color_tint.g, color_tint.b) * emission_strength
+		# Keep it looking realistic (not unshaded)
+		preview_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 		
 		mesh_instance.material_override = preview_material
 		preview_materials.append(preview_material)
 	
 	for child in node.get_children():
-		_apply_preview_materials(child, color_tint)
+		_apply_stronghold_preview_materials(child)
 
 
-func _update_preview_color(color_tint: Color):
-	for material in preview_materials:
-		if material is StandardMaterial3D:
+func _update_preview_tint(node: Node, tint: Color):
+	"""Update the color tint of preview materials"""
+	if node is MeshInstance3D:
+		var mesh_instance = node as MeshInstance3D
+		var material = mesh_instance.material_override
+		if material and material is StandardMaterial3D:
 			var mat = material as StandardMaterial3D
-			mat.albedo_color = Color(color_tint.r, color_tint.g, color_tint.b, preview_transparency)
+			# Store original color if not stored
+			if not mat.has_meta("original_color"):
+				mat.set_meta("original_color", mat.albedo_color)
 			
-			if use_emission:
-				mat.emission = Color(color_tint.r, color_tint.g, color_tint.b) * emission_strength
+			var original = mat.get_meta("original_color") as Color
+			mat.albedo_color = Color(
+				original.r * tint.r,
+				original.g * tint.g,
+				original.b * tint.b,
+				preview_transparency
+			)
+	
+	for child in node.get_children():
+		_update_preview_tint(child, tint)
 
 
 func _update_preview(world_pos: Vector3):
@@ -495,50 +509,16 @@ func _update_preview(world_pos: Vector3):
 	preview_node.position = world_pos + Vector3(building_size.x * 0.5, preview_height, building_size.y * 0.5)
 
 	var can_place = _can_place_at(world_pos)
-	var color_tint = valid_color_tint
+	is_placement_valid = can_place
 	
-	if not can_place:
-		var rotated_size = get_rotated_building_size()
-		
-		if navigation_grid:
-			var check_result
-			if building.is_wall():
-				if navigation_grid.has_method("check_area_placement_with_props"):
-					check_result = navigation_grid.check_area_placement_with_props(world_pos, building_size, building.name)
-				else:
-					check_result = {"blocking_props": []}
-			else:
-				if navigation_grid.has_method("check_area_placement_with_rotation"):
-					check_result = navigation_grid.check_area_placement_with_rotation(world_pos, rotated_size, current_rotation, building.name)
-				elif navigation_grid.has_method("check_area_placement_with_props"):
-					check_result = navigation_grid.check_area_placement_with_props(world_pos, rotated_size, building.name)
-				else:
-					check_result = {"blocking_props": []}
-			
-			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
-				var all_ignorable = true
-				if not "ignore_collision_with_names" in building or building.ignore_collision_with_names.is_empty():
-					all_ignorable = false
-				else:
-					if check_result.has("blocking_buildings") and check_result.blocking_buildings.size() > 0:
-						for building_name_blocking in check_result.blocking_buildings:
-							if not building.ignore_collision_with_names.has(building_name_blocking):
-								all_ignorable = false
-								break
-				
-				if all_ignorable:
-					if check_result.has("is_area_blocked") and check_result.is_area_blocked:
-						color_tint = invalid_color_tint
-					else:
-						color_tint = valid_color_tint
-				else:
-					color_tint = prop_blocked_color_tint
-			else:
-				color_tint = invalid_color_tint
-		else:
-			color_tint = invalid_color_tint
+	# Simple Stronghold-style indication
+	if show_invalid_overlay and invalid_indicator:
+		invalid_indicator.visible = not can_place
+		if not can_place:
+			invalid_indicator.global_position = preview_node.global_position + Vector3(0, 0.1, 0)
 	
-	_update_preview_color(color_tint)
+	# Apply color tint to preview materials when invalid
+	_update_preview_tint(preview_node, invalid_modulate if not can_place else Color.WHITE)
 
 
 func _cancel_placement_mode():
@@ -553,6 +533,9 @@ func _cancel_placement_mode():
 	
 	if preview_node:
 		preview_node.visible = false
+	
+	if invalid_indicator:
+		invalid_indicator.visible = false
 	
 	_clear_wall_preview()
 	
@@ -605,16 +588,10 @@ func select_building(index: int):
 
 
 func select_building_category(indices: Array[int]):
-	"""
-	Select a category of buildings using specific indices.
-	Example: select_building_category([10, 11, 12, 13])
-	This makes it safe when deleting assets - just update the array!
-	"""
 	if indices.is_empty():
 		push_error("Building category cannot be empty!")
 		return
 	
-	# Validate all indices
 	for idx in indices:
 		if idx < 0 or idx >= building_data.size():
 			push_error("Invalid building index in category: %d" % idx)
@@ -739,25 +716,16 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 	
 	if not building_type_1:
 		return
-	
-	# Debug: Show what mode we're in
-	if is_shift_held and building_type_2:
-		print("ALTERNATING MODE: Type1='%s' Type2='%s'" % [building_type_1.name, building_type_2.name])
-	else:
-		print("NORMAL MODE: Type='%s' (Shift: %s, Type2Index: %d)" % [building_type_1.name, is_shift_held, wall_type_2_index])
 
 	for i in range(wall_points.size()):
 		var grid_pos = wall_points[i]
 		var center_pos = navigation_grid.grid_to_world(grid_pos)
 		var placement_pos = center_pos - Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		# Determine which building type to use
 		var current_building: BuildingData
 		if is_shift_held and building_type_2:
-			# Alternating pattern: even indices = type 1, odd indices = type 2
 			current_building = building_type_1 if i % 2 == 0 else building_type_2
 		else:
-			# Normal mode: all same type
 			current_building = building_type_1
 		
 		if not current_building or not current_building.prefab:
@@ -767,53 +735,13 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 		wall_preview_container.add_child(preview_instance)
 		preview_instance.global_position = placement_pos + Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		_apply_preview_materials(preview_instance, valid_color_tint)
+		# Apply Stronghold-style transparency to wall previews
+		_apply_stronghold_preview_materials(preview_instance)
 		
 		var can_place_wall_segment = _can_place_at(placement_pos, current_building)
 		
-		if can_place_wall_segment:
-			_update_preview_color_for_node(preview_instance, valid_color_tint)
-		else:
-			var check_result
-			if navigation_grid.has_method("check_area_placement_with_props"):
-				check_result = navigation_grid.check_area_placement_with_props(placement_pos, current_building.size, current_building.name)
-			else:
-				check_result = {"can_place": false, "blocking_props": []}
-			
-			if check_result.has("blocking_props") and check_result.blocking_props.size() > 0:
-				var all_ignorable = true
-				if not "ignore_collision_with_names" in current_building or current_building.ignore_collision_with_names.is_empty():
-					all_ignorable = false
-				else:
-					if check_result.has("blocking_buildings"):
-						for building_name_blocking in check_result.blocking_buildings:
-							if not current_building.ignore_collision_with_names.has(building_name_blocking):
-								all_ignorable = false
-								break
-				
-				if all_ignorable:
-					if check_result.has("is_area_blocked") and check_result.is_area_blocked:
-						_update_preview_color_for_node(preview_instance, invalid_color_tint)
-					else:
-						_update_preview_color_for_node(preview_instance, valid_color_tint)
-				else:
-					_update_preview_color_for_node(preview_instance, prop_blocked_color_tint)
-			else:
-				_update_preview_color_for_node(preview_instance, invalid_color_tint)
-
-
-func _update_preview_color_for_node(node: Node, color_tint: Color):
-	if node is MeshInstance3D:
-		var mesh_instance = node as MeshInstance3D
-		var material = mesh_instance.material_override
-		if material and material is StandardMaterial3D:
-			var mat = material as StandardMaterial3D
-			mat.albedo_color = Color(color_tint.r, color_tint.g, color_tint.b, preview_transparency)
-			if use_emission:
-				mat.emission = Color(color_tint.r, color_tint.g, color_tint.b) * emission_strength
-	
-	for child in node.get_children():
-		_update_preview_color_for_node(child, color_tint)
+		# Simple valid/invalid indication
+		_update_preview_tint(preview_instance, invalid_modulate if not can_place_wall_segment else Color.WHITE)
 
 
 func _finish_wall_placement():
@@ -836,27 +764,23 @@ func _build_wall_line(from_world: Vector3, to_world: Vector3):
 	
 	var start_grid = navigation_grid.world_to_grid(from_world)
 	var end_grid = navigation_grid.world_to_grid(to_world)
-	var wall_points = _get_grid_line(start_grid, end_grid)
+	var points = _get_grid_line(start_grid, end_grid)
 	
-	var building_type_1 = get_building_by_index(wall_type_1_index)
-	var building_type_2 = get_building_by_index(wall_type_2_index) if is_shift_held and wall_type_2_index >= 0 else null
+	var type_1 = get_building_by_index(wall_type_1_index)
+	var type_2 = get_building_by_index(wall_type_2_index) if is_shift_held and wall_type_2_index >= 0 else null
 
-	for i in range(wall_points.size()):
-		var grid_pos = wall_points[i]
+	for i in range(points.size()):
+		var grid_pos = points[i]
 		var center_pos = navigation_grid.grid_to_world(grid_pos)
 		var placement_pos = center_pos - Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		
-		# Determine which building type to use
 		var current_building: BuildingData
-		if is_shift_held and building_type_2:
-			# Alternating pattern: even indices = type 1, odd indices = type 2
-			current_building = building_type_1 if i % 2 == 0 else building_type_2
+		if is_shift_held and type_2:
+			current_building = type_1 if i % 2 == 0 else type_2
 		else:
-			# Normal mode: all same type
-			current_building = building_type_1
+			current_building = type_1
 		
 		if not current_building:
 			continue
 		
-		# Place with the specific building type
-		_try_place_building(placement_pos, current_building_index if current_building == building_type_1 else wall_type_2_index)
+		_try_place_building(placement_pos, current_building_index if current_building == type_1 else wall_type_2_index)

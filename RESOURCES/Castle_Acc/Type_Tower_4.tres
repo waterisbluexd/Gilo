@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("3_28gcu")
 name = "Tower_4"
+size = Vector2(10, 10)
 prefab = ExtResource("2_vva4r")
 cost = 0
 build_time = 0.0
