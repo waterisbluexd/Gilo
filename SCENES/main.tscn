@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=98 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -22,6 +22,7 @@
 [ext_resource type="Shader" uid="uid://d12mf46jkat7n" path="res://SHADER/color_swap.gdshader" id="18_hk8u3"]
 [ext_resource type="Script" uid="uid://cfhokybcic0" path="res://SCRIPTS/UI/Builders/Panel_color_swap.gd" id="19_krqwh"]
 [ext_resource type="Script" uid="uid://ckgjn3iylh2fs" path="res://SCRIPTS/UI/Builders/castle_color.gd" id="20_krqwh"]
+[ext_resource type="Script" uid="uid://ci1n8rp5inon5" path="res://SCRIPTS/UI/Builders/Destroy_building.gd" id="20_qhscv"]
 [ext_resource type="Texture2D" uid="uid://i7m4i1t8do3o" path="res://UI/Resources/Textures/UI books & more.png" id="21_8nfwp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
@@ -3086,6 +3087,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 flat = true
+script = ExtResource("20_qhscv")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Settings/Destroy/Button"]
 layout_mode = 1
@@ -3094,6 +3096,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 14
@@ -3101,6 +3104,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Settings/Destroy/Button/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_pjl0f")
 
 [node name="Pixelated" type="Node" parent="."]

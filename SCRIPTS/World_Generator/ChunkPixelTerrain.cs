@@ -205,7 +205,6 @@ public partial class ChunkPixelTerrain : Node3D
 
     private void InitializeWaterSystem()
     {
-        // No initialization needed for StandardMaterial3D approach
     }
 
     public override void _ExitTree()
@@ -386,7 +385,6 @@ public partial class ChunkPixelTerrain : Node3D
                         CallDeferred(nameof(OnChunkGenerated), data);
                         if (waterData != null && waterData.HasWater)
                         {
-                            // Enqueue directly instead of using CallDeferred
                             _waterCreationQueue.Enqueue(waterData);
                         }
                     }
@@ -575,7 +573,6 @@ public partial class ChunkPixelTerrain : Node3D
         return "Unknown";
     }
 
-    // Get water depth at a specific position (returns 0 if no water)
     public float GetWaterDepthAt(float worldX, float worldZ)
     {
         if (!EnableWater || WaterNoise == null) return 0f;
@@ -583,8 +580,6 @@ public partial class ChunkPixelTerrain : Node3D
         float waterValue = WaterNoise.GetNoise2D(worldX, worldZ);
         if (waterValue < WaterThreshold)
         {
-            // Water exists - calculate depth based on how far below threshold
-            // Normalized between 0 (just at threshold) and 1 (deepest water)
             float depth = (WaterThreshold - waterValue) / (WaterThreshold + 1.0f);
             return Mathf.Clamp(depth, 0f, 1f);
         }
@@ -592,12 +587,10 @@ public partial class ChunkPixelTerrain : Node3D
         return 0f;
     }
 
-    // Check if position is near water (useful for beach generation)
     public bool IsNearWater(float worldX, float worldZ, float radius)
     {
         if (!EnableWater || WaterNoise == null) return false;
         
-        // Check 8 points around the position
         for (float angle = 0; angle < Mathf.Tau; angle += Mathf.Tau / 8)
         {
             float checkX = worldX + Mathf.Cos(angle) * radius;
@@ -613,13 +606,11 @@ public partial class ChunkPixelTerrain : Node3D
         return false;
     }
 
-    // Get water coverage for a chunk (0.0 to 1.0)
     public float GetChunkWaterCoverage(Vector2I chunkCoord)
     {
         if (_waterChunks.TryGetValue(chunkCoord, out var waterChunk))
         {
-            // This would require storing coverage in WaterChunk - for now return estimate
-            return 1.0f; // Chunk has water
+            return 1.0f;
         }
         return 0f;
     }

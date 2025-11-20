@@ -2,7 +2,6 @@
 extends Node3D
 class_name NavigationGrid
 
-# --- INSPECTOR CONFIGURABLE PARAMETERS ---
 @export_group("Grid Settings")
 @export var grid_cell_size: float = 1.0
 @export var chunk_size: int = 64
@@ -16,23 +15,18 @@ class_name NavigationGrid
 @export var debug_mode: bool = false
 @export var show_chunk_info: bool = false
 
-# --- INTERNAL VARIABLES ---
 var nav_chunks: Dictionary = {}
 var chunk_access_times: Dictionary = {}
 var chunk_terrain
 
-# Store ALL buildings (including walls, towers, etc.) with their names
-var building_blocked_cells: Dictionary = {}  # grid_pos -> building_name
-var building_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2, name: String}
+var building_blocked_cells: Dictionary = {}
+var building_registrations: Dictionary = {}
 
-# Store prop blocking data (for environment props like trees, rocks)
-var prop_blocked_cells: Dictionary = {}  # grid_pos -> prop_name
-var prop_registrations: Dictionary = {}  # world_pos_key -> {grid_cells: Array, size: Vector2}
+var prop_blocked_cells: Dictionary = {}
+var prop_registrations: Dictionary = {}
 
-# Store building rotation metadata for future pathfinding
-var building_rotations: Dictionary = {}  # world_pos_key -> rotation (0-7 for 8 directions)
+var building_rotations: Dictionary = {}
 
-# Cell states
 enum CellState { WALKABLE = 0, BLOCKED = 1 }
 
 func _ready():
@@ -53,7 +47,7 @@ func _ready():
 			print("NavigationGrid initialized - No terrain system found")
 		print("Cell size: %s, Chunk size: %s" % [grid_cell_size, chunk_size])
 
-# --- OPTIMIZED CHUNK MANAGEMENT ---
+
 func ensure_chunk_loaded(chunk_coord: Vector2i):
 	if not nav_chunks.has(chunk_coord):
 		if nav_chunks.size() >= max_loaded_chunks:
@@ -68,6 +62,7 @@ func ensure_chunk_loaded(chunk_coord: Vector2i):
 			print("Loaded chunk: %s (Total chunks: %s)" % [chunk_coord, nav_chunks.size()])
 	
 	chunk_access_times[chunk_coord] = Time.get_ticks_msec()
+
 
 func _unload_oldest_chunk():
 	if chunk_access_times.is_empty():
@@ -84,11 +79,13 @@ func _unload_oldest_chunk():
 	if oldest_chunk:
 		unload_chunk(oldest_chunk)
 
+
 func unload_chunk(chunk_coord: Vector2i):
 	nav_chunks.erase(chunk_coord)
 	chunk_access_times.erase(chunk_coord)
 	if show_chunk_info:
 		print("Unloaded chunk: %s" % chunk_coord)
+
 
 func cleanup_distant_chunks(center_world_pos: Vector3):
 	var center_chunk = world_to_chunk(center_world_pos)
@@ -107,12 +104,13 @@ func cleanup_distant_chunks(center_world_pos: Vector3):
 	for chunk_coord in chunks_to_unload:
 		unload_chunk(chunk_coord)
 
-# --- COORDINATE CONVERSION ---
+
 func world_to_grid(world_pos: Vector3) -> Vector2i:
 	return Vector2i(
 		int(floor(world_pos.x / grid_cell_size)), 
 		int(floor(world_pos.z / grid_cell_size))
 	)
+
 
 func world_to_chunk(world_pos: Vector3) -> Vector2i:
 	var chunk_world_size = chunk_size * grid_cell_size
@@ -121,16 +119,19 @@ func world_to_chunk(world_pos: Vector3) -> Vector2i:
 		int(floor(world_pos.z / chunk_world_size))
 	)
 
+
 func grid_to_local(grid_pos: Vector2i) -> Vector2i:
 	var local_x = ((grid_pos.x % chunk_size) + chunk_size) % chunk_size
 	var local_y = ((grid_pos.y % chunk_size) + chunk_size) % chunk_size
 	return Vector2i(local_x, local_y)
+
 
 func get_chunk_coord_from_grid(grid_pos: Vector2i) -> Vector2i:
 	return Vector2i(
 		int(floor(float(grid_pos.x) / float(chunk_size))),
 		int(floor(float(grid_pos.y) / float(chunk_size)))
 	)
+
 
 func grid_to_world(grid_pos: Vector2i) -> Vector3:
 	return Vector3(
@@ -139,13 +140,13 @@ func grid_to_world(grid_pos: Vector2i) -> Vector3:
 		grid_pos.y * grid_cell_size + grid_cell_size * 0.5
 	)
 
-# Generate unique key for world position (with rounding)
+
 func _world_pos_to_key(world_pos: Vector3) -> String:
 	var rounded_x = snapped(world_pos.x, 0.01)
 	var rounded_z = snapped(world_pos.z, 0.01)
 	return "%.2f_%.2f" % [rounded_x, rounded_z]
 
-# --- OPTIMIZED CELL STATE MANAGEMENT ---
+
 func set_cell(grid_pos: Vector2i, state: CellState):
 	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
 	ensure_chunk_loaded(chunk_coord)
@@ -153,6 +154,7 @@ func set_cell(grid_pos: Vector2i, state: CellState):
 	
 	var chunk_data = nav_chunks[chunk_coord]
 	chunk_data[local_pos.y * chunk_size + local_pos.x] = state
+
 
 func get_cell(grid_pos: Vector2i) -> CellState:
 	var chunk_coord = get_chunk_coord_from_grid(grid_pos)
@@ -163,10 +165,11 @@ func get_cell(grid_pos: Vector2i) -> CellState:
 	var chunk_data = nav_chunks[chunk_coord]
 	return chunk_data[local_pos.y * chunk_size + local_pos.x]
 
+
 func is_walkable(grid_pos: Vector2i) -> bool:
 	return get_cell(grid_pos) == CellState.WALKABLE
 
-# --- AREA OPERATIONS ---
+
 func block_area(world_pos: Vector3, size: Vector2):
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
@@ -177,6 +180,7 @@ func block_area(world_pos: Vector3, size: Vector2):
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
 			set_cell(Vector2i(x, y), CellState.BLOCKED)
+
 
 func unblock_area(world_pos: Vector3, size: Vector2):
 	var grid_start = world_to_grid(world_pos)
@@ -189,6 +193,7 @@ func unblock_area(world_pos: Vector3, size: Vector2):
 		for y in range(grid_start.y, grid_end.y):
 			set_cell(Vector2i(x, y), CellState.WALKABLE)
 
+
 func is_area_walkable(world_pos: Vector3, size: Vector2) -> bool:
 	var grid_start = world_to_grid(world_pos)
 	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
@@ -198,6 +203,7 @@ func is_area_walkable(world_pos: Vector3, size: Vector2) -> bool:
 			if not is_walkable(Vector2i(x, y)):
 				return false
 	return true
+
 
 func check_area_placement(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
@@ -230,12 +236,12 @@ func check_area_placement(world_pos: Vector3, size: Vector2, building_name: Stri
 				result.blocked_cells.append(cell_pos)
 				
 				if debug_mode:
-					print("  ❌ BLOCKED cell at grid %s" % cell_pos)
+					print("  BLOCKED cell at grid %s" % cell_pos)
 			elif debug_mode:
-				print("  ✅ FREE cell at grid %s" % cell_pos)
+				print("  FREE cell at grid %s" % cell_pos)
 	
 	if debug_mode:
-		var status = "✅ YES" if result.can_place else "❌ NO"
+		var status = "YES" if result.can_place else "NO"
 		print("RESULT: Can place '%s'? %s" % [building_name, status])
 		if not result.can_place:
 			print("Blocked cells: %s" % result.blocked_cells)
@@ -243,13 +249,13 @@ func check_area_placement(world_pos: Vector3, size: Vector2, building_name: Stri
 	
 	return result
 
-# NEW: Check area and return what's blocking it (buildings, props, or terrain)
+
 func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
 		"blocked_cells": [],
-		"blocking_props": [],  # Environment props (trees, rocks)
-		"blocking_buildings": [],  # Player-built buildings (walls, towers, etc.)
+		"blocking_props": [],
+		"blocking_buildings": [],
 		"grid_start": Vector2i.ZERO,
 		"grid_end": Vector2i.ZERO,
 		"total_cells": 0,
@@ -273,16 +279,13 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 				result.can_place = false
 				result.blocked_cells.append(cell_pos)
 				
-				# Check if it's a building
 				if building_blocked_cells.has(cell_pos):
 					var blocker_name = building_blocked_cells[cell_pos]
 					blocking_buildings_set[blocker_name] = true
-				# Check if it's a prop
 				elif prop_blocked_cells.has(cell_pos):
 					var prop_name = prop_blocked_cells[cell_pos]
 					blocking_props_set[prop_name] = true
 				else:
-					# It's terrain or something else
 					result.is_area_blocked = true
 	
 	for prop_name in blocking_props_set:
@@ -308,7 +311,7 @@ func check_area_placement_with_props(world_pos: Vector3, size: Vector2, building
 	
 	return result
 
-# NEW: Check area placement with rotation support
+
 func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotation: int, building_name: String = "Unknown") -> Dictionary:
 	var result = {
 		"can_place": true,
@@ -371,14 +374,13 @@ func check_area_placement_with_rotation(world_pos: Vector3, size: Vector2, rotat
 	
 	return result
 
-# --- BUILDING PLACEMENT WITH NAME TRACKING ---
-# NEW: Place building with name tracking (for dynamic ignore system)
+
 func place_building_with_name(world_pos: Vector3, building_size: Vector2, building_name: String):
 	var pos_key = _world_pos_to_key(world_pos)
 	
 	if building_registrations.has(pos_key):
 		if debug_mode:
-			print("⚠️ Building already registered at %s" % world_pos)
+			print("Building already registered at %s" % world_pos)
 		return
 	
 	var grid_start = world_to_grid(world_pos)
@@ -396,13 +398,14 @@ func place_building_with_name(world_pos: Vector3, building_size: Vector2, buildi
 	building_registrations[pos_key] = {
 		"grid_cells": affected_cells,
 		"size": building_size,
-		"name": building_name
+		"name": building_name,
+		"world_pos": world_pos
 	}
 	
 	if debug_mode:
-		print("🏗️ Placed building: %s at %s (%d cells)" % [building_name, world_pos, affected_cells.size()])
+		print("Placed building: %s at %s (%d cells)" % [building_name, world_pos, affected_cells.size()])
 
-# NEW: Place building with rotation and name
+
 func place_building_with_rotation_and_name(world_pos: Vector3, building_size: Vector2, rotation: int, building_name: String):
 	place_building_with_name(world_pos, building_size, building_name)
 	
@@ -410,15 +413,15 @@ func place_building_with_rotation_and_name(world_pos: Vector3, building_size: Ve
 	building_rotations[pos_key] = rotation
 	
 	if debug_mode:
-		print("🔄 Building rotation: %d degrees" % (rotation * 90))
+		print("Building rotation: %d degrees" % (rotation * 90))
 
-# NEW: Remove building by name
-func remove_building_with_name(world_pos: Vector3, building_size: Vector2):
+
+func remove_building_with_name(world_pos: Vector3, building_size: Vector2, building_name: String = ""):
 	var pos_key = _world_pos_to_key(world_pos)
 	
 	if not building_registrations.has(pos_key):
 		if debug_mode:
-			print("⚠️ No building registration found at %s" % world_pos)
+			print("No building registration found at %s" % world_pos)
 		return
 	
 	var reg_data = building_registrations[pos_key]
@@ -432,15 +435,31 @@ func remove_building_with_name(world_pos: Vector3, building_size: Vector2):
 	building_rotations.erase(pos_key)
 	
 	if debug_mode:
-		print("🪓 Removed building at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+		print("Removed building at %s (%d cells freed)" % [world_pos, affected_cells.size()])
 
-# --- PROP REGISTRATION (for environment objects) ---
+
+func get_building_at_world_pos(world_pos: Vector3) -> Dictionary:
+	var grid_pos = world_to_grid(world_pos)
+	
+	if building_blocked_cells.has(grid_pos):
+		var building_name = building_blocked_cells[grid_pos]
+		
+		for pos_key in building_registrations.keys():
+			var reg_data = building_registrations[pos_key]
+			if reg_data.name == building_name:
+				for cell in reg_data.grid_cells:
+					if cell == grid_pos:
+						return reg_data
+		
+	return {}
+
+
 func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: String):
 	var pos_key = _world_pos_to_key(world_pos)
 	
 	if prop_registrations.has(pos_key):
 		if debug_mode:
-			print("⚠️ Prop already registered at %s" % world_pos)
+			print("Prop already registered at %s" % world_pos)
 		return
 	
 	var grid_start = world_to_grid(world_pos)
@@ -462,14 +481,15 @@ func register_prop_obstacle(world_pos: Vector3, prop_size: Vector2, prop_name: S
 	}
 	
 	if debug_mode:
-		print("🌲 Registered prop: %s at %s (%d cells)" % [prop_name, world_pos, affected_cells.size()])
+		print("Registered prop: %s at %s (%d cells)" % [prop_name, world_pos, affected_cells.size()])
+
 
 func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
 	var pos_key = _world_pos_to_key(world_pos)
 	
 	if not prop_registrations.has(pos_key):
 		if debug_mode:
-			print("⚠️ No prop registration found at %s" % world_pos)
+			print("No prop registration found at %s" % world_pos)
 		return
 	
 	var reg_data = prop_registrations[pos_key]
@@ -482,7 +502,8 @@ func unregister_prop_obstacle(world_pos: Vector3, prop_size: Vector2):
 	prop_registrations.erase(pos_key)
 	
 	if debug_mode:
-		print("🪓 Unregistered prop at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+		print("Unregistered prop at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+
 
 func clear_prop_obstacles_in_area(world_start: Vector3, world_end: Vector3):
 	var grid_start = world_to_grid(world_start)
@@ -499,9 +520,9 @@ func clear_prop_obstacles_in_area(world_start: Vector3, world_end: Vector3):
 				cleared_count += 1
 	
 	if debug_mode and cleared_count > 0:
-		print("🧹 Cleared %d prop obstacles in area" % cleared_count)
+		print("Cleared %d prop obstacles in area" % cleared_count)
 
-# --- PATHFINDING (A*) ---
+
 func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1000) -> Array[Vector3]:
 	var start_grid = world_to_grid(start_world)
 	var end_grid = world_to_grid(end_world)
@@ -544,8 +565,10 @@ func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1
 	
 	return []
 
+
 func _heuristic(a: Vector2i, b: Vector2i) -> int:
 	return abs(a.x - b.x) + abs(a.y - b.y)
+
 
 func _get_lowest_f_score(open_set: Array[Vector2i], f_score: Dictionary) -> Vector2i:
 	var lowest = open_set[0]
@@ -556,6 +579,7 @@ func _get_lowest_f_score(open_set: Array[Vector2i], f_score: Dictionary) -> Vect
 			lowest = node
 			lowest_score = score
 	return lowest
+
 
 func _reconstruct_path(came_from: Dictionary, current: Vector2i) -> Array[Vector3]:
 	var path: Array[Vector3] = []
@@ -569,18 +593,22 @@ func _reconstruct_path(came_from: Dictionary, current: Vector2i) -> Array[Vector
 		current = came_from[current]
 	return path
 
-# --- PUBLIC API (LEGACY COMPATIBILITY) ---
+
 func place_building(world_pos: Vector3, building_size: Vector2):
 	place_building_with_name(world_pos, building_size, "Unknown")
+
 
 func remove_building(world_pos: Vector3, building_size: Vector2):
 	remove_building_with_name(world_pos, building_size)
 
+
 func place_building_with_rotation(world_pos: Vector3, building_size: Vector2, rotation: int):
 	place_building_with_rotation_and_name(world_pos, building_size, rotation, "Unknown")
 
+
 func find_navigation_path(start: Vector3, end: Vector3) -> Array[Vector3]:
 	return find_path(start, end)
+
 
 func clear_all():
 	nav_chunks.clear()
@@ -593,9 +621,10 @@ func clear_all():
 	if debug_mode:
 		print("Cleared all navigation data")
 
-# --- UTILITY FUNCTIONS ---
+
 func get_chunk_count() -> int:
 	return nav_chunks.size()
+
 
 func get_memory_usage_estimate() -> String:
 	var bytes = nav_chunks.size() * chunk_size * chunk_size
@@ -606,14 +635,18 @@ func get_memory_usage_estimate() -> String:
 	else:
 		return "%.1f MB" % (bytes / (1024.0 * 1024.0))
 
+
 func get_prop_blocked_count() -> int:
 	return prop_blocked_cells.size()
+
 
 func get_prop_registration_count() -> int:
 	return prop_registrations.size()
 
+
 func get_building_blocked_count() -> int:
 	return building_blocked_cells.size()
+
 
 func get_building_registration_count() -> int:
 	return building_registrations.size()

@@ -21,13 +21,18 @@ class_name BuildingPlacer
 @export var show_invalid_overlay: bool = true
 @export var invalid_modulate: Color = Color(1.0, 0.4, 0.4, 0.7)
 
+@export_group("Destroy Settings")
+@export var destroy_indicator_color: Color = Color(1.0, 0.0, 0.0, 0.5)
+
 var navigation_grid: NavigationGrid
 var is_placing_mode: bool = false
+var is_destroy_mode: bool = false
 var preview_node: Node3D
 var preview_materials: Array[Material] = []
 var last_click_time: float = 0.0
 var is_placement_valid: bool = true
 var invalid_indicator: MeshInstance3D
+var destroy_indicator: MeshInstance3D
 
 var is_building_wall: bool = false
 var wall_start_point: Vector3 = Vector3.ZERO
@@ -46,7 +51,12 @@ var max_rotations: int = 4
 var category_indices: Array[int] = []
 var is_category_mode: bool = false
 
+var placed_buildings: Dictionary = {}
+var hovered_building: Node3D = null
+
 signal placement_mode_changed(is_active: bool)
+signal destroy_mode_changed(is_active: bool)
+signal building_destroyed(building_name: String, position: Vector3)
 
 
 func get_current_building() -> BuildingData:
@@ -84,6 +94,7 @@ func get_rotated_building_size() -> Vector2:
 
 
 func _ready():
+	add_to_group("building_placer")
 	if use_8_directions:
 		max_rotations = 8
 		rotation_snap_angle = 45.0
@@ -112,6 +123,7 @@ func _ready():
 
 	_create_preview_node()
 	_create_invalid_indicator()
+	_create_destroy_indicator()
 	
 	wall_preview_container.name = "WallPreviewContainer"
 	add_child(wall_preview_container)
@@ -153,8 +165,8 @@ func _input(event):
 				return
 	
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			if is_placing_mode or is_building_wall:
-				_cancel_placement_mode()
+			if is_placing_mode or is_building_wall or is_destroy_mode:
+				_cancel_all_modes()
 				get_viewport().set_input_as_handled()
 			return
 		
@@ -245,7 +257,11 @@ func _get_all_wall_building_indices() -> Array[int]:
 	return wall_indices
 
 
-func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_object: Node3D):
+func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, hit_object: Node3D):
+	if is_destroy_mode:
+		_update_destroy_hover(world_pos, hit_object)
+		return
+	
 	if not is_placing_mode and not is_building_wall:
 		return
 
@@ -259,7 +275,11 @@ func _on_world_position_hovered(world_pos: Vector3, _hit_normal: Vector3, _hit_o
 		_update_preview(snapped_pos)
 
 
-func _on_world_position_clicked(world_pos: Vector3, _hit_object: Node3D):
+func _on_world_position_clicked(world_pos: Vector3, hit_object: Node3D):
+	if is_destroy_mode:
+		_handle_destroy_click(world_pos, hit_object)
+		return
+	
 	if not is_placing_mode:
 		return
 	
@@ -383,7 +403,16 @@ func _place_building_at(world_pos: Vector3, building: BuildingData = null):
 		else:
 			navigation_grid.place_building_with_name(world_pos, rotated_size, building.name)
 	
-	_create_building_visual(world_pos, building)
+	var building_node = _create_building_visual(world_pos, building)
+	if building_node:
+		var grid_key = _get_grid_key(world_pos)
+		placed_buildings[grid_key] = {
+			"node": building_node,
+			"position": world_pos,
+			"size": rotated_size if not building.is_wall() else building.size,
+			"building_data": building,
+			"rotation": current_rotation if not building.is_wall() else 0
+		}
 
 
 func _create_preview_node():
@@ -431,6 +460,24 @@ func _create_invalid_indicator():
 	invalid_indicator.rotation_degrees.x = -90
 	invalid_indicator.visible = false
 	add_child(invalid_indicator)
+
+
+func _create_destroy_indicator():
+	destroy_indicator = MeshInstance3D.new()
+	var plane_mesh = PlaneMesh.new()
+	plane_mesh.size = Vector2(2.0, 2.0)
+	destroy_indicator.mesh = plane_mesh
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_color = destroy_indicator_color
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	
+	destroy_indicator.material_override = material
+	destroy_indicator.rotation_degrees.x = -90
+	destroy_indicator.visible = false
+	add_child(destroy_indicator)
 
 
 func _apply_stronghold_preview_materials(node: Node):
@@ -502,6 +549,11 @@ func _update_preview(world_pos: Vector3):
 	_update_preview_tint(preview_node, invalid_modulate if not can_place else Color.WHITE)
 
 
+func _cancel_all_modes():
+	_cancel_placement_mode()
+	_cancel_destroy_mode()
+
+
 func _cancel_placement_mode():
 	is_placing_mode = false
 	is_building_wall = false
@@ -523,7 +575,7 @@ func _cancel_placement_mode():
 	emit_signal("placement_mode_changed", false)
 
 
-func _create_building_visual(world_pos: Vector3, building: BuildingData):
+func _create_building_visual(world_pos: Vector3, building: BuildingData) -> Node3D:
 	var building_node: Node3D
 	if building.prefab:
 		building_node = building.prefab.instantiate()
@@ -551,6 +603,8 @@ func _create_building_visual(world_pos: Vector3, building: BuildingData):
 	if spawner:
 		spawner.configure_building(building)
 		spawner.start_spawning()
+	
+	return building_node
 
 
 func select_building(index: int):
@@ -760,3 +814,87 @@ func _build_wall_line(from_world: Vector3, to_world: Vector3):
 			continue
 		
 		_try_place_building(placement_pos, current_building_index if current_building == type_1 else wall_type_2_index)
+
+
+func enable_destroy_mode():
+	_cancel_placement_mode()
+	is_destroy_mode = true
+	emit_signal("destroy_mode_changed", true)
+
+
+func _cancel_destroy_mode():
+	is_destroy_mode = false
+	hovered_building = null
+	if destroy_indicator:
+		destroy_indicator.visible = false
+	emit_signal("destroy_mode_changed", false)
+
+
+func _update_destroy_hover(world_pos: Vector3, hit_object: Node3D):
+	var snapped_pos = snap_to_grid_position(world_pos)
+	var building_info = _find_building_at_position(snapped_pos)
+	
+	if building_info:
+		hovered_building = building_info.node
+		if destroy_indicator:
+			var size = building_info.size
+			destroy_indicator.visible = true
+			destroy_indicator.global_position = building_info.position + Vector3(size.x * 0.5, 0.1, size.y * 0.5)
+			destroy_indicator.scale = Vector3(size.x, 1, size.y)
+	else:
+		hovered_building = null
+		if destroy_indicator:
+			destroy_indicator.visible = false
+
+
+func _handle_destroy_click(world_pos: Vector3, hit_object: Node3D):
+	var snapped_pos = snap_to_grid_position(world_pos)
+	var building_info = _find_building_at_position(snapped_pos)
+	
+	if building_info:
+		_destroy_building(building_info)
+
+
+func _find_building_at_position(world_pos: Vector3) -> Dictionary:
+	for grid_key in placed_buildings.keys():
+		var building_info = placed_buildings[grid_key]
+		var pos = building_info.position
+		var size = building_info.size
+		
+		if world_pos.x >= pos.x and world_pos.x < pos.x + size.x and world_pos.z >= pos.z and world_pos.z < pos.z + size.y:
+			return building_info
+	
+	return {}
+
+
+func _destroy_building(building_info: Dictionary):
+	if not building_info or not building_info.has("node"):
+		return
+	
+	var building_node = building_info.node
+	var building_pos = building_info.position
+	var building_size = building_info.size
+	var building_data_res = building_info.building_data
+	
+	if navigation_grid:
+		if navigation_grid.has_method("remove_building_with_name"):
+			navigation_grid.remove_building_with_name(building_pos, building_size, building_data_res.name)
+		elif navigation_grid.has_method("remove_building"):
+			navigation_grid.remove_building(building_pos, building_size)
+	
+	if building_node and is_instance_valid(building_node):
+		building_node.queue_free()
+	
+	var grid_key = _get_grid_key(building_pos)
+	placed_buildings.erase(grid_key)
+	
+	emit_signal("building_destroyed", building_data_res.name, building_pos)
+	
+	if hovered_building == building_node:
+		hovered_building = null
+		if destroy_indicator:
+			destroy_indicator.visible = false
+
+
+func _get_grid_key(world_pos: Vector3) -> String:
+	return str(int(world_pos.x)) + "_" + str(int(world_pos.z))
