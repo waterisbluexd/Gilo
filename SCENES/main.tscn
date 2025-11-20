@@ -1,4 +1,4 @@
-[gd_scene load_steps=92 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=97 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -328,6 +328,27 @@ region_rect = Rect2(128, 0, 16, 16)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_obhih"]
 texture = ExtResource("17_qhscv")
 region_rect = Rect2(144, 0, 16, 16)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hk8u3"]
+load_path = "res://.godot/imported/UI books & more.png-6a3fe5ad472bd871bad889c4fd776549.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8wudm"]
+texture = SubResource("CompressedTexture2D_hk8u3")
+region_rect = Rect2(26, 320, 21, 16)
+modulate_color = Color(0.88, 0.7186667, 0.6864, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g0gpn"]
+texture = ExtResource("21_8nfwp")
+region_rect = Rect2(656, 384, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ec66c"]
+texture = ExtResource("21_8nfwp")
+region_rect = Rect2(26, 320, 21, 16)
+modulate_color = Color(0.88, 0.5434, 0.484, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pjl0f"]
+texture = ExtResource("21_8nfwp")
+region_rect = Rect2(672, 384, 16, 16)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_h2jjw"]
 size = Vector2(1000, 1000)
@@ -3005,6 +3026,83 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_0tshv")
 script = ExtResource("19_krqwh")
 
+[node name="Settings" type="VBoxContainer" parent="UI/GameUIv2/UI/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.975
+anchor_top = 0.44500002
+anchor_right = 0.975
+anchor_bottom = 0.44500002
+offset_left = 0.22497559
+offset_top = 1.0149994
+offset_right = 49.224976
+offset_bottom = 96.015
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="OverView" type="Panel" parent="UI/GameUIv2/UI/Control/Settings"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8wudm")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Settings/OverView"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Settings/OverView/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 5
+
+[node name="Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Settings/OverView/Button/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_g0gpn")
+
+[node name="Destroy" type="Panel" parent="UI/GameUIv2/UI/Control/Settings"]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ec66c")
+
+[node name="Button" type="Button" parent="UI/GameUIv2/UI/Control/Settings/Destroy"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameUIv2/UI/Control/Settings/Destroy/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 5
+
+[node name="Panel" type="Panel" parent="UI/GameUIv2/UI/Control/Settings/Destroy/Button/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_pjl0f")
+
 [node name="Pixelated" type="Node" parent="."]
 
 [node name="Main" type="Control" parent="Pixelated"]
@@ -3069,7 +3167,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
 [node name="snow" type="GPUParticles3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Clouds"]
 transform = Transform3D(1.0000007, 0, 0, 0, 1, 0, 0, 0, 1.0000007, 0, -149.97372, 0)
-amount = 20000
+amount = 15000
 lifetime = 3.5
 fixed_fps = 60
 visibility_aabb = AABB(-972.1384, -170.45824, -968.82904, 1938.7869, 291.37982, 1938.988)

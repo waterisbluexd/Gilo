@@ -1,30 +1,64 @@
 shader_type spatial;
-render_mode blend_mix, depth_prepass_alpha,cull_back, diffuse_toon, specular_toon;
+render_mode unshaded, blend_mix, cull_back, depth_draw_opaque;
 
-// Albedo color control
-uniform vec4 albedo : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-// Alpha scissor threshold
-uniform float alpha_scissor_threshold : hint_range(0.0, 1.0) = 0.5;
+// Grid and cell controls
+uniform float grid_size : hint_range(4.0, 128.0) = 32.0;
 
-// Metallic and roughness
-uniform float metallic : hint_range(0.0, 1.0) = 0.0;
-uniform float roughness : hint_range(0.0, 1.0) = 1.0;
+// Noise texture for foam animation
+uniform sampler2D noise_texture : hint_default_white;
+uniform vec2 noise_tiling = vec2(2.0, 2.0);
+uniform float speed : hint_range(0.0, 1.0) = 0.1;
+uniform float fluffiness : hint_range(0.0, 2.0) = 0.5;
 
-// Texture (optional)
-uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+// Foam appearance
+uniform float foam_threshold : hint_range(0.0, 2.0) = 0.7;
+uniform float foam_strength : hint_range(0.0, 1.0) = 0.8;
+uniform float foam_smoothness : hint_range(0.0, 0.5) = 0.1;
+
+// Colors
+uniform vec4 base_color : source_color = vec4(0.15, 0.35, 0.6, 1.0);
+uniform vec4 foam_color : source_color = vec4(0.9, 0.95, 1.0, 1.0);
+
+// Overall opacity and alpha mask
+uniform float overall_opacity : hint_range(0.0, 1.0) = 1.0;
+uniform sampler2D alpha_mask : hint_default_white;
 
 void fragment() {
-	// Sample the texture
-	vec4 albedo_tex = texture(texture_albedo, UV);
-	
-	// Apply albedo color
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	
-	// Set alpha and alpha scissor threshold
-	ALPHA = albedo.a * albedo_tex.a;
-	ALPHA_SCISSOR_THRESHOLD = alpha_scissor_threshold;
-	
-	// Set material properties
-	METALLIC = metallic;
-	ROUGHNESS = roughness;
+    // Sample alpha mask
+    float mask = texture(alpha_mask, UV).r;
+    
+    // Subdivide UVs into grid cells
+    vec2 grid_uv = UV * grid_size;
+    vec2 cell_id = floor(grid_uv);
+    vec2 cell_uv = fract(grid_uv);
+    
+    // Base noise UV for this cell
+    vec2 base_noise_uv = (cell_id / grid_size) * noise_tiling;
+    
+    // Sample noise twice with different speeds (like cloud shader)
+    float noise1 = texture(noise_texture, base_noise_uv + TIME * 2.5 * speed / 10.0).r;
+    float noise2 = texture(noise_texture, base_noise_uv + TIME * (2.5 + fluffiness * 3.0) * speed / 10.0).r;
+    
+    // Combine the two noise samples
+    float combined_noise = noise1 + noise2;
+    
+    // Create foam highlights using smoothstep on combined noise
+    float foam_mask = smoothstep(
+        foam_threshold - foam_smoothness,
+        foam_threshold + foam_smoothness,
+        combined_noise
+    );
+    
+    // Apply foam strength
+    foam_mask *= foam_strength;
+    
+    // Mix base color with foam color
+    vec3 final_color = mix(base_color.rgb, foam_color.rgb, foam_mask);
+    
+    // Calculate final alpha
+    float final_alpha = base_color.a * overall_opacity * mask;
+    
+    // Output
+    ALBEDO = final_color;
+    ALPHA = final_alpha;
 }
