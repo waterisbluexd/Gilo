@@ -53,6 +53,8 @@ var is_category_mode: bool = false
 
 var placed_buildings: Dictionary = {}
 var hovered_building: Node3D = null
+var is_destroy_mouse_held: bool = false
+var destroyed_building_keys: Array[String] = []
 
 signal placement_mode_changed(is_active: bool)
 signal destroy_mode_changed(is_active: bool)
@@ -94,7 +96,6 @@ func get_rotated_building_size() -> Vector2:
 
 
 func _ready():
-	add_to_group("building_placer")
 	if use_8_directions:
 		max_rotations = 8
 		rotation_snap_angle = 45.0
@@ -158,6 +159,16 @@ func _input(event):
 	
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
+			if is_destroy_mode:
+				if event.pressed:
+					is_destroy_mouse_held = true
+					destroyed_building_keys.clear()
+				else:
+					is_destroy_mouse_held = false
+					destroyed_building_keys.clear()
+				get_viewport().set_input_as_handled()
+				return
+			
 			if is_building_wall and is_mouse_held and not event.pressed:
 				_finish_wall_placement()
 				is_mouse_held = false
@@ -535,16 +546,18 @@ func _update_preview(world_pos: Vector3):
 		return
 
 	var rotated_size = get_rotated_building_size()
-	var centered_world_pos = world_pos - Vector3(rotated_size.x * 0.5, 0, rotated_size.y * 0.5)
-	preview_node.position = world_pos + Vector3(0, preview_height, 0)
+	var corner_pos = world_pos - Vector3(rotated_size.x * 0.5, 0, rotated_size.y * 0.5)
+	
+	preview_node.position = corner_pos + Vector3(rotated_size.x * 0.5, preview_height, rotated_size.y * 0.5)
 
-	var can_place = _can_place_at(centered_world_pos)
+	var can_place = _can_place_at(corner_pos)
 	is_placement_valid = can_place
 	
 	if show_invalid_overlay and invalid_indicator:
 		invalid_indicator.visible = not can_place
 		if not can_place:
-			invalid_indicator.global_position = preview_node.global_position + Vector3(0, 0.1, 0)
+			invalid_indicator.global_position = corner_pos + Vector3(rotated_size.x * 0.5, 0.1, rotated_size.y * 0.5)
+			invalid_indicator.scale = Vector3(rotated_size.x, 1, rotated_size.y)
 	
 	_update_preview_tint(preview_node, invalid_modulate if not can_place else Color.WHITE)
 
@@ -824,6 +837,8 @@ func enable_destroy_mode():
 
 func _cancel_destroy_mode():
 	is_destroy_mode = false
+	is_destroy_mouse_held = false
+	destroyed_building_keys.clear()
 	hovered_building = null
 	if destroy_indicator:
 		destroy_indicator.visible = false
@@ -841,6 +856,12 @@ func _update_destroy_hover(world_pos: Vector3, hit_object: Node3D):
 			destroy_indicator.visible = true
 			destroy_indicator.global_position = building_info.position + Vector3(size.x * 0.5, 0.1, size.y * 0.5)
 			destroy_indicator.scale = Vector3(size.x, 1, size.y)
+		
+		if is_destroy_mouse_held:
+			var grid_key = _get_grid_key(building_info.position)
+			if not destroyed_building_keys.has(grid_key):
+				_destroy_building(building_info)
+				destroyed_building_keys.append(grid_key)
 	else:
 		hovered_building = null
 		if destroy_indicator:
@@ -848,11 +869,17 @@ func _update_destroy_hover(world_pos: Vector3, hit_object: Node3D):
 
 
 func _handle_destroy_click(world_pos: Vector3, hit_object: Node3D):
+	if not is_destroy_mouse_held:
+		return
+	
 	var snapped_pos = snap_to_grid_position(world_pos)
 	var building_info = _find_building_at_position(snapped_pos)
 	
 	if building_info:
-		_destroy_building(building_info)
+		var grid_key = _get_grid_key(building_info.position)
+		if not destroyed_building_keys.has(grid_key):
+			_destroy_building(building_info)
+			destroyed_building_keys.append(grid_key)
 
 
 func _find_building_at_position(world_pos: Vector3) -> Dictionary:

@@ -1,8 +1,9 @@
+@tool
 extends Node3D
 
 var time: float
 @export var day_length: float = 24 * 60  # 24 minutes in seconds
-@export_range(0.0, 1.0, 0.01) var start_time: float = 0.3
+@export_range(1, 24, 1) var start_hour: int = 7  # Start at 7 AM
 @export_range(0.0, 100.0, 1.0) var time_speed: float = 100.0
 @export var paused: bool = false
 
@@ -28,9 +29,8 @@ const SUNSET = 0.75
 const MIDNIGHT = 0.0
 
 func _ready():
-	time = start_time
+	time = hour_to_normalized_time(start_hour)
 	
-	# Create default gradients if not set
 	if not sun_color:
 		sun_color = create_default_sun_gradient()
 	if not moon_color:
@@ -38,7 +38,6 @@ func _ready():
 	if not sky_color:
 		sky_color = create_default_sky_gradient()
 	
-	# Create default curves if not set
 	if not sun_intensity:
 		sun_intensity = create_default_sun_curve()
 	if not moon_intensity:
@@ -60,13 +59,31 @@ func _process(delta):
 	update_celestial_bodies()
 	update_lighting()
 
+func hour_to_normalized_time(hour: int) -> float:
+	if hour == 24:
+		return 0.0
+	return float(hour) / 24.0
+
+func get_current_hour() -> int:
+	var hour = int(time * 24.0)
+	if hour == 0:
+		return 24
+	return hour
+
+func get_current_time_string() -> String:
+	# Returns time as "HH:MM" format
+	var total_minutes = int(time * 24.0 * 60.0)
+	var hours = total_minutes / 60
+	var minutes = total_minutes % 60
+	if hours == 0:
+		hours = 24
+	return "%02d:%02d" % [hours, minutes]
+
 func update_celestial_bodies():
-	# Sun rotation: 0° (midnight) -> -90° (noon) -> -180° (midnight)
 	var sun_angle = time * -180.0
 	if sun:
 		sun.rotation_degrees.x = sun_angle
-	
-	# Moon rotation: -90° (midnight/overhead) -> -180° (noon/below) -> -270° (midnight)
+
 	if moon:
 		moon.rotation_degrees.x = sun_angle - 90.0
 

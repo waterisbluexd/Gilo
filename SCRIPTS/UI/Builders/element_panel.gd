@@ -133,7 +133,7 @@ func _on_wall_2_pressed():
 
 func _on_wall_3_pressed():
 	if building_placer:
-		building_placer.select_building_category([25, 26])
+		building_placer.select_building(35)
 
 func _on_tower_1_pressed():
 	if building_placer:

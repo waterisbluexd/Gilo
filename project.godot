@@ -36,6 +36,10 @@ window/handheld/orientation=1
 
 project/assembly_name="Gilo"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/day_and_night_cycle/plugin.cfg", "res://addons/dynamic_day_night_cycles/plugin.cfg")
+
 [global_group]
 
 Avoid_Building="Avoid Building with these collisionshape and groups"

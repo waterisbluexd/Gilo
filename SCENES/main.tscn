@@ -450,7 +450,7 @@ script = ExtResource("1_v5vvh")
 
 [node name="Sun_Moon" parent="light" instance=ExtResource("2_11g8y")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-start_time = 0.36
+start_hour = 1
 paused = true
 
 [node name="assets" type="Node" parent="."]
@@ -3171,6 +3171,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
 [node name="snow" type="GPUParticles3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Clouds"]
 transform = Transform3D(1.0000007, 0, 0, 0, 1, 0, 0, 0, 1.0000007, 0, -149.97372, 0)
+visible = false
 amount = 15000
 lifetime = 3.5
 fixed_fps = 60
