@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
-[ext_resource type="PackedScene" uid="uid://biwrr8qig8ma8" path="res://SCENES/sun_moon.tscn" id="2_11g8y"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
+[ext_resource type="PackedScene" uid="uid://dg6m6j4okm3jg" path="res://SCENES/day_night.tscn" id="2_qhscv"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
 [ext_resource type="Script" uid="uid://u3rg75cj5buo" path="res://SCRIPTS/debugger/⯆_info.gd" id="3_o4jo6"]
@@ -382,6 +382,7 @@ shader_parameter/brightness = 0.6000000285
 shader_parameter/threshold = 1.0350000491625
 shader_parameter/fluffiness = 0.626000029735
 shader_parameter/tile_size = 3615.515171261962
+shader_parameter/cloud_color = Color(1, 1, 1, 1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hk8u3"]
 emission_shape_scale = Vector3(60, 60, 60)
@@ -448,10 +449,8 @@ script = ExtResource("1_v5vvh")
 
 [node name="light" type="Node" parent="."]
 
-[node name="Sun_Moon" parent="light" instance=ExtResource("2_11g8y")]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-start_hour = 1
-paused = true
+[node name="Day_night" parent="light" instance=ExtResource("2_qhscv")]
+start_hour = 11.0
 
 [node name="assets" type="Node" parent="."]
 
@@ -3171,7 +3170,6 @@ surface_material_override/0 = SubResource("ShaderMaterial_5vkv0")
 
 [node name="snow" type="GPUParticles3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Clouds"]
 transform = Transform3D(1.0000007, 0, 0, 0, 1, 0, 0, 0, 1.0000007, 0, -149.97372, 0)
-visible = false
 amount = 15000
 lifetime = 3.5
 fixed_fps = 60

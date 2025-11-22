@@ -36,8 +36,8 @@ sky_material = SubResource("ProceduralSkyMaterial_itxqv")
 [sub_resource type="Environment" id="Environment_wp4xf"]
 background_mode = 2
 sky = SubResource("Sky_v0l8b")
-ambient_light_color = Color(0.101960786, 0.12156863, 0.2, 1)
-ambient_light_energy = 0.005674325
+ambient_light_color = Color(0.9079321, 0.5355611, 0.42877546, 1)
+ambient_light_energy = 0.4846812
 tonemap_mode = 2
 ssr_depth_tolerance = 0.01
 glow_enabled = true
@@ -61,8 +61,9 @@ sky_color = SubResource("Gradient_fjyl2")
 environment_intensity = SubResource("Curve_a2k5s")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.015305921, 0.9998829, 0, -0.9998829, -0.015305921, 0, 16.92135, 0)
-light_color = Color(0.8110115, 0.7637827, 0.33891845, 1)
+transform = Transform3D(1, 0, 0, 0, 0.60726535, 0.7944991, 0, -0.7944991, 0.60726535, 0, 16.92135, 0)
+light_color = Color(0.963779, 0.7575878, 0.56030905, 1)
+light_energy = 0.23879866
 shadow_enabled = true
 directional_shadow_split_1 = 0.096
 directional_shadow_split_2 = 0.096
@@ -71,8 +72,9 @@ directional_shadow_max_distance = 8192.0
 directional_shadow_pancake_size = 1024.0
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.9861557, -0.13648762, 0.09417058, 0.12883885, -0.27315274, 0.953304, -0.10439123, 0.952239, 0.286956, 0, 0.77491903, 0)
-light_color = Color(0.8110115, 0.7637827, 0.33891845, 1)
+transform = Transform3D(-0.9401263, -0.2340751, -0.24773252, -0.3389335, 0.718577, 0.60726535, 0.03586921, 0.654871, -0.75488913, 0, 0.77491903, 0)
+light_color = Color(0.6056909, 0.6603356, 0.77380383, 1)
+light_energy = 0.0071760807
 shadow_enabled = true
 directional_shadow_split_1 = 0.096
 directional_shadow_split_2 = 0.096
