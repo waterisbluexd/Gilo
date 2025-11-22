@@ -32,6 +32,7 @@ window/subwindows/embed_subwindows=false
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
+mouse_cursor/custom_image="uid://dwyqdfcvcs8tl"
 
 [dotnet]
 
