@@ -28,7 +28,9 @@ point_count = 14
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_itxqv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+sky_energy_multiplier = 0.9
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_energy_multiplier = 0.9
 
 [sub_resource type="Sky" id="Sky_v0l8b"]
 sky_material = SubResource("ProceduralSkyMaterial_itxqv")
@@ -36,8 +38,8 @@ sky_material = SubResource("ProceduralSkyMaterial_itxqv")
 [sub_resource type="Environment" id="Environment_wp4xf"]
 background_mode = 2
 sky = SubResource("Sky_v0l8b")
-ambient_light_color = Color(0.9079321, 0.5355611, 0.42877546, 1)
-ambient_light_energy = 0.4846812
+ambient_light_color = Color(0.94167703, 0.63679576, 0.49166363, 1)
+ambient_light_energy = 0.54044664
 tonemap_mode = 2
 ssr_depth_tolerance = 0.01
 glow_enabled = true
@@ -61,9 +63,9 @@ sky_color = SubResource("Gradient_fjyl2")
 environment_intensity = SubResource("Curve_a2k5s")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.60726535, 0.7944991, 0, -0.7944991, 0.60726535, 0, 16.92135, 0)
-light_color = Color(0.963779, 0.7575878, 0.56030905, 1)
-light_energy = 0.23879866
+transform = Transform3D(1, 0, 0, 0, 0.541832, 0.8404868, 0, -0.8404868, 0.541832, 0, 16.92135, 0)
+light_color = Color(0.97199607, 0.80620563, 0.5876994, 1)
+light_energy = 0.3262232
 shadow_enabled = true
 directional_shadow_split_1 = 0.096
 directional_shadow_split_2 = 0.096
@@ -72,9 +74,9 @@ directional_shadow_max_distance = 8192.0
 directional_shadow_pancake_size = 1024.0
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.9401263, -0.2340751, -0.24773252, -0.3389335, 0.718577, 0.60726535, 0.03586921, 0.654871, -0.75488913, 0, 0.77491903, 0)
-light_color = Color(0.6056909, 0.6603356, 0.77380383, 1)
-light_energy = 0.0071760807
+transform = Transform3D(-0.9314224, -0.2525273, 0.26207295, 0.35855183, -0.7601703, 0.5418319, 0.062392697, 0.59864104, 0.79858387, 0, 0.77491903, 0)
+light_color = Color(0.6220445, 0.6755614, 0.7879018, 1)
+light_energy = 0.002806306
 shadow_enabled = true
 directional_shadow_split_1 = 0.096
 directional_shadow_split_2 = 0.096

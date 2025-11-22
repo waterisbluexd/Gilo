@@ -1,4 +1,4 @@
-[gd_scene load_steps=98 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=99 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dg6m6j4okm3jg" path="res://SCENES/day_night.tscn" id="2_qhscv"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
+[ext_resource type="PackedScene" uid="uid://dv50xpjjelxjt" path="res://SCENES/wind_effect.tscn" id="3_krqwh"]
 [ext_resource type="Script" uid="uid://u3rg75cj5buo" path="res://SCRIPTS/debugger/⯆_info.gd" id="3_o4jo6"]
 [ext_resource type="Script" uid="uid://dktovmungqggl" path="res://SCRIPTS/debugger/⯆_camera_+_pivot_debugger.gd" id="3_ys6xq"]
 [ext_resource type="Script" uid="uid://bxogkj03xjpgk" path="res://SCRIPTS/debugger/console_panel.gd" id="4_df0lc"]
@@ -181,7 +182,7 @@ region_rect = Rect2(19, 0, 10, 16)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h2h65"]
 texture = ExtResource("17_qhscv")
-region_rect = Rect2(35, 0, 10, 16)
+region_rect = Rect2(33, 0, 14, 16)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_84fi8"]
 texture = ExtResource("17_qhscv")
@@ -2298,7 +2299,7 @@ grow_vertical = 2
 flat = true
 
 [node name="Wall_3" type="Panel" parent="UI/GameUIv2/UI/Control/Book/LeftPage/MarginContainer/Castle_Item_Selector/GridContainer"]
-custom_minimum_size = Vector2(10, 16)
+custom_minimum_size = Vector2(14, 16)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_h2h65")
 
@@ -3161,6 +3162,15 @@ zoom_speed = 10.0
 show_debug_print = false
 show_raycast_debug = false
 show_visual_debug = false
+
+[node name="WindEffect" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Camera3D" instance=ExtResource("3_krqwh")]
+transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, -1.2176476, -312.99997)
+top_level = true
+trail_count = 100
+wind_direction = Vector3(1, 0, 0.5)
+spawn_radius_xz = 400.0
+global_min_y = 100.0
+global_max_y = 100.0
 
 [node name="Clouds" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot"]
 transform = Transform3D(0.99999934, 0, 0, 0, 1, 0, 0, 0, 0.99999934, 9.779424, 286.23193, -19.975433)

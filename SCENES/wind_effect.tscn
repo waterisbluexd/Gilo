@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dv50xpjjelxjt"]
+
+[ext_resource type="Script" uid="uid://cxot21r8nrswp" path="res://SCRIPTS/enviorment/wind_effect.gd" id="1_gyyd6"]
+[ext_resource type="PackedScene" uid="uid://cg7ys4sl2ep5d" path="res://SCENES/wind_trail_3d.tscn" id="2_wglpl"]
+
+[node name="WindEffect" type="Node3D"]
+script = ExtResource("1_gyyd6")
+trail_scene = ExtResource("2_wglpl")
+trail_count = 5
+wind_direction = Vector3(-1, 0, 0.5)
+global_min_y = 10.0
+global_max_y = 10.0
+wind_speed = 30.0
