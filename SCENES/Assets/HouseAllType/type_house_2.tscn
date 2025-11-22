@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=4 uid="uid://cpg1mfsiy2le4"]
+[gd_scene load_steps=8 format=4 uid="uid://cpg1mfsiy2le4"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_2diy3"]
-[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_x4wit"]
+[ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_qfgxx"]
+[ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="3_x4wit"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t8my"]
 resource_name = "palette"
@@ -14,25 +15,6 @@ resource_name = "Hovel_walls_outliner"
 cull_mode = 2
 albedo_color = Color(0.20252344, 0.20252344, 0.20252344, 1)
 roughness = 0.5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
-render_priority = 0
-shader = ExtResource("2_x4wit")
-shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
-shader_parameter/shadow_strength = 0.999999977648
-shader_parameter/highlight_strength = 0.0
-shader_parameter/highlight_color = Color(1, 1, 1, 1)
-shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
-shader_parameter/is_perspective_camera = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j3m1j"]
-resource_name = "Hovel_roof"
-next_pass = SubResource("ShaderMaterial_ipdbf")
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.80784315, 0.4117647, 0, 1)
-texture_filter = 2
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_u7erc"]
 _surfaces = [{
@@ -100,7 +82,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 366,
 "index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYACAAJAAoACwAIAAoADAANAA4ADwAMAA4AEAARABIAEwAQABIAFAAVABYAFwAUABYAGAAZABoAGwAYABoAHAAdAB4AHwAcAB4AIAAhACIAIQAjACIAJAAlACYAJQAnACYAKAApACoAKQArACoALAAtAC4ALQAvAC4AMAAxADIAMQAzADIANAA1ADYANQA3ADYAOAA5ADoAOQA7ADoAPAA9AD4APQA/AD4AQABBAEIAQwBBAEAAQwBAAEQARQBDAEQARgBFAEQARwBFAEYARwBGAEgASQBHAEgASgBJAEgASwBJAEoASwBKAEwATQBLAEwATgBNAEwATwBLAE0ATwBQAEsAUQBPAE0AUgBRAE0AUwBPAFEAVABTAFEAUwBVAE8AVgBVAFMAVwBWAFMAWABZAFoAWABbAFkAWQBbAFwAWwBdAFwAXQBeAFwAXQBfAF4AXgBfAGAAXwBhAGAAYQBiAGAAYQBjAGIAYgBjAGQAYwBlAGQAZQBmAGQAYwBnAGUAaABnAGMAZwBpAGUAaQBqAGUAZwBrAGkAawBsAGkAbQBrAGcAbQBuAGsAbgBvAGsAcABxAHIAcwBwAHIAdABxAHAAdQBxAHQAdgBxAHUAdwBxAHYAeABxAHcAeQBxAHgAeQB4AHoAewB5AHoAfAB9AH4AfwB8AH4AgAB/AH4AgQCAAH4AggCBAH4AgwCCAH4AhACDAH4AhQCEAH4AhQCGAIQAhgCHAIQAiACJAIoAiwCIAIoAjACNAI4AjwCMAI4AkACRAJIAkwCQAJIAlACVAJYAlwCUAJYAmACZAJoAmwCYAJoAnACdAJ4AnwCcAJ4AoAChAKIAoQCjAKIApAClAKYApQCnAKYAqACpAKoAqQCrAKoArACtAK4ArQCvAK4AsACxALIAsQCzALIAtAC1ALYAtQC3ALYAuAC5ALoAuQC7ALoA"),
-"material": SubResource("StandardMaterial3D_j3m1j"),
+"material": ExtResource("3_x4wit"),
 "name": "Hovel_roof",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -116,3 +98,12 @@ shadow_mesh = SubResource("ArrayMesh_u7erc")
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_y1a8t")
 skeleton = NodePath("")
+
+[node name="Window_light_1" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 8.742278e-08, -1, 8.742278e-08, -3.821371e-15, 8.742278e-08, 1, 0, -3.629571, -1.9085325)
+
+[node name="Window_light_2" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, -1, -4.3711385e-08, 4.371139e-08, 4.371139e-08, 4.3711395e-08, 1, 1.6153839, -1.805589, -1.538215)
+
+[node name="Window_light_3" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+transform = Transform3D(1.3113416e-07, -1, 4.371139e-08, 1, 1.3113416e-07, 4.3711385e-08, -4.371139e-08, 4.3711385e-08, 1, -1.5182321, -1.805589, -1.538215)

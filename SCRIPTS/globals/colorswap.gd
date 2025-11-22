@@ -1,3 +1,4 @@
+#global
 extends Node
 
 signal colors_updated(picked_color, dark_color_1, dark_color_2)

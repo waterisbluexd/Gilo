@@ -4,6 +4,7 @@ var time: float
 @export var day_length: float = 1440.0  # 24 minutes in seconds (24 * 60)
 @export_range(0, 24, 0.5) var start_hour: float = 7.0  # Start at 7 AM
 var time_rate : float
+var is_paused: bool = false
 
 @onready var sun: DirectionalLight3D = $Sun
 @export var sun_color: Gradient
@@ -23,13 +24,27 @@ var time_rate : float
 func _ready() -> void:
 	time_rate = 1.0 / day_length
 	time = start_hour / 24.0  # Convert hour to 0-1 range
+	
+	# Update global time immediately
+	TimeManager.update_time(time)
 
 func _process(delta: float) -> void:
-	time += time_rate * delta
+	# Check for pause input
+	if Input.is_key_pressed(KEY_P):
+		is_paused = !is_paused
+		TimeManager.is_paused = is_paused
 	
-	if time >= 1.0:
-		time = 0.0
+	# Only update time if not paused
+	if not is_paused:
+		time += time_rate * delta
+		
+		if time >= 1.0:
+			time = 0.0
+		
+		# Update global time
+		TimeManager.update_time(time)
 	
+	# Always update visual elements (even when paused, so changes are visible)
 	# Sun
 	sun.rotation_degrees.x = time * 360 + 90
 	sun.light_color = sun_color.sample(time)
@@ -56,3 +71,13 @@ func get_current_hour() -> float:
 # Helper function to set specific time
 func set_time_of_day(hour: float) -> void:
 	time = clamp(hour / 24.0, 0.0, 1.0)
+	TimeManager.update_time(time)
+
+# Helper function to check if paused
+func is_time_paused() -> bool:
+	return is_paused
+
+# Helper function to toggle pause
+func toggle_pause() -> void:
+	is_paused = !is_paused
+	TimeManager.is_paused = is_paused

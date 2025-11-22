@@ -1,15 +1,17 @@
-[gd_scene load_steps=99 format=3 uid="uid://hq2dn4st8e10"]
+[gd_scene load_steps=101 format=3 uid="uid://hq2dn4st8e10"]
 
 [ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
 [ext_resource type="PackedScene" uid="uid://dg6m6j4okm3jg" path="res://SCENES/day_night.tscn" id="2_qhscv"]
+[ext_resource type="Script" uid="uid://csae7nfd4u58g" path="res://SCRIPTS/UI/Builders/building_roof_material.gd" id="3_8nfwp"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
 [ext_resource type="PackedScene" uid="uid://dv50xpjjelxjt" path="res://SCENES/wind_effect.tscn" id="3_krqwh"]
 [ext_resource type="Script" uid="uid://u3rg75cj5buo" path="res://SCRIPTS/debugger/⯆_info.gd" id="3_o4jo6"]
 [ext_resource type="Script" uid="uid://dktovmungqggl" path="res://SCRIPTS/debugger/⯆_camera_+_pivot_debugger.gd" id="3_ys6xq"]
 [ext_resource type="Script" uid="uid://bxogkj03xjpgk" path="res://SCRIPTS/debugger/console_panel.gd" id="4_df0lc"]
+[ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="4_tk6o3"]
 [ext_resource type="PackedScene" uid="uid://dn7khush7j3" path="res://SCENES/World_Generator_V1.tscn" id="5_ab6ae"]
 [ext_resource type="FontFile" uid="uid://br1q3dhrr723w" path="res://RESOURCES/FONTS/PixeloidSans-mLxMm.ttf" id="5_ceyew"]
 [ext_resource type="Shader" uid="uid://cak56oqlb4xjg" path="res://SHADER/clouds.gdshader" id="5_h2jjw"]
@@ -451,9 +453,13 @@ script = ExtResource("1_v5vvh")
 [node name="light" type="Node" parent="."]
 
 [node name="Day_night" parent="light" instance=ExtResource("2_qhscv")]
-start_hour = 11.0
+day_length = 24.0
 
 [node name="assets" type="Node" parent="."]
+
+[node name="Color" type="Node" parent="assets"]
+script = ExtResource("3_8nfwp")
+materials = Array[StandardMaterial3D]([ExtResource("4_tk6o3")])
 
 [node name="UI" type="Node" parent="."]
 
@@ -3166,7 +3172,7 @@ show_visual_debug = false
 [node name="WindEffect" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Camera3D" instance=ExtResource("3_krqwh")]
 transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, -1.2176476, -312.99997)
 top_level = true
-trail_count = 100
+trail_count = 10
 wind_direction = Vector3(1, 0, 0.5)
 spawn_radius_xz = 400.0
 global_min_y = 100.0

@@ -151,6 +151,7 @@ script = ExtResource("5_te0ef")
 building_data = Array[ExtResource("6_xo5mt")]([ExtResource("7_d66sa"), ExtResource("8_28e2f"), ExtResource("9_gx6qx"), ExtResource("10_ul5h0"), ExtResource("11_a4esh"), ExtResource("13_v4jrb"), ExtResource("14_n0uxr"), ExtResource("25_4p0f6"), ExtResource("26_0jpg0"), ExtResource("27_p1l53"), ExtResource("28_0jpg0"), ExtResource("29_3jrs1"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("37_t0ggg"), ExtResource("38_p1l53"), ExtResource("15_ul5h0"), ExtResource("39_5yf05"), ExtResource("40_fo4ex"), ExtResource("41_h75an"), ExtResource("42_56c7f"), ExtResource("43_a2icq"), ExtResource("44_a2icq"), ExtResource("45_uub18"), ExtResource("46_ml1bp"), ExtResource("47_u063q"), ExtResource("48_w6af6"), ExtResource("49_ykr5g"), ExtResource("50_ykr5g"), ExtResource("51_nkaxm"), ExtResource("53_bxm4h")])
 click_cooldown = 0.0
 use_8_directions = true
+destroy_indicator_color = Color(1, 0, 0, 0)
 
 [node name="EnvironmentManager" type="Node3D" parent="." node_paths=PackedStringArray("NavigationGridNode")]
 transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0)

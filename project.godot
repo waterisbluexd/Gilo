@@ -21,6 +21,7 @@ DebugManager="*res://SCRIPTS/debugger/DebugManager.gd"
 ConsoleCapture="*res://SCRIPTS/debugger/ConsoleCapture.gd"
 ResourceSystem="*res://SCRIPTS/World_Generator/ResourceSystem.cs"
 GlobalColors="*res://SCRIPTS/globals/colorswap.gd"
+TimeManager="*res://SCRIPTS/globals/TimeManager.gd"
 
 [display]
 

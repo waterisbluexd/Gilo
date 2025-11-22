@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0aekl62kmsbf"]
+
+[ext_resource type="Script" uid="uid://dfxwxlk0bksax" path="res://SCRIPTS/enviorment/buildings/houses/window_light_1.gd" id="1_mnvb6"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_6006l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fx24t"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.9999998, 0.3729215, 0.004035282, 1)
+emission_enabled = true
+emission = Color(0.733329, 0.29686144, 4.813075e-07, 1)
+emission_energy_multiplier = 3.79
+
+[node name="Window_light_1" type="MeshInstance3D"]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 8.742278e-08, -1, 8.742278e-08, -3.821371e-15, 8.742278e-08, 1, 0, 0, 0)
+mesh = SubResource("PlaneMesh_6006l")
+surface_material_override/0 = SubResource("StandardMaterial3D_fx24t")
+script = ExtResource("1_mnvb6")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.984095e-08, 0.7988876, 0)
+light_color = Color(0.9002294, 0.4617499, 0.23564968, 1)
+light_energy = 0.3
+omni_range = 3.838877

@@ -1,31 +1,13 @@
-[gd_scene load_steps=9 format=4 uid="uid://bnbli11l4vds"]
+[gd_scene load_steps=8 format=4 uid="uid://bnbli11l4vds"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_d6vpy"]
-[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_u1sq6"]
+[ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_d6vpy"]
+[ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_u1sq6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t8my"]
 resource_name = "palette"
 cull_mode = 2
 albedo_texture = ExtResource("1_d6vpy")
-texture_filter = 2
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
-render_priority = 0
-shader = ExtResource("2_u1sq6")
-shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
-shader_parameter/shadow_strength = 0.999999977648
-shader_parameter/highlight_strength = 0.0
-shader_parameter/highlight_color = Color(1, 1, 1, 1)
-shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
-shader_parameter/is_perspective_camera = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gq62d"]
-resource_name = "Hovel_roof"
-next_pass = SubResource("ShaderMaterial_ipdbf")
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.80784315, 0.4117647, 0, 1)
 texture_filter = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x5ufb"]
@@ -88,7 +70,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 618,
 "index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYACAAJAAoACwAIAAoADAANAA4ADwAMAA4AEAARABIAEwAQABIAFAAVABYAFwAUABYAGAAZABoAGwAYABoAHAAdAB4AHwAcAB4AIAAhACIAIQAjACIAJAAlACYAJQAnACYAKAApACoAKQArACoALAAtAC4ALQAvAC4AMAAxADIAMQAzADIANAA1ADYANQA3ADYAOAA5ADoAOQA7ADoAPAA9AD4APQA/AD4AQABBAEIAQQBDAEIARABFAEYARQBHAEYASABJAEoASQBLAEoATABNAE4ATQBPAE4ATwBQAE4ATwBRAFAAUABRAFIAUQBTAFIAUwBUAFIAUwBVAFQAVABVAFYAVgBVAFcAVQBYAFcAWABZAFcAWABaAFkAWgBbAFkAWQBcAFcAVgBXAF0AVwBeAF0AXwBWAF0AYABWAF8AXwBdAGEAXQBiAGEAYwBfAGEAZABlAGYAZwBlAGQAZwBkAGgAaQBnAGgAagBpAGgAawBpAGoAawBqAGwAbQBrAGwAbgBtAGwAbwBtAG4AbwBuAHAAcQBvAHAAcgBxAHAAcwBvAHEAcwB0AG8AdQBzAHEAdgB1AHEAdwBzAHUAeAB3AHUAdwB5AHMAegB5AHcAewB6AHcAfAB9AH4AfwB8AH4AgACBAIIAgwCAAIIAhACFAIYAhwCEAIYAiACJAIoAiwCIAIoAjACNAI4AjwCMAI4AkACRAJIAkwCQAJIAlACVAJYAlQCXAJYAmACZAJoAmQCbAJoAnACdAJ4AnQCfAJ4AoAChAKIAoQCjAKIApAClAKYApQCnAKYAqACpAKoAqACrAKkAqQCrAKwAqwCtAKwArQCuAKwArQCvAK4ArgCvALAArwCxALAAsQCyALAAsQCzALIAsgCzALQAswC1ALQAtQC2ALQAswC3ALUAuAC3ALMAtwC5ALUAuQC6ALUAtwC7ALkAuwC8ALkAvQC7ALcAvQC+ALsAvgC/ALsAwADBAMIAwwDAAMIAxADBAMAAxQDBAMQAxgDBAMUAxwDBAMYAyADBAMcAyQDBAMgAyQDIAMoAywDJAMoAzADNAM4AzwDMAM4A0ADPAM4A0QDQAM4A0gDQANEA0gDRANMA1ADVANMA1QDWANMA1gDXANMA1wDYANMA2QDaANsA3ADZANsA3ADdANkA3QDeANkA3QDfAN4A3QDgAN8A3QDhAOAA3QDiAOEA4wDkAOUA5gDjAOUA5wDoAOkA6gDnAOkA6wDsAO0A7gDrAO0A7wDwAPEA8gDvAPEA8wD0APUA9gDzAPUA9wD4APkA+gD3APkA+wD8AP0A/gD7AP0A/wAAAQEBAgH/AAEBAwEEAQUBBgEDAQUBBwEIAQkBBwEKAQgBCAEKAQsBCgEMAQsBDQEOAQ8BDgEQAQ8BEQESARMBEgEUARMBFQEWARcBFQEYARYBFgEYARkBGAEaARkBGwEcAR0BHAEeAR0BGwEfARwBHwEgARwBIQEiASMBIgEkASMBJQEmAScBJQEoASYBJgEoASkBKAEqASkBKwEsAS0BLAEuAS0BKwEvASwBLwEwASwBMQEyATMBMgE0ATMBNQE2ATcBNQE4ATYBNgE4ATkBOAE6ATkBNQE7ATgBOwE8ATgB"),
-"material": SubResource("StandardMaterial3D_gq62d"),
+"material": ExtResource("2_d6vpy"),
 "name": "Hovel_roof",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -116,3 +98,9 @@ shadow_mesh = SubResource("ArrayMesh_w7c6x")
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_n2i7t")
 skeleton = NodePath("")
+
+[node name="Window_light_1" parent="." instance=ExtResource("3_u1sq6")]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, -8.4703295e-22, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, -1.8229923, 1.0761676, -1.8632799)
+
+[node name="Window_light_2" parent="." instance=ExtResource("3_u1sq6")]
+transform = Transform3D(1.3113416e-07, -1, 4.371139e-08, -8.4703295e-22, -4.371139e-08, -1, 1, 1.3113416e-07, -5.7320566e-15, -2.8291283, 1.0761676, -0.7724588)

@@ -1,26 +1,6 @@
-[gd_scene load_steps=7 format=4 uid="uid://c3wesedi66mpv"]
+[gd_scene load_steps=5 format=4 uid="uid://c3wesedi66mpv"]
 
-[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_nvxof"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u533l"]
-render_priority = 0
-shader = ExtResource("1_nvxof")
-shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
-shader_parameter/shadow_strength = 0.4
-shader_parameter/highlight_strength = 0.0
-shader_parameter/highlight_color = Color(1, 1, 1, 1)
-shader_parameter/shadow_color = Color(0, 0, 0, 1)
-shader_parameter/is_perspective_camera = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fx8ka"]
-resource_name = "Hovel_roof"
-next_pass = SubResource("ShaderMaterial_u533l")
-cull_mode = 2
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.80784315, 0.4117647, 0, 1)
-roughness = 0.5
+[ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="1_nvxof"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qs5t"]
 resource_name = "Tent_Base"
@@ -60,7 +40,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 15,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoA"),
-"material": SubResource("StandardMaterial3D_fx8ka"),
+"material": ExtResource("1_nvxof"),
 "name": "Tent_Color",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),

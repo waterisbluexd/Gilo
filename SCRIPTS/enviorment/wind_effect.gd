@@ -122,15 +122,10 @@ func update_trail(trail_data: Dictionary, delta: float) -> bool:
 
 	# --- PHASE 2: MOVING ---
 	trail_data.progress += delta * (wind_speed / travel_distance) * trail_data.speed_multiplier
-	
-	# Check if we reached the end
 	if trail_data.progress >= 1.0:
-		# Start the fade out process
 		trail_data.is_fading = true
-		set_trail_emitting(trail_data.node, false) # Stop drawing new lines
-		return false # Don't delete yet!
-
-	# Calculate Movement (Only if not fading)
+		set_trail_emitting(trail_data.node, false)
+		return false
 	var t = trail_data.progress
 	var base_pos = trail_data.start_pos.lerp(trail_data.end_pos, t)
 	
@@ -148,4 +143,4 @@ func update_trail(trail_data: Dictionary, delta: float) -> bool:
 	
 	trail_data.node.global_position = base_pos + wave_motion + turbulence
 	
-	return false # Not ready to delete
+	return false

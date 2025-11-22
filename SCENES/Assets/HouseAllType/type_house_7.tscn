@@ -1,31 +1,13 @@
-[gd_scene load_steps=9 format=4 uid="uid://u6w4jhudo8sf"]
+[gd_scene load_steps=8 format=4 uid="uid://u6w4jhudo8sf"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_bwtx8"]
-[ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_pkyfd"]
+[ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_bwtx8"]
+[ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_pkyfd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6t8my"]
 resource_name = "palette"
 cull_mode = 2
 albedo_texture = ExtResource("1_bwtx8")
-texture_filter = 2
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipdbf"]
-render_priority = 0
-shader = ExtResource("2_pkyfd")
-shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = true
-shader_parameter/shadow_strength = 0.999999977648
-shader_parameter/highlight_strength = 0.0
-shader_parameter/highlight_color = Color(1, 1, 1, 1)
-shader_parameter/shadow_color = Color(0.3720656, 0.21321312, 9.62615e-08, 1)
-shader_parameter/is_perspective_camera = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1dxhr"]
-resource_name = "Hovel_roof"
-next_pass = SubResource("ShaderMaterial_ipdbf")
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.80784315, 0.4117647, 0, 1)
 texture_filter = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x5ufb"]
@@ -88,7 +70,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 654,
 "index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYACAAHAAYACQAHAAgACQAIAAoACwAJAAoADAALAAoADQALAAwADQAMAA4ADQAOAA8AEAANAA8AEQAQAA8AEgAQABEAEwASABEAFAARAA8ADwAOABUAFgAPABUADgAXABUADgAYABcAFQAXABkAFwAaABkAGwAVABkAHAAdAB4AHwAcAB4AIAAhACIAIwAgACIAJAAlACYAJwAkACYAKAAnACYAKQAqACsALAApACsALQAuAC8AMAAtAC8AMQAyADMAMgA0ADMANQA2ADcANgA4ADcAOQA6ADsAOgA8ADsAPAA9ADsAPgA/AEAAPwBBAEAAQgBDAEQAQwBFAEQARgBHAEgARwBJAEgASgBLAEwASwBNAEwATQBOAEwATQBPAE4ATgBPAFAATwBRAFAAUQBSAFAAUQBTAFIAUgBTAFQAVABTAFUAUwBWAFUAVgBXAFUAVgBYAFcAWABZAFcAVwBaAFUAVABVAFsAVQBcAFsAXQBUAFsAXgBUAF0AXQBbAF8AWwBgAF8AYQBdAF8AYgBjAGQAZQBjAGIAZQBiAGYAZwBlAGYAaABnAGYAaQBnAGgAaQBoAGoAawBpAGoAbABrAGoAbQBrAGwAbQBsAG4AbwBtAG4AcABvAG4AcQBtAG8AcQByAG0AcwBxAG8AdABzAG8AdQBxAHMAdgB1AHMAdQB3AHEAeAB3AHUAeQB4AHUAegB7AHwAfQB6AHwAfgB9AHwAfwB+AHwAgACBAIIAgwCAAIIAhACFAIYAhwCEAIYAiACJAIoAiwCIAIoAjACNAI4AjwCMAI4AkACRAJIAkwCQAJIAlACVAJYAlwCUAJYAmACZAJoAmwCYAJoAnACdAJ4AnQCfAJ4AoAChAKIAoQCjAKIApAClAKYApQCnAKYAqACpAKoAqQCrAKoArACtAK4ArQCvAK4AsACxALIAsQCzALIAtAC1ALYAtQC3ALYAuAC5ALoAuQC7ALoAvAC9AL4AvQC/AL4AwADBAMIAwwDAAMIAxADBAMAAxQDBAMQAxgDBAMUAxwDGAMUAyADJAMoAywDIAMoAzADLAMoAzQDMAMoAzgDNAMoAzwDQANEA0gDPANEA0wDUANUA1gDTANUA1wDYANkA2gDXANkA2wDcAN0A3gDcANsA3wDeANsA4ADbAN0A4QDgAN0A4gDjAOQA5QDiAOQA5gDlAOQA5wDmAOQA6ADnAOQA6QDoAOQA6gDpAOQA6wDqAOQA7ADrAOQA7QDuAO8A8ADtAO8A8QDyAPMA9ADxAPMA9QD2APcA+AD2APUA+AD1APkA+AD5APoA+AD6APsA+AD7APwA+AD8AP0A+AD9AP4A+AD+AP8A+AD/AAAB+AAAAQEBAgH4AAEBAgEBAQMBAQEEAQMBBQEGAQcBCAEFAQcBCQEKAQsBDAEJAQsBDQEOAQ8BEAENAQ8BEQESARMBFAERARMBFQEWARcBGAEVARcBGQEaARsBHAEZARsBHQEeAR8BHQEgAR4BIAEhAR4BIgEjASQBIwElASQBJgEnASgBJwEpASgBKgErASwBKwEtASwBLgEvATABLwExATABMgEzATQBMwE1ATQBNgE3ATgBNwE5ATgBOgE7ATwBOwE9ATwBPgE/AUABPwFBAUABQgFDAUQBQwFFAUQBRgFHAUgBRwFJAUgBSgFLAUwBSwFNAUwBTgFPAVABTwFRAVABUgFTAVQBUwFVAVQB"),
-"material": SubResource("StandardMaterial3D_1dxhr"),
+"material": ExtResource("2_bwtx8"),
 "name": "Hovel_roof",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -116,3 +98,15 @@ shadow_mesh = SubResource("ArrayMesh_fodic")
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ve5u2")
 skeleton = NodePath("")
+
+[node name="Window_light_1" parent="." instance=ExtResource("3_pkyfd")]
+transform = Transform3D(-1.9106865e-15, -4.371139e-08, -1, 1, 1.3113416e-07, -7.642742e-15, 1.3113416e-07, -1, 4.371139e-08, 0, 2.6085753, -2.1855516)
+
+[node name="Window_light_2" parent="." instance=ExtResource("3_pkyfd")]
+transform = Transform3D(-1.9106865e-15, -4.371139e-08, -1, 1, 1.3113416e-07, -7.642742e-15, 1.3113416e-07, -1, 4.371139e-08, -1.5891508, 2.6085753, -2.1855516)
+
+[node name="Window_light_3" parent="." instance=ExtResource("3_pkyfd")]
+transform = Transform3D(1.3113416e-07, -1, 8.742278e-08, 1, 1.3113416e-07, -7.642742e-15, -3.8213705e-15, 8.742278e-08, 1, -2.7585893, 2.6085753, -0.859174)
+
+[node name="Window_light_4" parent="." instance=ExtResource("3_pkyfd")]
+transform = Transform3D(0, 5.9604645e-08, 0.99999994, 1, 1.3113416e-07, -8.422168e-15, -1.3113414e-07, 0.99999994, -5.9604645e-08, 0.77051544, 2.6085753, -0.17597651)
