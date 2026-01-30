@@ -24,25 +24,9 @@ enum BuildingType {
 	TOWER
 }
 
-# --- CASTLE ONLY PROPERTIES ---
-@export_group("Castle Settings")
-@export var owner: String = "Player"
-@export var max_peasants: int = 20
-@export var peasant_types: Array[NPCType] = [] 
-
 # --- VALIDATION ---
 func is_castle() -> bool:
 	return building_type == BuildingType.CASTLE
-
-func can_hold_more_peasants(current_peasant_count: int) -> bool:
-	if not is_castle():
-		return false
-	return current_peasant_count < max_peasants
-
-func can_spawn_peasant_type(peasant_type: NPCType) -> bool:
-	if not is_castle():
-		return false
-	return peasant_types.has(peasant_type)
 
 @export_group("Work Site")
 @export var provides_jobs: Array[String] = []

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://c0y3ew7ynopkp"]
+[gd_scene format=4 uid="uid://c0y3ew7ynopkp"]
 
 [ext_resource type="Texture2D" uid="uid://d15v5ndyywsp5" path="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_stone_bricks.png" id="1_kynid"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_725r6"]
@@ -55,7 +55,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_jn5ke")
 
-[node name="Wall_1" type="MeshInstance3D"]
+[node name="Wall_1" type="MeshInstance3D" unique_id=1038182243]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_jbuog")
 skeleton = NodePath("")

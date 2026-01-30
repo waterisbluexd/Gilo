@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://cskj2thns57ko"]
+
+[ext_resource type="PackedScene" uid="uid://cirxda2m1hemg" path="res://SCENES/Assets/Castle_Acc/type_castle_1.tscn" id="1_oxj5q"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="2_0y8u4"]
+
+[resource]
+script = ExtResource("2_0y8u4")
+size = Vector2(10, 10)
+prefab = ExtResource("1_oxj5q")
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

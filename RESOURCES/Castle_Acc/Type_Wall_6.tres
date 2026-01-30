@@ -1,16 +1,13 @@
-[gd_resource type="Resource" script_class="BuildingData" load_steps=4 format=3 uid="uid://b3hv28pfckd6u"]
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://c4rg3uivdeex8"]
 
-[ext_resource type="Script" uid="uid://nlcjomlb1de0" path="res://SCRIPTS/entite/NPCType.gd" id="1_tma4q"]
-[ext_resource type="PackedScene" uid="uid://d2b6t3q0sv14o" path="res://SCENES/Assets/Castle_Acc/wall_9.tscn" id="2_tma4q"]
+[ext_resource type="PackedScene" uid="uid://ptll3y4smc22" path="res://SCENES/Assets/Castle_Acc/wall_6.tscn" id="1_ojv14"]
 [ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="3_cli8s"]
 
 [resource]
 script = ExtResource("3_cli8s")
 name = "Wall_6"
 size = Vector2(1, 1)
-prefab = ExtResource("2_tma4q")
-cost = 0
-build_time = 0.0
-ignore_collision_with_names = Array[String](["Tower_1", "Tower_2", "Tower_3", "Tower_4"])
+prefab = ExtResource("1_ojv14")
+ignore_collision_with_names = Array[String](["Type_Tower_1", "Type_Tower_2", "Type_Tower_3", "Type_Tower_4"])
 building_type = 5
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"

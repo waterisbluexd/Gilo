@@ -1,19 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://do8uqji4urspu"]
+[gd_scene format=3 uid="uid://do8uqji4urspu"]
 
-[ext_resource type="Script" uid="uid://1lmx1qfc3il3" path="res://SCRIPTS/enviorment/buildings/Castle/BuildingSpawner.gd" id="1_j7dqp"]
 [ext_resource type="PackedScene" uid="uid://cirxda2m1hemg" path="res://SCENES/Assets/Castle_Acc/type_castle_1.tscn" id="2_15ya3"]
 
-[node name="Castle" type="Node3D"]
+[node name="Castle" type="Node3D" unique_id=1369067204]
 transform = Transform3D(1.797, 0, 0, 0, 1.797, 0, 0, 0, 1.797, 0, 0, 0)
 
-[node name="BuildingSpawner" type="Node3D" parent="."]
-script = ExtResource("1_j7dqp")
-
-[node name="EntranceMarker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8825115, 0.6503179, 10.02397)
-
-[node name="Idlezone" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.649027, 0.30830812, -16.267498)
-
-[node name="Type_Castle_1" parent="." instance=ExtResource("2_15ya3")]
+[node name="Type_Castle_1" parent="." unique_id=149131760 instance=ExtResource("2_15ya3")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
