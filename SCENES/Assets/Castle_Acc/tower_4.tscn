@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://d2yvqxuu2bfkn"]
+[gd_scene format=4 uid="uid://d2yvqxuu2bfkn"]
 
 [ext_resource type="Texture2D" uid="uid://8feclwtj3v3t" path="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_oak_planks.png" id="1_hsr0m"]
 [ext_resource type="Texture2D" uid="uid://d15v5ndyywsp5" path="res://MODLES/assetsmodel/Castle/Walls/Walls_V2_stone_bricks.png" id="2_dv2jd"]
@@ -121,7 +121,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dnuqf")
 
-[node name="Tower_4" type="MeshInstance3D"]
+[node name="Tower_4" type="MeshInstance3D" unique_id=495367383]
 transform = Transform3D(0.6, 0, 0, 0, -2.6226834e-08, -0.6, 0, 0.6, -2.6226834e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_m8vee")
 skeleton = NodePath("")

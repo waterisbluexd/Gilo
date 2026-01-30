@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://cu5s8w2kbiv6j"]
+[gd_scene format=4 uid="uid://cu5s8w2kbiv6j"]
 
 [ext_resource type="Texture2D" uid="uid://ri2vwbsjc78d" path="res://MODLES/assetsmodel/plants/Tree_tree_jungle.png" id="1_oej3e"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_qwgwc"]
@@ -59,9 +59,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_4ghg6")
 
-[node name="Tree" type="Node3D" groups=["Tree"]]
+[node name="Tree" type="Node3D" unique_id=1119204824 groups=["Tree"]]
 
-[node name="cube_001" type="MeshInstance3D" parent="." groups=["Tree"]]
-transform = Transform3D(3.2, 0, 0, 0, 3.2, 0, 0, 0, 3.2, 0, 0, 0)
+[node name="cube_001" type="MeshInstance3D" parent="." unique_id=2031899487 groups=["Tree"]]
+transform = Transform3D(3.4, 0, 0, 0, 3.4, 0, 0, 0, 3.4, 0, 0, 0)
 mesh = SubResource("ArrayMesh_2yp2e")
 skeleton = NodePath("")

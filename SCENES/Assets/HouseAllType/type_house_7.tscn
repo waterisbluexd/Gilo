@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://u6w4jhudo8sf"]
+[gd_scene format=4 uid="uid://u6w4jhudo8sf"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_bwtx8"]
 [ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_bwtx8"]
@@ -92,21 +92,22 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_fodic")
 
-[node name="Type_House_7" type="Node3D"]
+[node name="Type_House_7" type="Node3D" unique_id=853467384]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
 
-[node name="MediumHouse3" type="MeshInstance3D" parent="."]
+[node name="MediumHouse3" type="MeshInstance3D" parent="." unique_id=959824299]
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ve5u2")
 skeleton = NodePath("")
 
-[node name="Window_light_1" parent="." instance=ExtResource("3_pkyfd")]
+[node name="Window_light_1" parent="." unique_id=216904084 instance=ExtResource("3_pkyfd")]
 transform = Transform3D(-1.9106865e-15, -4.371139e-08, -1, 1, 1.3113416e-07, -7.642742e-15, 1.3113416e-07, -1, 4.371139e-08, 0, 2.6085753, -2.1855516)
 
-[node name="Window_light_2" parent="." instance=ExtResource("3_pkyfd")]
+[node name="Window_light_2" parent="." unique_id=12404323 instance=ExtResource("3_pkyfd")]
 transform = Transform3D(-1.9106865e-15, -4.371139e-08, -1, 1, 1.3113416e-07, -7.642742e-15, 1.3113416e-07, -1, 4.371139e-08, -1.5891508, 2.6085753, -2.1855516)
 
-[node name="Window_light_3" parent="." instance=ExtResource("3_pkyfd")]
+[node name="Window_light_3" parent="." unique_id=1162545354 instance=ExtResource("3_pkyfd")]
 transform = Transform3D(1.3113416e-07, -1, 8.742278e-08, 1, 1.3113416e-07, -7.642742e-15, -3.8213705e-15, 8.742278e-08, 1, -2.7585893, 2.6085753, -0.859174)
 
-[node name="Window_light_4" parent="." instance=ExtResource("3_pkyfd")]
+[node name="Window_light_4" parent="." unique_id=146283002 instance=ExtResource("3_pkyfd")]
 transform = Transform3D(0, 5.9604645e-08, 0.99999994, 1, 1.3113416e-07, -8.422168e-15, -1.3113414e-07, 0.99999994, -5.9604645e-08, 0.77051544, 2.6085753, -0.17597651)

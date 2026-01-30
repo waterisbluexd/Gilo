@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://kg23yx6jwpx1"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://kg23yx6jwpx1"]
 
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="1_67fpn"]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://c87umx5x4kn64"]
+[gd_scene format=4 uid="uid://c87umx5x4kn64"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_6006l"]
 [ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_6006l"]
@@ -92,13 +92,14 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vu656")
 
-[node name="Type_House_1" type="Node3D"]
+[node name="Type_House_1" type="Node3D" unique_id=173333756]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
 
-[node name="SmallHouse1" type="MeshInstance3D" parent="."]
+[node name="SmallHouse1" type="MeshInstance3D" parent="." unique_id=1673797709]
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ci6g7")
 skeleton = NodePath("")
 surface_material_override/1 = ExtResource("2_6006l")
 
-[node name="Window_light_1" parent="SmallHouse1" instance=ExtResource("3_fx24t")]
+[node name="Window_light_1" parent="SmallHouse1" unique_id=1355929046 instance=ExtResource("3_fx24t")]
 transform = Transform3D(-1, -1.509958e-07, 3.821371e-15, 1.509958e-07, -1, 8.742278e-08, -9.379101e-15, 8.742278e-08, 1, 0, -1.9791793, -1.9895645)

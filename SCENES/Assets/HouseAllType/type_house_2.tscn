@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://cpg1mfsiy2le4"]
+[gd_scene format=4 uid="uid://cpg1mfsiy2le4"]
 
 [ext_resource type="Texture2D" uid="uid://dbttni8o8ku8q" path="res://MODLES/assetsmodel/Housealltype/Hovels_v2_Palette.png" id="1_2diy3"]
 [ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_qfgxx"]
@@ -92,18 +92,19 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_u7erc")
 
-[node name="Type_House_2" type="Node3D"]
+[node name="Type_House_2" type="Node3D" unique_id=433684879]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
 
-[node name="SmallHouse2" type="MeshInstance3D" parent="."]
+[node name="SmallHouse2" type="MeshInstance3D" parent="." unique_id=1391119315]
 transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, -0.5, 0, 0.5, -2.1855694e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_y1a8t")
 skeleton = NodePath("")
 
-[node name="Window_light_1" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+[node name="Window_light_1" parent="SmallHouse2" unique_id=560628144 instance=ExtResource("3_qfgxx")]
 transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 8.742278e-08, -1, 8.742278e-08, -3.821371e-15, 8.742278e-08, 1, 0, -3.629571, -1.9085325)
 
-[node name="Window_light_2" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+[node name="Window_light_2" parent="SmallHouse2" unique_id=1454364213 instance=ExtResource("3_qfgxx")]
 transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, -1, -4.3711385e-08, 4.371139e-08, 4.371139e-08, 4.3711395e-08, 1, 1.6153839, -1.805589, -1.538215)
 
-[node name="Window_light_3" parent="SmallHouse2" instance=ExtResource("3_qfgxx")]
+[node name="Window_light_3" parent="SmallHouse2" unique_id=1672449033 instance=ExtResource("3_qfgxx")]
 transform = Transform3D(1.3113416e-07, -1, 4.371139e-08, 1, 1.3113416e-07, 4.3711385e-08, -4.371139e-08, 4.3711385e-08, 1, -1.5182321, -1.805589, -1.538215)
