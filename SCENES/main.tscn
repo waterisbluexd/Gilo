@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://csae7nfd4u58g" path="res://SCRIPTS/UI/Builders/building_roof_material.gd" id="3_8nfwp"]
 [ext_resource type="Script" uid="uid://dwk8lnwssp12h" path="res://SCRIPTS/debugger/version.gd" id="3_ab6ae"]
 [ext_resource type="Script" uid="uid://cdap38wordu3u" path="res://SCRIPTS/defaults/camera_3d.gd" id="3_i3vxn"]
-[ext_resource type="PackedScene" uid="uid://dv50xpjjelxjt" path="res://SCENES/wind_effect.tscn" id="3_krqwh"]
 [ext_resource type="Script" uid="uid://u3rg75cj5buo" path="res://SCRIPTS/debugger/⯆_info.gd" id="3_o4jo6"]
 [ext_resource type="Script" uid="uid://dktovmungqggl" path="res://SCRIPTS/debugger/⯆_camera_+_pivot_debugger.gd" id="3_ys6xq"]
 [ext_resource type="Script" uid="uid://bxogkj03xjpgk" path="res://SCRIPTS/debugger/console_panel.gd" id="4_df0lc"]
@@ -3156,27 +3155,6 @@ script = ExtResource("2_ac0l5")
 fast_pan_threshold = 1000.0
 enable_debug = true
 
-[node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot" unique_id=1241003378]
-transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.4999999, 0, -0.4999999, 0.86602545, 0, 173.43045, 300.39038)
-projection = 1
-current = true
-size = 100.0
-near = 0.001
-script = ExtResource("3_i3vxn")
-zoom_speed = 10.0
-show_debug_print = false
-show_raycast_debug = false
-show_visual_debug = false
-
-[node name="WindEffect" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot/Camera3D" unique_id=2035769535 instance=ExtResource("3_krqwh")]
-transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, 0, -1.2176476, -312.99997)
-top_level = true
-trail_count = 10
-wind_direction = Vector3(1, 0, 0.5)
-spawn_radius_xz = 400.0
-global_min_y = 100.0
-global_max_y = 100.0
-
 [node name="Clouds" type="MeshInstance3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot" unique_id=1270065948]
 transform = Transform3D(0.99999934, 0, 0, 0, 1, 0, 0, 0, 0.99999934, 9.779424, 286.23193, -19.975433)
 mesh = SubResource("PlaneMesh_h2jjw")
@@ -3191,6 +3169,14 @@ fixed_fps = 60
 visibility_aabb = AABB(-972.1384, -170.45824, -968.82904, 1938.7869, 291.37982, 1938.988)
 process_material = SubResource("ParticleProcessMaterial_hk8u3")
 draw_pass_1 = SubResource("QuadMesh_tk6o3")
+
+[node name="Camera3D" type="Camera3D" parent="Pixelated/Main/SubViewportContainer/SubViewport/CameraPivot" unique_id=312672373]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.8660254, 0.49999997, 0, -0.5, 0.8660253, 0, 93.39951, 161.7727)
+projection = 1
+near = 0.001
+far = 10000.0
+script = ExtResource("3_i3vxn")
+min_size = 79.69
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" unique_id=1957180836 node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

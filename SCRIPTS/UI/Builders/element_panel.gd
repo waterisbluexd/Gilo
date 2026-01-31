@@ -125,72 +125,62 @@ func _ready():
 
 func _on_wall_1_pressed():
 	if building_placer:
-		building_placer.select_building_category([10, 11])
+		building_placer.select_building_category([0, 1])
 
 func _on_wall_2_pressed():
 	if building_placer:
-		building_placer.select_building_category([23, 24])
+		building_placer.select_building_category([2, 3])
 
 func _on_wall_3_pressed():
 	if building_placer:
-		building_placer.select_building(35)
+		building_placer.select_building(4)
 
 func _on_tower_1_pressed():
 	if building_placer:
-		building_placer.select_building(19)
+		building_placer.select_building(6)
 
 func _on_tower_2_pressed():
 	if building_placer:
-		building_placer.select_building(20)
+		building_placer.select_building(7)
 
 func _on_tower_3_pressed():
 	if building_placer:
-		building_placer.select_building(22)
+		building_placer.select_building(8)
 
 func _on_tower_4_pressed():
 	if building_placer:
-		building_placer.select_building_category([27, 28, 29])
+		building_placer.select_building(9)
 
 func _on_gate_1_pressed():
-	if building_placer:
-		building_placer.select_building(28)
+	pass
 
 func _on_gate_2_pressed():
-	if building_placer:
-		building_placer.select_building(29)
+	pass
 
 func _on_stone_bridge_button_pressed():
-	if building_placer:
-		building_placer.select_building_category([30, 31, 32])
+	pass
 
 func _on_stock_pile_pressed():
-	if building_placer:
-		building_placer.select_building(1)
+	pass
 
 func _on_wood_cutter_pressed():
-	if building_placer:
-		building_placer.select_building(21)
+	pass
 
 func _on_stone_cutter_pressed():
-	if building_placer:
-		building_placer.select_building(3)
+	pass
 
 func _on_bulk_pressed():
-	if building_placer:
-		building_placer.select_building(4)
+	pass
 
 func _on_iron_mine_pressed():
-	if building_placer:
-		building_placer.select_building(5)
+	pass
 
 func _on_tent_pressed():
-	if building_placer:
-		building_placer.select_building_category([7, 8, 9])
+	pass
 
 func _on_houses_pressed():
 	if building_placer:
-		building_placer.select_building_category([12, 13, 14, 15, 16, 17])
+		building_placer.select_building_category([11,12,13,14,15,16,17,18])
 
 func _on_well_pressed():
-	if building_placer:
-		building_placer.select_building_category([33, 34])
+	pass
