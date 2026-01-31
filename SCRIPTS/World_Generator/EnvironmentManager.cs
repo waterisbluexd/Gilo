@@ -6,7 +6,6 @@ using System.Linq;
 [Tool]
 public partial class EnvironmentManager : Node3D
 {
-    private ResourceSystem _resourceSystem;
     private Node3D _navigationGrid;
 
     [ExportGroup("Prop Database")]
@@ -37,8 +36,6 @@ public partial class EnvironmentManager : Node3D
     private ChunkPixelTerrain _terrain;
     private Dictionary<Vector2I, ChunkPropData> _propChunks = new();
     private Camera3D _camera;
-    private int _totalResourcesRegistered = 0;
-    private bool _resourceSystemReady = false;
     private Dictionary<Vector2I, List<PropNavigationData>> _chunkPropNavData = new();
     private Dictionary<Vector2I, Dictionary<int, List<PixelPosition>>> _biomePixelCache = new();
     private int _biomeCount = 8;
@@ -64,18 +61,6 @@ public partial class EnvironmentManager : Node3D
         GD.Print($"🌍 EnvironmentManager detected {_biomeCount} biomes");
 
         _camera = GetViewport()?.GetCamera3D();
-        _resourceSystem = GetNodeOrNull<ResourceSystem>("/root/ResourceSystem");
-        
-        if (_resourceSystem == null)
-        {
-            GD.PushError("⚠️ CRITICAL: ResourceSystem not found in AutoLoad!");
-        }
-        else
-        {
-            _resourceSystemReady = true;
-            if (EnableDebugLogging)
-                GD.Print("✅ ResourceSystem connected successfully");
-        }
 
         if (RegisterWithNavigationGrid)
         {
@@ -118,7 +103,6 @@ public partial class EnvironmentManager : Node3D
             }
         }
 
-        int harvestableCount = 0;
         int clusteredCount = 0;
         int area3DCount = 0;
 
@@ -126,7 +110,6 @@ public partial class EnvironmentManager : Node3D
         {
             if (prop != null)
             {
-                if (prop.IsHarvestable) harvestableCount++;
                 if (prop.PlacementPattern == EnvironmentPropData.SpawnPattern.Clustered) clusteredCount++;
                 if (prop.UsesArea3DCollision()) area3DCount++;
                 
@@ -149,7 +132,7 @@ public partial class EnvironmentManager : Node3D
             }
         }
 
-        GD.Print($"EnvironmentManager initialized: {PropDatabase.Count} props ({harvestableCount} harvestable, {clusteredCount} clustered, {area3DCount} Area3D)");
+        GD.Print($"EnvironmentManager initialized: {PropDatabase.Count} props ({clusteredCount} clustered, {area3DCount} Area3D)");
         GD.Print($"Spawn priority order: {string.Join(", ", _sortedPropDatabase.Select(p => $"{p.Name}({p.SpawnPriority})"))}");
     }
 
@@ -223,8 +206,6 @@ public partial class EnvironmentManager : Node3D
             _biomePixelCache[chunkCoord] = biomePixels;
         }
 
-        int chunkResourceCount = 0;
-        int skippedHarvestedCount = 0;
         int propsRegisteredWithNav = 0;
 
         if (!_chunkPropNavData.ContainsKey(chunkCoord))
@@ -243,22 +224,20 @@ public partial class EnvironmentManager : Node3D
             if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Scattered)
             {
                 GenerateScatteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
-                    halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
-                    ref skippedHarvestedCount, ref propsRegisteredWithNav);
+                    halfChunkWorldSize, chunkPropData, ref propsRegisteredWithNav);
             }
             else if (propData.PlacementPattern == EnvironmentPropData.SpawnPattern.Clustered)
             {
                 GenerateClusteredProps(propData, biomePixels, chunkCoord, chunkWorldOrigin, 
-                    halfChunkWorldSize, chunkPropData, ref chunkResourceCount, 
-                    ref skippedHarvestedCount, ref propsRegisteredWithNav);
+                    halfChunkWorldSize, chunkPropData, ref propsRegisteredWithNav);
             }
         }
 
         _propChunks[chunkCoord] = chunkPropData;
 
-        if (EnableDebugLogging && (chunkResourceCount > 0 || skippedHarvestedCount > 0 || propsRegisteredWithNav > 0))
+        if (EnableDebugLogging && propsRegisteredWithNav > 0)
         {
-            GD.Print($"🌲 Chunk {chunkCoord}: Spawned {chunkResourceCount} resources, Skipped {skippedHarvestedCount} harvested, Registered {propsRegisteredWithNav} with NavGrid");
+            GD.Print($"🌲 Chunk {chunkCoord}: Registered {propsRegisteredWithNav} with NavGrid");
         }
     }
 
@@ -336,8 +315,7 @@ public partial class EnvironmentManager : Node3D
         EnvironmentPropData propData, 
         Dictionary<int, List<PixelPosition>> biomePixels,
         Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize,
-        ChunkPropData chunkPropData, ref int chunkResourceCount, 
-        ref int skippedHarvestedCount, ref int propsRegisteredWithNav)
+        ChunkPropData chunkPropData, ref int propsRegisteredWithNav)
     {
         var propInstances = new List<PropInstance>();
         int instanceIndex = 0;
@@ -359,26 +337,6 @@ public partial class EnvironmentManager : Node3D
 
             foreach (var pixel in biomePixels[biomeIndex])
             {
-                bool shouldSpawn = true;
-                
-                if (_resourceSystemReady && propData.IsHarvestable)
-                {
-                    shouldSpawn = _resourceSystem.ShouldSpawnResource(chunkCoord, instanceIndex, propData.Name);
-                    
-                    if (!shouldSpawn)
-                    {
-                        skippedHarvestedCount++;
-                        if (EnableDebugLogging && skippedHarvestedCount <= 3)
-                            GD.Print($"🚫 Skipping harvested {propData.Name} at index {instanceIndex}");
-                    }
-                }
-
-                if (!shouldSpawn)
-                {
-                    instanceIndex++;
-                    continue;
-                }
-
                 float randomValue = GetDeterministicRandom(pixel.WorldX, pixel.WorldZ, propData.Name);
                 if (randomValue < propData.Probability)
                 {
@@ -401,18 +359,6 @@ public partial class EnvironmentManager : Node3D
                     propInstances.Add(instance);
 
                     RegisterPlacedProp(instance.WorldPosition, propData, chunkCoord);
-
-                    if (propData.IsHarvestable && _resourceSystemReady) 
-                    {
-                        _resourceSystem.RegisterResource(
-                            chunkCoord, 
-                            instance.WorldPosition, 
-                            propData.Name, 
-                            instanceIndex
-                        );
-                        chunkResourceCount++;
-                        _totalResourcesRegistered++;
-                    }
 
                     if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
                     {
@@ -483,8 +429,7 @@ public partial class EnvironmentManager : Node3D
         EnvironmentPropData propData, 
         Dictionary<int, List<PixelPosition>> biomePixels,
         Vector2I chunkCoord, Vector2 chunkWorldOrigin, float halfChunkWorldSize,
-        ChunkPropData chunkPropData, ref int chunkResourceCount, 
-        ref int skippedHarvestedCount, ref int propsRegisteredWithNav)
+        ChunkPropData chunkPropData, ref int propsRegisteredWithNav)
     {
         var propInstances = new List<PropInstance>();
         int instanceIndex = 0;
@@ -541,18 +486,6 @@ public partial class EnvironmentManager : Node3D
                     foreach (var instance in cluster)
                     {
                         RegisterPlacedProp(instance.WorldPosition, propData, chunkCoord);
-
-                        if (propData.IsHarvestable && _resourceSystemReady) 
-                        {
-                            _resourceSystem.RegisterResource(
-                                chunkCoord, 
-                                instance.WorldPosition, 
-                                propData.Name, 
-                                instanceIndex++
-                            );
-                            chunkResourceCount++;
-                            _totalResourcesRegistered++;
-                        }
 
                         if (RegisterWithNavigationGrid && _navigationGrid != null && propData.BlocksNavigation)
                         {
@@ -880,9 +813,6 @@ public partial class EnvironmentManager : Node3D
             }
 
             _propChunks.Remove(coord);
-            
-            if (_resourceSystemReady)
-                _resourceSystem.UnloadChunk(coord);
         }
     }
 
@@ -934,7 +864,6 @@ public partial class EnvironmentManager : Node3D
     }
 
     public int GetLoadedPropChunkCount() => _propChunks.Count;
-    public int GetTotalResourcesRegistered() => _totalResourcesRegistered;
 
     public void ClearAllProps()
     {
@@ -944,7 +873,6 @@ public partial class EnvironmentManager : Node3D
         _chunkPropNavData.Clear();
         _chunkPlacedProps.Clear();
         _biomePixelCache.Clear();
-        _totalResourcesRegistered = 0;
     }
 
     public Node3D GetNavigationGrid() => _navigationGrid;

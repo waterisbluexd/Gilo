@@ -498,7 +498,7 @@ mouse_filter = 2
 [node name="Window" type="Window" parent="UI/Debugger/Control/panel/Control" unique_id=371848421]
 oversampling_override = 1.0
 title = "Debugger"
-position = Vector2i(8, 36)
+position = Vector2i(0, 36)
 size = Vector2i(689, 1039)
 visible = false
 always_on_top = true
@@ -3176,7 +3176,10 @@ projection = 1
 near = 0.001
 far = 10000.0
 script = ExtResource("3_i3vxn")
-min_size = 79.69
+show_debug_print = false
+show_raycast_debug = false
+show_visual_debug = false
+show_cursor_indicator = false
 
 [node name="ChunkPixelTerrain" parent="Pixelated/Main/SubViewportContainer/SubViewport" unique_id=1957180836 node_paths=PackedStringArray("Player") instance=ExtResource("5_ab6ae")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

@@ -8,7 +8,7 @@ public partial class EnvironmentPropData : Resource
     {
         Mesh,
         PackedScene,
-        MultiplePackedScenes  // NEW: Support for multiple scene variants
+        MultiplePackedScenes
     }
 
     public enum SpawnPattern
@@ -19,40 +19,32 @@ public partial class EnvironmentPropData : Resource
 
     public enum CollisionMode
     {
-        GridBased,      // Old system - simple grid collision
-        Area3D          // New system - uses Area3D for precise collision
+        GridBased,
+        Area3D
     }
 
     [ExportGroup("Basic Info")]
     [Export] public string Name { get; set; } = "New Prop";
     [Export(PropertyHint.Range, "0,100")]
-    public int SpawnPriority { get; set; } = 50;  // NEW: Higher priority spawns first
+    public int SpawnPriority { get; set; } = 50;
 
     [ExportGroup("Prop Source")]
     [Export] public PropSourceType SourceType { get; set; } = PropSourceType.Mesh;
     [Export] public Mesh PropMesh { get; set; }
     [Export] public PackedScene PropScene { get; set; }
-    [Export] public Godot.Collections.Array<PackedScene> PropSceneVariants { get; set; } = new();  // NEW
-
-    [ExportGroup("Resource Settings")]
-    [Export] public bool IsHarvestable { get; set; } = false;
-    [Export] public string ResourceType { get; set; } = "Wood";
-    [Export(PropertyHint.Range, "1,1000")]
-    public int ResourceYield { get; set; } = 50;
-    [Export(PropertyHint.Range, "0.5,30.0")]
-    public float HarvestTime { get; set; } = 3.0f;
+    [Export] public Godot.Collections.Array<PackedScene> PropSceneVariants { get; set; } = new();
 
     [ExportGroup("Collision & Navigation")]
-    [Export] public CollisionMode CollisionType { get; set; } = CollisionMode.GridBased;  // NEW
+    [Export] public CollisionMode CollisionType { get; set; } = CollisionMode.GridBased;
     [Export] public bool BlocksNavigation { get; set; } = true;
     
-    // Grid-based collision (old system)
+    // Grid-based collision
     [Export] public Vector2 CollisionSize { get; set; } = Vector2.Zero;
     [Export] public bool AutoCalculateCollisionSize { get; set; } = true;
     
-    // Collision Group (for BOTH Area3D and grid-based props)
-    [Export] public string CollisionGroupName { get; set; } = "";  // NEW: e.g., "tree_collision", "rock_collision"
-    [Export] public Godot.Collections.Array<string> AvoidGroupNames { get; set; } = new();  // NEW: Groups this prop shouldn't overlap with
+    // Collision Group
+    [Export] public string CollisionGroupName { get; set; } = "";
+    [Export] public Godot.Collections.Array<string> AvoidGroupNames { get; set; } = new();
 
     [ExportGroup("Placement Rules")]
     [Export] public SpawnPattern PlacementPattern { get; set; } = SpawnPattern.Scattered;
@@ -73,8 +65,8 @@ public partial class EnvironmentPropData : Resource
 
     [ExportGroup("Multiple Scenes Settings")]
     [Export(PropertyHint.Range, "0.0,5.0")]
-    public float MinDistanceBetweenVariants { get; set; } = 2.0f;  // NEW: Minimum distance between scene variants
-    [Export] public bool RandomizeVariantSelection { get; set; } = true;  // NEW
+    public float MinDistanceBetweenVariants { get; set; } = 2.0f;
+    [Export] public bool RandomizeVariantSelection { get; set; } = true;
 
     [ExportGroup("Advanced Options")]
     [Export] public bool InheritMaterialsFromSource { get; set; } = true;
@@ -94,17 +86,15 @@ public partial class EnvironmentPropData : Resource
 
     public string GetCollisionGroup()
     {
-        // Return the explicit group name if set
         if (!string.IsNullOrEmpty(CollisionGroupName))
             return CollisionGroupName;
         
-        // Otherwise, derive from prop name (backward compatibility)
         string lowerName = Name.ToLower();
         if (lowerName.Contains("tree")) return "tree_collision";
         if (lowerName.Contains("rock") || lowerName.Contains("boulder")) return "rock_collision";
         if (lowerName.Contains("bush") || lowerName.Contains("shrub")) return "bush_collision";
         
-        return "prop_collision"; // Default fallback
+        return "prop_collision";
     }
 
     public bool HasMultipleScenes()
@@ -130,7 +120,7 @@ public partial class EnvironmentPropData : Resource
     public Vector2 GetCollisionSize()
     {
         if (UsesArea3DCollision())
-            return Vector2.Zero; // Area3D handles collision
+            return Vector2.Zero;
 
         if (CollisionSize != Vector2.Zero)
             return CollisionSize;

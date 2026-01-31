@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnvironmentPropData" load_steps=3 format=3 uid="uid://dapn6fuee5y6k"]
+[gd_resource type="Resource" script_class="EnvironmentPropData" format=3 uid="uid://dapn6fuee5y6k"]
 
 [ext_resource type="PackedScene" uid="uid://cu5s8w2kbiv6j" path="res://SCENES/Assets/plants/tree.tscn" id="1_l4hsf"]
 [ext_resource type="Script" uid="uid://dko4jpirlylb2" path="res://SCRIPTS/World_Generator/EnvironmentPropData.cs" id="1_x0scu"]
@@ -9,7 +9,6 @@ Name = "Oak_Tree"
 SpawnPriority = 70
 SourceType = 1
 PropScene = ExtResource("1_l4hsf")
-IsHarvestable = true
 CollisionSize = Vector2(2, 2)
 CollisionGroupName = "Tree"
 AvoidGroupNames = Array[String](["Rocks"])
