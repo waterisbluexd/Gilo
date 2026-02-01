@@ -239,9 +239,9 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cgd18")
 
 [node name="Npc" type="Node3D" unique_id=1574694953]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 
 [node name="body" type="MeshInstance3D" parent="." unique_id=1603060567]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 
 [node name="cube" type="MeshInstance3D" parent="body" unique_id=1760995632]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1352633, -0.010216145, 0)

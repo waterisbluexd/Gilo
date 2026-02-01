@@ -3195,7 +3195,7 @@ BeachWidth = 10.0
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
 Player = NodePath("../CameraPivot")
 
-[node name="Npc" parent="Pixelated/Main/SubViewportContainer/SubViewport/ChunkPixelTerrain" unique_id=1362047545 instance=ExtResource("27_tk6o3")]
+[node name="Npc" parent="Pixelated/Main/SubViewportContainer/SubViewport" unique_id=1362047545 instance=ExtResource("27_tk6o3")]
 
 [node name="Display" type="Control" parent="Pixelated" unique_id=1816824152]
 layout_mode = 3

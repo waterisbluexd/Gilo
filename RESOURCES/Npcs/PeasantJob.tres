@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="PeasantJob" format=3 uid="uid://4bvkcnj1f0xx"]
-
-[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/Npcs/default_Sbev.tscn" id="1_ae14b"]
-[ext_resource type="Script" uid="uid://cr7sru6h8f4ro" path="res://SCRIPTS/Systems/AI/PeasantJob.cs" id="1_hx888"]
-
-[resource]
-script = ExtResource("1_hx888")
-ModelScene = ExtResource("1_ae14b")
-metadata/_custom_type_script = "uid://cr7sru6h8f4ro"

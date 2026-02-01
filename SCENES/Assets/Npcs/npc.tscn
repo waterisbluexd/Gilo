@@ -1,14 +1,16 @@
 [gd_scene format=3 uid="uid://c738q4bvec3cn"]
 
-[ext_resource type="Script" uid="uid://d4egkatbd10m4" path="res://SCRIPTS/Systems/Unit_data/unit.cs" id="1_b71g3"]
+[ext_resource type="Script" uid="uid://ro3chu5hdopt" path="res://SCRIPTS/Systems/Unit_data/Unit.gd" id="1_b71g3"]
 [ext_resource type="Script" uid="uid://bm3gnkysfuaq8" path="res://SCRIPTS/Ownership/Owner.cs" id="2_agaf1"]
-[ext_resource type="Script" uid="uid://b1du5f74ucwo1" path="res://SCRIPTS/Systems/Unit_data/unitVisuals.cs" id="3_c5apn"]
+[ext_resource type="Resource" uid="uid://by1bv6btt55ls" path="res://RESOURCES/Npcs/PeasentJob.tres" id="2_c5apn"]
+[ext_resource type="Script" uid="uid://cenygte1qwqes" path="res://SCRIPTS/Systems/Unit_data/UnitVisuals.gd" id="4_agaf1"]
 
 [node name="Npc" type="Node3D" unique_id=1362047545]
 script = ExtResource("1_b71g3")
+job = ExtResource("2_c5apn")
 
 [node name="Owner" type="Node" parent="." unique_id=1459298822]
 script = ExtResource("2_agaf1")
 
 [node name="unitVisual" type="Node3D" parent="." unique_id=2087078677]
-script = ExtResource("3_c5apn")
+script = ExtResource("4_agaf1")

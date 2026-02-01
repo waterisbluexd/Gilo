@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="PeasantJob" format=3 uid="uid://by1bv6btt55ls"]
+
+[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/Npcs/default_Sbev.tscn" id="1_1wodc"]
+[ext_resource type="Script" uid="uid://2eclrqchu0of" path="res://SCRIPTS/Systems/AI/PeasantJob.gd" id="1_sspsb"]
+
+[resource]
+script = ExtResource("1_sspsb")
+model_scene = ExtResource("1_1wodc")
