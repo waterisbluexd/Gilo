@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://c2toi2o671k6c"]
 
-[ext_resource type="Texture2D" uid="uid://c8gvnikifry3g" path="res://MODLES/en_tities/Social_Animals/Human_Type_1_0.png" id="1_yagjy"]
+[ext_resource type="Texture2D" uid="uid://c8gvnikifry3g" path="res://MODLES/en_tities/Social_Animals/Human_Type_1_0.png" id="1_fv85j"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_56e0a"]
 resource_name = "material_0"
@@ -10,7 +10,7 @@ alpha_antialiasing_mode = 0
 cull_mode = 2
 diffuse_mode = 3
 specular_mode = 1
-albedo_texture = ExtResource("1_yagjy")
+albedo_texture = ExtResource("1_fv85j")
 texture_filter = 0
 texture_repeat = false
 
@@ -238,8 +238,8 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cgd18")
 
-[node name="Human_Type_Ceviliean" type="Node3D" unique_id=1574694953]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+[node name="Npc" type="Node3D" unique_id=1574694953]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 
 [node name="body" type="MeshInstance3D" parent="." unique_id=1603060567]
 

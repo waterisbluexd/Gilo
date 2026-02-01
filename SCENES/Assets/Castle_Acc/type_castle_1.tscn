@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://cirxda2m1hemg"]
 
 [ext_resource type="Texture2D" uid="uid://cpv804mailmme" path="res://MODLES/assetsmodel/Castle/Castle_Palette.png" id="1_a4ttv"]
+[ext_resource type="Script" uid="uid://cxlk535g2t0r5" path="res://SCRIPTS/Buildings/Castle.cs" id="1_castle"]
+[ext_resource type="Script" uid="uid://bm3gnkysfuaq8" path="res://SCRIPTS/Ownership/Owner.cs" id="2_owner"]
 [ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_x7fjq"]
 [ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_nrnqe"]
-[ext_resource type="Script" path="res://SCRIPTS/Buildings/Castle.cs" id="1_castle"]
-[ext_resource type="Script" path="res://SCRIPTS/Ownership/Owner.cs" id="2_owner"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eccyp"]
 resource_name = "palette"
@@ -100,6 +100,12 @@ script = ExtResource("1_castle")
 [node name="Owner" type="Node" parent="." unique_id=1]
 script = ExtResource("2_owner")
 
+[node name="Spawner" type="Node" parent="." unique_id=1642435024]
+
+[node name="unit_spawnpoint" type="Marker3D" parent="Spawner" unique_id=211791500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9526298, 0, 6.0184293)
+gizmo_extents = 3.14
+
 [node name="Castle" type="MeshInstance3D" parent="." unique_id=912746921]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_utsbq")
@@ -143,3 +149,144 @@ transform = Transform3D(-4.371141e-08, 1.03316026e-07, -0.8723192, -8.742274e-08
 
 [node name="Window_light_13" parent="Castle" unique_id=49266698 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-4.371141e-08, 1.03316026e-07, -0.8723192, -8.742274e-08, 1, 6.572161e-08, 1.0000001, 8.742277e-08, -3.8130285e-08, 7.7554493, 5.590207, -2.0350494)
+
+[node name="Gathering_area" type="Node" parent="." unique_id=57302540]
+
+[node name="gathering_ holder" type="Node3D" parent="Gathering_area" unique_id=338850061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.783741, 0, 9.622254)
+
+[node name="gathering_stand_1" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1117609241]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_2" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1854879021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8184061, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_3" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=86693632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1815939, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_4" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1806749269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_5" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1925105159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, -0.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_6" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1587827785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, 0.49851513)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_7" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=2114408249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_8" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1312471134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1815939, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_9" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1902343048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8184061, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_10" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1904224620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_11" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=75371142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, 0.49851513)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_12" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=370859873]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, -0.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_13" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=2039245639]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, -0.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_14" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1766127469]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_15" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=475151368]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_16" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1275887000]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_17" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1009496227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8184061, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_18" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=124318915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1815939, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_19" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=2063283188]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_20" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1202656096]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.181594, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_21" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=389550379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, -2.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_22" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1836853379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, -1.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_23" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1833122098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, -0.5014858)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_24" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=568615426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, 0.49851513)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_25" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=61024934]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_26" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1925625680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.181594, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_27" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1931582909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.181594, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_28" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1892554146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1815939, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_29" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1862982343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1815939, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_30" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1189678679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8184061, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_31" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=272510522]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_32" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1385078136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, 2.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_33" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=791889172]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, 1.4985151)
+gizmo_extents = 0.91
+
+[node name="gathering_stand_34" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=2017946851]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.818406, 0, 0.49851513)
+gizmo_extents = 0.91
