@@ -4,6 +4,7 @@ class_name Unit
 @export var job: PeasantJob
 
 var _visuals: Node3D
+var target_stand: Node3D  # Where this NPC is going (GatheringStand)
 
 func _ready() -> void:
 	_visuals = get_node_or_null("unitVisual")

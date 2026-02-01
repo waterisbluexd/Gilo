@@ -4,7 +4,10 @@
 [ext_resource type="Script" uid="uid://cxlk535g2t0r5" path="res://SCRIPTS/Buildings/Castle.cs" id="1_castle"]
 [ext_resource type="Script" uid="uid://bm3gnkysfuaq8" path="res://SCRIPTS/Ownership/Owner.cs" id="2_owner"]
 [ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_x7fjq"]
+[ext_resource type="Script" uid="uid://dbapecboqo7qc" path="res://SCRIPTS/Systems/Spawner/CastleSpawner.gd" id="3_htkne"]
 [ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_nrnqe"]
+[ext_resource type="PackedScene" uid="uid://c738q4bvec3cn" path="res://SCENES/Assets/Npcs/npc.tscn" id="4_mjdom"]
+[ext_resource type="Resource" uid="uid://by1bv6btt55ls" path="res://RESOURCES/Npcs/PeasentJob.tres" id="5_mjdom"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eccyp"]
 resource_name = "palette"
@@ -100,11 +103,13 @@ script = ExtResource("1_castle")
 [node name="Owner" type="Node" parent="." unique_id=1]
 script = ExtResource("2_owner")
 
-[node name="Spawner" type="Node" parent="." unique_id=1642435024]
+[node name="Spawner" type="Node3D" parent="." unique_id=1951544058]
+script = ExtResource("3_htkne")
+npc_scene = ExtResource("4_mjdom")
+gatherer_job = ExtResource("5_mjdom")
 
 [node name="unit_spawnpoint" type="Marker3D" parent="Spawner" unique_id=211791500]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9526298, 0, 6.0184293)
-gizmo_extents = 3.14
 
 [node name="Castle" type="MeshInstance3D" parent="." unique_id=912746921]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
@@ -153,7 +158,7 @@ transform = Transform3D(-4.371141e-08, 1.03316026e-07, -0.8723192, -8.742274e-08
 [node name="Gathering_area" type="Node" parent="." unique_id=57302540]
 
 [node name="gathering_ holder" type="Node3D" parent="Gathering_area" unique_id=338850061]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.783741, 0, 9.622254)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4130507, 0, 13.403821)
 
 [node name="gathering_stand_1" type="Marker3D" parent="Gathering_area/gathering_ holder" unique_id=1117609241]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8184061, 0, -1.5014858)

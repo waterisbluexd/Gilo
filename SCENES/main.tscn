@@ -26,7 +26,6 @@
 [ext_resource type="Script" uid="uid://ckgjn3iylh2fs" path="res://SCRIPTS/UI/Builders/castle_color.gd" id="20_krqwh"]
 [ext_resource type="Script" uid="uid://ci1n8rp5inon5" path="res://SCRIPTS/UI/Builders/Destroy_building.gd" id="20_qhscv"]
 [ext_resource type="Texture2D" uid="uid://i7m4i1t8do3o" path="res://UI/Resources/Textures/UI books & more.png" id="21_8nfwp"]
-[ext_resource type="PackedScene" uid="uid://c738q4bvec3cn" path="res://SCENES/Assets/Npcs/npc.tscn" id="27_tk6o3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0u8pi"]
 content_margin_left = 0.0
@@ -3194,8 +3193,6 @@ BeachThreshold = -2.0
 BeachWidth = 10.0
 CustomMaterial = SubResource("StandardMaterial3D_11g8y")
 Player = NodePath("../CameraPivot")
-
-[node name="Npc" parent="Pixelated/Main/SubViewportContainer/SubViewport" unique_id=1362047545 instance=ExtResource("27_tk6o3")]
 
 [node name="Display" type="Control" parent="Pixelated" unique_id=1816824152]
 layout_mode = 3
