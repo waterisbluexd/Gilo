@@ -404,6 +404,11 @@ func _place_building_at(world_pos: Vector3, building: BuildingData = null):
 	if not _can_place_at(world_pos, building):
 		return
 
+	# Remove preview node before creating the actual building to avoid duplicate _Ready() calls
+	if preview_node:
+		preview_node.queue_free()
+		preview_node = null
+
 	var rotated_size = get_rotated_building_size()
 	
 	if building.is_wall():
@@ -436,6 +441,9 @@ func _create_preview_node():
 	
 	if building.prefab:
 		preview_node = building.prefab.instantiate()
+		# Mark as preview so Castle script doesn't initialize
+		if preview_node.has_method("SetAsPreview"):
+			preview_node.call("SetAsPreview", true)
 	else:
 		var mesh_instance = MeshInstance3D.new()
 		var box_mesh = BoxMesh.new()
@@ -778,6 +786,9 @@ func _draw_wall_preview(from_world: Vector3, to_world: Vector3):
 			continue
 		
 		var preview_instance = current_building.prefab.instantiate()
+		# Mark as preview so Castle script doesn't initialize
+		if preview_instance.has_method("SetAsPreview"):
+			preview_instance.call("SetAsPreview", true)
 		wall_preview_container.add_child(preview_instance)
 		preview_instance.global_position = placement_pos + Vector3(grid_cell_size * 0.5, 0, grid_cell_size * 0.5)
 		

@@ -5,9 +5,21 @@ public partial class Castle : Node3D
     private Owner _owner;
     private static int _castleCount = 0;
     private int _castleId;
+    private bool _isPreview = false;
+
+    public void SetAsPreview(bool isPreview)
+    {
+        _isPreview = isPreview;
+    }
 
     public override void _Ready()
     {
+        // Skip initialization if this is a preview node
+        if (_isPreview)
+        {
+            return;
+        }
+        
         _castleId = ++_castleCount;
         Name = $"Castle_{_castleId}";
         
