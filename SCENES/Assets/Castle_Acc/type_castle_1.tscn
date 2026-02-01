@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=4 uid="uid://cirxda2m1hemg"]
+[gd_scene format=4 uid="uid://cirxda2m1hemg"]
 
 [ext_resource type="Texture2D" uid="uid://cpv804mailmme" path="res://MODLES/assetsmodel/Castle/Castle_Palette.png" id="1_a4ttv"]
 [ext_resource type="Material" uid="uid://kg23yx6jwpx1" path="res://RESOURCES/Gradiant_and curve/roof_color_all.tres" id="2_x7fjq"]
 [ext_resource type="PackedScene" uid="uid://d0aekl62kmsbf" path="res://SCENES/Assets/HouseAllType/window_light_1.tscn" id="3_nrnqe"]
+[ext_resource type="Script" path="res://SCRIPTS/Buildings/Castle.cs" id="1_castle"]
+[ext_resource type="Script" path="res://SCRIPTS/Ownership/Owner.cs" id="2_owner"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eccyp"]
 resource_name = "palette"
@@ -92,48 +94,52 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_v8qiw")
 
-[node name="Type_Castle_1" type="Node3D"]
+[node name="Type_Castle_1" type="Node3D" unique_id=912835809]
+script = ExtResource("1_castle")
 
-[node name="Castle" type="MeshInstance3D" parent="."]
+[node name="Owner" type="Node" parent="." unique_id=1]
+script = ExtResource("2_owner")
+
+[node name="Castle" type="MeshInstance3D" parent="." unique_id=912746921]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_utsbq")
 skeleton = NodePath("")
 
-[node name="Window_light_1" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_1" parent="Castle" unique_id=1969679083 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-4.3711395e-08, -7.1054274e-15, -3.6331139, -8.742277e-08, 1, -1.5646076e-21, 1.0000001, 8.742277e-08, -1.5880846e-07, 1.7849498, 6.094157, -5.9846315)
 
-[node name="Window_light_2" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_2" parent="Castle" unique_id=831910796 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-4.3711395e-08, -7.1054274e-15, -1.8844433, -8.742277e-08, 1, -8.115392e-22, 1.0000001, 8.742277e-08, -8.237164e-08, -5.0826173, 3.6073685, -2.0050564)
 
-[node name="Window_light_3" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_3" parent="Castle" unique_id=1592017485 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(8.7422755e-08, -1, -5.9604645e-08, -4.3711406e-08, 5.9604645e-08, -1.884443, 1.0000001, 8.742277e-08, -8.237163e-08, -9.86243, -0.9164401, -2.0050564)
 
-[node name="Window_light_4" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_4" parent="Castle" unique_id=701180128 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(8.7422755e-08, -1, -2.7591323e-08, -4.3711406e-08, 5.9604645e-08, -0.8723192, 1.0000001, 8.742277e-08, -3.813029e-08, -9.86243, -1.9066316, -5.9658165)
 
-[node name="Window_light_6" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_6" parent="Castle" unique_id=616689405 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(4.3711406e-08, -8.940697e-08, 0.8723191, 8.7422734e-08, -0.9999999, -1.3427132e-22, 1, 8.742276e-08, -3.8130285e-08, -8.017957, -3.6121798, -6.024063)
 
-[node name="Window_light_7" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_7" parent="Castle" unique_id=2027522181 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(4.3711406e-08, -8.940697e-08, 0.8723191, 8.7422734e-08, -0.9999999, -1.3427132e-22, 1, 8.742276e-08, -3.8130285e-08, -8.017957, -3.6121798, -2.0244694)
 
-[node name="Window_light_8" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_8" parent="Castle" unique_id=1346455801 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(4.3711406e-08, -8.940697e-08, 0.8723191, 8.7422734e-08, -0.9999999, -1.3427132e-22, 1, 8.742276e-08, -3.8130285e-08, -4.006853, -3.6121798, -6.024063)
 
-[node name="Window_light_9" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_9" parent="Castle" unique_id=647575908 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(4.3711406e-08, -8.940697e-08, 0.8723191, 8.7422734e-08, -0.9999999, -1.3427132e-22, 1, 8.742276e-08, -3.8130285e-08, -4.006853, -3.6121798, -2.0244694)
 
-[node name="Window_light_5" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_5" parent="Castle" unique_id=1253128555 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(8.7422755e-08, -1, -2.7591323e-08, -4.3711406e-08, 5.9604645e-08, -0.8723192, 1.0000001, 8.742277e-08, -3.813029e-08, -9.86243, 0.17082584, -8.949372)
 
-[node name="Window_light_10" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_10" parent="Castle" unique_id=1822584812 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-8.742274e-08, 1, 1.0385189e-07, 4.3711413e-08, -1.4702742e-07, 0.8723192, 1.0000001, 8.742277e-08, -3.813029e-08, 9.613329, 3.9745293, -12.975305)
 
-[node name="Window_light_11" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_11" parent="Castle" unique_id=947187556 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-8.742274e-08, 1, 1.0385189e-07, 4.3711413e-08, -1.4702742e-07, 0.8723192, 1.0000001, 8.742277e-08, -3.813029e-08, 9.613329, 3.9745293, -2.0350494)
 
-[node name="Window_light_12" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_12" parent="Castle" unique_id=544873784 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-4.371141e-08, 1.03316026e-07, -0.8723192, -8.742274e-08, 1, 6.572161e-08, 1.0000001, 8.742277e-08, -3.8130285e-08, 7.7554493, 5.590207, -12.975305)
 
-[node name="Window_light_13" parent="Castle" instance=ExtResource("3_nrnqe")]
+[node name="Window_light_13" parent="Castle" unique_id=49266698 instance=ExtResource("3_nrnqe")]
 transform = Transform3D(-4.371141e-08, 1.03316026e-07, -0.8723192, -8.742274e-08, 1, 6.572161e-08, 1.0000001, 8.742277e-08, -3.8130285e-08, 7.7554493, 5.590207, -2.0350494)
