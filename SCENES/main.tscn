@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://hq2dn4st8e10"]
 
-[ext_resource type="Script" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
+[ext_resource type="Script" uid="uid://ffkbi680dxeu" path="res://SCRIPTS/frac.gd" id="1_v5vvh"]
 [ext_resource type="Theme" uid="uid://djnnf4tjioitp" path="res://RESOURCES/Debugger_res.tres" id="2_0u8pi"]
 [ext_resource type="Script" uid="uid://xd6mhrfirxsn" path="res://SCRIPTS/defaults/CameraPivot.gd" id="2_ac0l5"]
 [ext_resource type="PackedScene" uid="uid://dg6m6j4okm3jg" path="res://SCENES/day_night.tscn" id="2_qhscv"]
