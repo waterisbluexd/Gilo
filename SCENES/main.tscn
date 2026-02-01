@@ -437,9 +437,10 @@ fractal_ping_pong_strength = 1.87
 domain_warp_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7p5hq"]
-noise_type = 3
 frequency = 0.0001
-fractal_octaves = 1
+fractal_type = 2
+fractal_octaves = 10
+fractal_gain = 0.685
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11g8y"]
 
