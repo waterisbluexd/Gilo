@@ -1,126 +1,270 @@
 extends Node3D
 class_name CastleSpawner
 
-## How many NPCs can gather at once
-@export var max_gatherers: int = 5
+## Maximum NPCs that can gather simultaneously
+@export var max_gatherers: int = 50
+
 ## The NPC scene to spawn
 @export var npc_scene: PackedScene
-## The job to assign spawned NPCs
+
+## The job to assign to spawned NPCs
 @export var gatherer_job: PeasantJob
 
-## Child nodes - stores references
-var gathering_stands: Array[Node3D] = []
-var active_npcs: Array = []
+## Spawning settings
+@export var spawn_interval: float = 0.5
+@export var auto_spawn: bool = true
 
-## Spawning
-@export var spawn_interval: float = 2.0  # Spawn an NPC every X seconds
+## Performance settings
+@export var enable_npc_pooling: bool = true
+@export var pool_size: int = 10
+@export var path_update_interval: float = 3.0
+
+## Internal references
+var gathering_stands: Array[Node3D] = []
+var active_npcs: Array[Unit] = []
+var inactive_pool: Array[Unit] = []
 var spawn_timer: float = 0.0
+var spawnpoint: Node3D
+
+## Track assignments
+var stand_assignments: Dictionary = {}
+
+## Statistics
+var total_spawned: int = 0
+var from_pool: int = 0
 
 func _ready() -> void:
-	# Debug: Show what we are and what's around us
-	print("CastleSpawner node: %s (type: %s)" % [name, get_class()])
-	print("CastleSpawner parent: %s" % [get_parent().name if get_parent() else "NONE"])
-	print("CastleSpawner children: %s" % [get_children().map(func(c): return c.name)])
+	print("=== CastleSpawner Initializing ===")
 	
-	# Find all gathering stands recursively (they're under Gathering_area/gathering_holder)
-	_find_gathering_stands(get_parent())
+	# Find spawn point
+	spawnpoint = get_node_or_null("unit_spawnpoint")
+	if not spawnpoint:
+		push_warning("No unit_spawnpoint found - will spawn at spawner position")
+	else:
+		print("✓ Spawnpoint found at: %s" % spawnpoint.global_position)
+	
+	# Find gathering stands
+	var castle_root = get_parent()
+	print("Searching for gathering stands in: %s" % castle_root.name)
+	_find_gathering_stands(castle_root)
 	
 	if gathering_stands.is_empty():
-		push_error("CastleSpawner: No gathering_stand nodes found in hierarchy!")
+		push_error("CastleSpawner: No gathering stands found!")
+		return
 	
-	print("CastleSpawner ready. Found %d gathering stands. Max gatherers: %d" % [gathering_stands.size(), max_gatherers])
-	spawn_timer = spawn_interval  # Spawn first one immediately
-
-## Recursively find all nodes named gathering_stand_*
-func _find_gathering_stands(node: Node) -> void:
-	for child in node.get_children():
-		if child.name.begins_with("gathering_stand"):
-			gathering_stands.append(child as Node3D)
-		_find_gathering_stands(child)  # Recurse deeper
-
-func _process(delta: float) -> void:
-	spawn_timer -= delta
-	if spawn_timer <= 0 and can_spawn():
-		spawn_npc()
+	# Initialize stand tracking
+	for stand in gathering_stands:
+		stand_assignments[stand] = []
+	
+	print("✓ Found %d gathering stands" % gathering_stands.size())
+	print("✓ Max gatherers: %d" % max_gatherers)
+	
+	# Pre-populate pool
+	if enable_npc_pooling:
+		call_deferred("_populate_pool")
+	
+	if auto_spawn:
 		spawn_timer = spawn_interval
 
-## Check if we can spawn more NPCs
+func _populate_pool() -> void:
+	if not npc_scene:
+		return
+	
+	print("Pre-populating NPC pool with %d units..." % pool_size)
+	for i in range(pool_size):
+		var npc = await _create_npc_instance()
+		if npc:
+			npc.visible = false
+			npc.process_mode = Node.PROCESS_MODE_DISABLED
+			inactive_pool.append(npc)
+	print("✓ Pool ready with %d NPCs" % inactive_pool.size())
+
+func _process(delta: float) -> void:
+	if not auto_spawn:
+		return
+	
+	spawn_timer -= delta
+	if spawn_timer <= 0 and can_spawn():
+		spawn_npc_deferred()
+		spawn_timer = spawn_interval
+
+func spawn_npc_deferred() -> void:
+	var npc = await spawn_npc()
+
+func _find_gathering_stands(node: Node) -> void:
+	if node == null:
+		return
+	
+	for child in node.get_children():
+		if child.name.begins_with("gathering_stand") or child.name.begins_with("GatheringStand"):
+			if child is Node3D:
+				gathering_stands.append(child as Node3D)
+				print("  → Found stand: %s at %s" % [child.name, child.global_position])
+		_find_gathering_stands(child)
+
 func can_spawn() -> bool:
+	active_npcs = active_npcs.filter(func(npc): return is_instance_valid(npc))
 	return active_npcs.size() < max_gatherers
 
-## Spawn a new NPC and send it to a gathering stand
 func spawn_npc() -> Unit:
 	if not can_spawn():
-		push_error("Cannot spawn - at max capacity (%d/%d)" % [active_npcs.size(), max_gatherers])
 		return null
 	
-	if not npc_scene:
-		push_error("CastleSpawner has no npc_scene assigned!")
-		return null
+	var npc: Unit = null
 	
-	# Find spawnpoint before instantiating NPC
-	var spawnpoint = get_node_or_null("unit_spawnpoint")
-	var spawn_pos = Vector3.ZERO
-	if spawnpoint:
-		spawn_pos = spawnpoint.global_position
-		print("DEBUG: unit_spawnpoint found at global position: %s" % spawn_pos)
+	# Try to get from pool first
+	if enable_npc_pooling and not inactive_pool.is_empty():
+		npc = inactive_pool.pop_back()
+		npc.visible = true
+		npc.process_mode = Node.PROCESS_MODE_INHERIT
+		from_pool += 1
+		print("→ Using NPC from pool: %s" % npc.name)
 	else:
-		spawn_pos = global_position
-		print("DEBUG: unit_spawnpoint NOT found, using spawner position: %s" % spawn_pos)
+		# Create new instance
+		npc = await _create_npc_instance()
+		if not npc:
+			return null
+		print("→ Created new NPC: %s" % npc.name)
 	
-	# Instantiate the NPC
-	var npc: Unit = npc_scene.instantiate()
-	
-	# Add to the castle (same parent as Spawner), which is the Type_Castle_1 root
-	get_parent().add_child(npc)
-	
-	# Set position immediately after adding to tree
+	# Position the NPC
+	var spawn_pos = spawnpoint.global_position if spawnpoint else global_position
 	npc.global_position = spawn_pos
-	print("DEBUG: NPC global_position set to: %s" % npc.global_position)
+	npc.spawner = self
 	
-	# Assign the gathering job
+	print("  NPC positioned at: %s" % npc.global_position)
+	
+	# Assign job
 	if gatherer_job:
-		npc.job = gatherer_job.duplicate()
+		if not npc.job:
+			npc.job = gatherer_job.duplicate()
+		npc.apply_job(npc.job)
+		print("  Job assigned: %s (can_work: %s, can_fight: %s)" % [npc.job.job_name, npc.job.can_work, npc.job.can_fight])
 	
-	# Attach movement script
-	var movement = NPCMovement.new()
-	npc.add_child(movement)
+	# Reset movement component
+	var movement = npc.get_node_or_null("NPCMovement")
+	if movement:
+		print("  Movement component found")
+		
+		if movement.has_method("stop"):
+			movement.stop()
+		if movement.has_method("set_path_update_interval"):
+			movement.set_path_update_interval(path_update_interval)
+		
+		# Reset movement state directly
+		movement.has_arrived = false
+		movement.is_moving = false
+		movement.waiting_for_path = false
+		movement.active = true
+	else:
+		print("  ✗ NO MOVEMENT COMPONENT!")
 	
-	# Track this NPC
+	# Check if unit should gather
+	var should_gather = false
+	if npc.has_method("should_gather"):
+		should_gather = npc.should_gather()
+		print("  should_gather() returned: %s" % should_gather)
+	else:
+		print("  ✗ NPC has no should_gather() method!")
+	
+	# Only assign gathering stand if unit should gather (peasants)
+	if should_gather:
+		var target_stand = get_best_stand()
+		if target_stand:
+			npc.target_stand = target_stand
+			assign_npc_to_stand(npc, target_stand)
+			
+			print("  ✓ Assigned to gathering stand: %s at %s" % [target_stand.name, target_stand.global_position])
+			
+			# Trigger path request
+			if movement and movement.has_method("request_path_to_target"):
+				print("  ✓ Requesting path...")
+				movement.request_path_to_target()
+			else:
+				print("  ✗ Can't request path - movement is null or missing method")
+		else:
+			print("  ✗ No available gathering stand!")
+	else:
+		# Non-peasant unit - disable movement
+		print("  → Non-peasant unit - staying at spawn")
+		if movement:
+			movement.active = false
+	
 	active_npcs.append(npc)
+	total_spawned += 1
 	
-	# Send to nearest gathering stand
-	var target_stand = get_nearest_stand()
-	if target_stand:
-		npc.target_stand = target_stand
-		print("✓ Spawned NPC #%d at %s, sending to gathering stand %s" % [active_npcs.size(), npc.global_position, target_stand.name])
+	print("✓ Spawned NPC #%d (total: %d)\n" % [active_npcs.size(), total_spawned])
 	
 	return npc
 
-## Get the gathering stand with fewest NPCs
-func get_nearest_stand() -> Node3D:
+func _create_npc_instance() -> Unit:
+	if not npc_scene:
+		push_error("No npc_scene assigned!")
+		return null
+	
+	var npc: Unit = npc_scene.instantiate()
+	if not npc:
+		return null
+	
+	get_parent().call_deferred("add_child", npc)
+	await npc.ready
+	
+	return npc
+
+func get_best_stand() -> Node3D:
 	if gathering_stands.is_empty():
 		return null
 	
-	var best_stand = gathering_stands[0]
-	var min_npcs = stand_get_npc_count(best_stand)
+	var best_stand: Node3D = null
+	var min_count: int = 999999
 	
 	for stand in gathering_stands:
-		var count = stand_get_npc_count(stand)
-		if count < min_npcs:
+		var count = get_stand_npc_count(stand)
+		if count < min_count:
 			best_stand = stand
-			min_npcs = count
+			min_count = count
 	
 	return best_stand
 
-## Count how many NPCs are at this stand
-func stand_get_npc_count(stand: Node3D) -> int:
-	var count = 0
-	for npc in active_npcs:
-		if npc.target_stand == stand:
-			count += 1
-	return count
+func get_stand_npc_count(stand: Node3D) -> int:
+	if not stand_assignments.has(stand):
+		return 0
+	
+	stand_assignments[stand] = stand_assignments[stand].filter(
+		func(npc): return is_instance_valid(npc)
+	)
+	
+	return stand_assignments[stand].size()
 
-## Remove NPC from tracking (when it dies, etc)
+func assign_npc_to_stand(npc: Unit, stand: Node3D) -> void:
+	if not stand_assignments.has(stand):
+		stand_assignments[stand] = []
+	stand_assignments[stand].append(npc)
+
 func remove_npc(npc: Unit) -> void:
 	active_npcs.erase(npc)
+	
+	# Remove from stand assignments
+	for stand in stand_assignments.keys():
+		stand_assignments[stand].erase(npc)
+	
+	# Return to pool if enabled
+	if enable_npc_pooling and inactive_pool.size() < pool_size:
+		npc.visible = false
+		npc.process_mode = Node.PROCESS_MODE_DISABLED
+		
+		var spawn_pos = spawnpoint.global_position if spawnpoint else global_position
+		npc.global_position = spawn_pos
+		
+		inactive_pool.append(npc)
+	else:
+		npc.queue_free()
+
+func force_spawn() -> void:
+	var old_auto = auto_spawn
+	auto_spawn = false
+	await spawn_npc()
+	auto_spawn = old_auto
+
+func despawn_all() -> void:
+	for npc in active_npcs.duplicate():
+		remove_npc(npc)

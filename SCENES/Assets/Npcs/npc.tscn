@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bm3gnkysfuaq8" path="res://SCRIPTS/Ownership/Owner.cs" id="2_agaf1"]
 [ext_resource type="Resource" uid="uid://by1bv6btt55ls" path="res://RESOURCES/Npcs/PeasentJob.tres" id="2_c5apn"]
 [ext_resource type="Script" uid="uid://cenygte1qwqes" path="res://SCRIPTS/Systems/Unit_data/UnitVisuals.gd" id="4_agaf1"]
+[ext_resource type="Script" uid="uid://bimdc8h8ebpgk" path="res://SCRIPTS/Systems/Spawner/NPCMovement.gd" id="5_c5apn"]
 
 [node name="Npc" type="Node3D" unique_id=1362047545]
 script = ExtResource("1_b71g3")
@@ -14,3 +15,7 @@ script = ExtResource("2_agaf1")
 
 [node name="unitVisual" type="Node3D" parent="." unique_id=2087078677]
 script = ExtResource("4_agaf1")
+
+[node name="NPCMovement" type="Node3D" parent="." unique_id=1877014798]
+script = ExtResource("5_c5apn")
+waypoint_reached_distance = 0.0

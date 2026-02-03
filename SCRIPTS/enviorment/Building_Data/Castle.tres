@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_0y8u4")
-size = Vector2(10, 10)
+size = Vector2(30, 30)
 prefab = ExtResource("1_oxj5q")
+building_type = 2
 metadata/_custom_type_script = "uid://dlvnextl2ndl6"
