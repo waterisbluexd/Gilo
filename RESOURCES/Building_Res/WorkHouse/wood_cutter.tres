@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://cugtt241fn5m2"]
+
+[ext_resource type="PackedScene" uid="uid://ds3ee2ncp7o6u" path="res://SCENES/Assets/WorkHouse/WoodCutter/woodcutter.tscn" id="1_dl7x4"]
+[ext_resource type="Script" uid="uid://dlvnextl2ndl6" path="res://SCRIPTS/enviorment/Building_Data/BuildingData.gd" id="1_quswo"]
+
+[resource]
+script = ExtResource("1_quswo")
+name = "woodcutter"
+prefab = ExtResource("1_dl7x4")
+building_type = 1
+metadata/_custom_type_script = "uid://dlvnextl2ndl6"

@@ -28,6 +28,7 @@ GlobalColors="*res://SCRIPTS/globals/colorswap.gd"
 TimeManager="*res://SCRIPTS/globals/TimeManager.gd"
 EntityRegistry="*uid://cvieei2hqx8oq"
 Pathfindingmanager_v1="*uid://rbgesjr3ylvn"
+JobManager="*uid://dwxiyq6ljyk8a"
 
 [display]
 

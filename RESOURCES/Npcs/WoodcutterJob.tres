@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WoodcutterJob" format=3 uid="uid://x24625pl43a4"]
+
+[ext_resource type="Script" uid="uid://n7fh247al1t6" path="res://SCRIPTS/Systems/AI/Woodcutterjob.gd" id="1_rckwx"]
+[ext_resource type="PackedScene" uid="uid://c2toi2o671k6c" path="res://SCENES/Assets/Npcs/default_Sbev.tscn" id="1_xqigc"]
+
+[resource]
+script = ExtResource("1_rckwx")
+model_scene = ExtResource("1_xqigc")
+metadata/_custom_type_script = "uid://n7fh247al1t6"

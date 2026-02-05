@@ -23,6 +23,9 @@ var has_arrived: bool = false
 var is_moving: bool = false
 var waiting_for_path: bool = false
 
+## Current destination
+var current_destination: Node3D
+
 ## Smoothing
 var velocity: Vector3 = Vector3.ZERO
 var acceleration: float = 3.0
@@ -45,15 +48,37 @@ func _ready() -> void:
 func _setup_navigation() -> void:
 	await get_tree().process_frame
 	
-	if unit.target_stand:
+	# Check for workplace assignment first
+	if unit.is_assigned_to_work and unit.assigned_workplace:
+		print("NPC %s setup - assigned to workplace at: %s" % [unit.name, unit.work_position])
+		var work_marker = Node3D.new()
+		work_marker.global_position = unit.work_position
+		get_parent().get_parent().add_child(work_marker)
+		current_destination = work_marker
+		request_path_to_target()
+	elif unit.target_stand:
 		print("NPC %s setup - target: %s" % [unit.name, unit.target_stand.name])
+		current_destination = unit.target_stand
 		request_path_to_target()
 
 func set_path_update_interval(interval: float) -> void:
 	path_update_interval = interval
 
 func _physics_process(delta: float) -> void:
-	if not active or not unit or not unit.target_stand or has_arrived:
+	if not active or not unit or has_arrived:
+		return
+	
+	# Determine current target
+	var target = current_destination
+	if not target:
+		if unit.is_assigned_to_work:
+			# Create temp marker for work position
+			return
+		elif unit.target_stand:
+			target = unit.target_stand
+			current_destination = target
+	
+	if not target:
 		return
 	
 	# Update path periodically
@@ -72,7 +97,13 @@ func _physics_process(delta: float) -> void:
 		_move_direct(delta)
 
 func request_path_to_target() -> void:
-	if not unit.target_stand:
+	var target_pos: Vector3
+	
+	if unit.is_assigned_to_work:
+		target_pos = unit.work_position
+	elif current_destination:
+		target_pos = current_destination.global_position
+	else:
 		return
 	
 	# Check if PathfindingManager exists
@@ -80,19 +111,19 @@ func request_path_to_target() -> void:
 		waiting_for_path = true
 		PathfindingManager.instance.request_path(
 			unit.global_position,
-			unit.target_stand.global_position,
+			target_pos,
 			_on_path_received
 		)
 	else:
 		# Fallback to direct grid pathfinding
-		_request_path_direct()
+		_request_path_direct(target_pos)
 
-func _request_path_direct() -> void:
+func _request_path_direct(target_pos: Vector3) -> void:
 	var nav_grid = _find_navigation_grid()
 	if nav_grid:
 		current_path = nav_grid.find_path(
 			unit.global_position,
-			unit.target_stand.global_position
+			target_pos
 		)
 		current_waypoint_index = 0
 		waiting_for_path = false
@@ -167,10 +198,15 @@ func _follow_path(delta: float) -> void:
 	is_moving = true
 
 func _move_direct(delta: float) -> void:
-	if not unit.target_stand:
+	var target_pos: Vector3
+	
+	if unit.is_assigned_to_work:
+		target_pos = unit.work_position
+	elif current_destination:
+		target_pos = current_destination.global_position
+	else:
 		return
 	
-	var target_pos = unit.target_stand.global_position
 	var current_pos = unit.global_position
 	
 	# Flatten Y
@@ -209,10 +245,17 @@ func _move_direct(delta: float) -> void:
 	is_moving = true
 
 func _check_arrival() -> void:
-	if has_arrived or not unit.target_stand:
+	if has_arrived:
 		return
 	
-	var target_pos = unit.target_stand.global_position
+	var target_pos: Vector3
+	if unit.is_assigned_to_work:
+		target_pos = unit.work_position
+	elif current_destination:
+		target_pos = current_destination.global_position
+	else:
+		return
+	
 	var current_pos = unit.global_position
 	target_pos.y = 0
 	current_pos.y = 0
@@ -226,7 +269,10 @@ func _check_arrival() -> void:
 		velocity = Vector3.ZERO
 		current_path.clear()
 		
-		print("✓ NPC %s arrived at %s (distance: %.2f)" % [unit.name, unit.target_stand.name, distance])
+		if unit.is_assigned_to_work:
+			print("✓ NPC %s arrived at workplace (distance: %.2f)" % [unit.name, distance])
+		else:
+			print("✓ NPC %s arrived at %s (distance: %.2f)" % [unit.name, current_destination.name if current_destination else "target", distance])
 		
 		# Notify unit
 		unit.on_reached_stand()
@@ -244,9 +290,16 @@ func stop() -> void:
 	waiting_for_path = false
 
 func set_destination(target: Node3D) -> void:
-	unit.target_stand = target
+	print("🎯 [%s] SET_DESTINATION called:" % (unit.name if unit else "Unknown"))
+	print("  Target: %s" % (target.name if target else "null"))
+	print("  Target position: %s" % (target.global_position if target else "N/A"))
+	print("  Current position: %s" % (unit.global_position if unit else "N/A"))
+	
+	current_destination = target
 	has_arrived = false
 	current_path.clear()
+	
+	print("  ✓ Destination set, calling request_path_to_target...")
 	request_path_to_target()
 
 static var _cached_grid: NavigationGrid = null

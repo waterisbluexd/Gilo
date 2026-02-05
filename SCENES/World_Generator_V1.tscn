@@ -41,6 +41,7 @@
 [ext_resource type="Resource" uid="uid://bf822lawj12kr" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_5.tres" id="34_5yf05"]
 [ext_resource type="Resource" uid="uid://d3m64tm6308at" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_6.tres" id="35_5t4om"]
 [ext_resource type="Resource" uid="uid://brldy3ktj83mg" path="res://RESOURCES/Building_Res/HouseAllType/Type_House_7.tres" id="36_fo4ex"]
+[ext_resource type="Resource" uid="uid://cugtt241fn5m2" path="res://RESOURCES/Building_Res/WorkHouse/wood_cutter.tres" id="37_p1l53"]
 [ext_resource type="Script" uid="uid://dp6dberhafga5" path="res://SCRIPTS/World_Generator/WaterChunk.cs" id="44_46brh"]
 
 [sub_resource type="Resource" id="Resource_t185i"]
@@ -131,7 +132,7 @@ script = ExtResource("4_jl6tj")
 
 [node name="BuildingPlacer" type="Node3D" parent="." unique_id=895637025 groups=["building_placer"]]
 script = ExtResource("5_te0ef")
-building_data = Array[ExtResource("6_xo5mt")]([ExtResource("18_t0ggg"), ExtResource("19_p1l53"), ExtResource("20_46brh"), ExtResource("21_5yf05"), ExtResource("22_5t4om"), ExtResource("23_fo4ex"), ExtResource("24_h75an"), ExtResource("25_56c7f"), ExtResource("26_a2icq"), ExtResource("27_28gtb"), ExtResource("28_uub18"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("27_bxm4h")])
+building_data = Array[ExtResource("6_xo5mt")]([ExtResource("18_t0ggg"), ExtResource("19_p1l53"), ExtResource("20_46brh"), ExtResource("21_5yf05"), ExtResource("22_5t4om"), ExtResource("23_fo4ex"), ExtResource("24_h75an"), ExtResource("25_56c7f"), ExtResource("26_a2icq"), ExtResource("27_28gtb"), ExtResource("28_uub18"), ExtResource("30_kledd"), ExtResource("31_t0ggg"), ExtResource("32_p1l53"), ExtResource("33_46brh"), ExtResource("34_5yf05"), ExtResource("35_5t4om"), ExtResource("36_fo4ex"), ExtResource("27_bxm4h"), ExtResource("37_p1l53")])
 click_cooldown = 0.0
 use_8_directions = true
 destroy_indicator_color = Color(1, 0, 0, 0)

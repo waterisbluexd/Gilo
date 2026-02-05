@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://b8vjn0guh46mm"]
+[gd_scene format=4 uid="uid://b8vjn0guh46mm"]
 
 [ext_resource type="Texture2D" uid="uid://wqvwliysf6h1" path="res://MODLES/assetsmodel/Castle/Bridges_spruce_planks.png" id="1_tbon2"]
 [ext_resource type="Shader" uid="uid://dgn5i3nwx1mr6" path="res://SHADER/edge_highlight.gdshader" id="2_dglha"]
@@ -203,7 +203,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_i8xdw")
 
-[node name="WoodCutter_1" type="MeshInstance3D"]
+[node name="WoodCutter_1" type="MeshInstance3D" unique_id=2059415737]
 transform = Transform3D(0.6, 0, 0, 0, -2.6226834e-08, -0.6, 0, 0.6, -2.6226834e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_gjppc")
 skeleton = NodePath("")

@@ -158,6 +158,16 @@ func spawn_npc() -> Unit:
 	else:
 		print("  ✗ NO MOVEMENT COMPONENT!")
 	
+	# Register with JobManager as available worker (peasant)
+	if JobManager.instance:
+		JobManager.instance.register_available_worker(npc)
+		print("  ✓ Registered as available worker with JobManager")
+		
+		# Check if there are vacant workplaces and auto-assign (Stronghold style!)
+		await get_tree().create_timer(0.2).timeout
+		if JobManager.instance.available_workers.has(npc):
+			_try_auto_assign_to_workplace(npc)
+	
 	# Check if unit should gather
 	var should_gather = false
 	if npc.has_method("should_gather"):
@@ -166,7 +176,7 @@ func spawn_npc() -> Unit:
 	else:
 		print("  ✗ NPC has no should_gather() method!")
 	
-	# Only assign gathering stand if unit should gather (peasants)
+	# Only assign gathering stand if unit should gather (peasants without work assignment)
 	if should_gather:
 		var target_stand = get_best_stand()
 		if target_stand:
@@ -184,8 +194,8 @@ func spawn_npc() -> Unit:
 		else:
 			print("  ✗ No available gathering stand!")
 	else:
-		# Non-peasant unit - disable movement
-		print("  → Non-peasant unit - staying at spawn")
+		# Non-peasant unit or assigned to work - disable movement temporarily
+		print("  → Non-gathering unit - staying at spawn")
 		if movement:
 			movement.active = false
 	
@@ -268,3 +278,19 @@ func force_spawn() -> void:
 func despawn_all() -> void:
 	for npc in active_npcs.duplicate():
 		remove_npc(npc)
+
+## Try to auto-assign a newly spawned worker to a workplace with vacancy
+func _try_auto_assign_to_workplace(npc: Unit) -> void:
+	if not JobManager.instance:
+		return
+	
+	# Find first workplace with vacancy
+	for workplace_id in JobManager.instance.workplaces.keys():
+		var info = JobManager.instance.get_workplace_info(workplace_id)
+		if info.has_vacancy:
+			print("  🎯 Auto-assigning %s to vacant workplace" % npc.name)
+			JobManager.instance.assign_worker_to_workplace(npc, workplace_id)
+			return
+	
+	# No vacant workplaces found
+	print("  ℹ️ No vacant workplaces for %s" % npc.name)

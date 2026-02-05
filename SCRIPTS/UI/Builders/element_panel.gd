@@ -164,8 +164,8 @@ func _on_stock_pile_pressed():
 	pass
 
 func _on_wood_cutter_pressed():
-	pass
-
+	if building_placer:
+		building_placer.select_building(19)
 func _on_stone_cutter_pressed():
 	pass
 
