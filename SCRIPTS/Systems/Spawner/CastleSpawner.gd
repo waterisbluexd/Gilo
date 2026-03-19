@@ -26,8 +26,17 @@ var inactive_pool: Array[Unit] = []
 var spawn_timer: float = 0.0
 var spawnpoint: Node3D
 
+## Get spawn position for NavigationGrid (used to protect from blocking)
+func get_spawn_position() -> Vector3:
+	if spawnpoint:
+		return spawnpoint.global_position
+	return global_position
+
 ## Track assignments
 var stand_assignments: Dictionary = {}
+
+## Pause spawning during building placement
+var is_paused_for_placement: bool = false
 
 ## Statistics
 var total_spawned: int = 0
@@ -59,12 +68,62 @@ func _ready() -> void:
 	print("✓ Found %d gathering stands" % gathering_stands.size())
 	print("✓ Max gatherers: %d" % max_gatherers)
 	
+	# Connect to BuildingPlacer placement mode
+	_connect_to_building_placer()
+	
 	# Pre-populate pool
 	if enable_npc_pooling:
 		call_deferred("_populate_pool")
 	
 	if auto_spawn:
 		spawn_timer = spawn_interval
+
+func _connect_to_building_placer() -> void:
+	# Find BuildingPlacer in the scene tree
+	var root = get_tree().root
+	var building_placer = _find_building_placer(root)
+	
+	if building_placer and building_placer.has_signal("placement_mode_changed"):
+		building_placer.placement_mode_changed.connect(_on_placement_mode_changed)
+		print("✓ Connected to BuildingPlacer placement_mode_changed signal")
+	else:
+		print("⚠ BuildingPlacer not found or doesn't have signal")
+
+func _find_building_placer(node: Node) -> Node:
+	if node.has_method("select_building") or node.has_method("start_placement_mode"):
+		return node
+	for child in node.get_children():
+		var result = _find_building_placer(child)
+		if result:
+			return result
+	return null
+
+func _on_placement_mode_changed(is_active: bool) -> void:
+	is_paused_for_placement = is_active
+	
+	if is_active:
+		print("⏸ Pausing NPC spawning - building placement active")
+		# Pause all active NPCs
+		_pause_all_npcs(true)
+	else:
+		print("▶ Resuming NPC spawning - building placement ended")
+		# Resume all active NPCs
+		_pause_all_npcs(false)
+
+func _pause_all_npcs(pause: bool) -> void:
+	for npc in active_npcs:
+		if is_instance_valid(npc):
+			var movement = npc.get_node_or_null("NPCMovement")
+			if movement:
+				movement.active = not pause
+				if pause:
+					# Stop current movement
+					movement.current_path.clear()
+					movement.velocity = Vector3.ZERO
+				else:
+					# Resume pathfinding
+					if movement.has_method("request_path_to_target"):
+						movement.request_path_to_target()
 
 func _populate_pool() -> void:
 	if not npc_scene:
@@ -80,7 +139,7 @@ func _populate_pool() -> void:
 	print("✓ Pool ready with %d NPCs" % inactive_pool.size())
 
 func _process(delta: float) -> void:
-	if not auto_spawn:
+	if not auto_spawn or is_paused_for_placement:
 		return
 	
 	spawn_timer -= delta

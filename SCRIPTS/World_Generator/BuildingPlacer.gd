@@ -413,7 +413,11 @@ func _place_building_at(world_pos: Vector3, building: BuildingData = null):
 	
 	if building.is_wall():
 		navigation_grid.place_building_with_name(world_pos, building.size, building.name)
-	else:
+	elif building.building_type == BuildingData.BuildingType.CASTLE:
+		# For castles, block all cells (simpler than perimeter-only)
+		# NPCs will need to find openings/doors to enter
+		navigation_grid.place_building_with_name(world_pos, rotated_size, building.name)
+	elif building.block_perimeter_only:
 		if navigation_grid.has_method("place_building_with_rotation_and_name"):
 			navigation_grid.place_building_with_rotation_and_name(world_pos, rotated_size, current_rotation, building.name)
 		else:

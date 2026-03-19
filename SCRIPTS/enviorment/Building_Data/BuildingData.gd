@@ -24,6 +24,10 @@ enum BuildingType {
 	TOWER
 }
 
+## If true, only blocks perimeter cells (interior stays walkable for NPCs)
+## Use this for CASTLE type buildings so NPCs can walk inside
+@export var block_perimeter_only: bool = false
+
 # --- VALIDATION ---
 func is_castle() -> bool:
 	return building_type == BuildingType.CASTLE

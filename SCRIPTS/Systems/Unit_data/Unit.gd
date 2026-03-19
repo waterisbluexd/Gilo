@@ -52,16 +52,22 @@ func should_gather() -> bool:
 	return job.can_work and not job.can_fight and not is_assigned_to_work
 
 ## Set workplace destination
-func set_work_destination(workplace: Node3D, position: Vector3) -> void:
+func set_work_destination(workplace: Node3D, work_pos: Vector3) -> void:
 	assigned_workplace = workplace
-	work_position = position
+	work_position = work_pos
 	is_assigned_to_work = true
 	is_at_workplace = false
 	
 	print("🏗️ [%s] SET WORK DESTINATION:" % name)
 	print("  Workplace: %s" % workplace.name)
-	print("  Position: %s" % position)
+	print("  Position: %s" % work_pos)
 	print("  Current position: %s" % global_position)
+	
+	# Check if we're in the tree
+	if not is_inside_tree():
+		push_warning("[%s] Not inside tree yet, deferring work destination set" % name)
+		call_deferred("set_work_destination", workplace, work_pos)
+		return
 	
 	# Clear gathering stand if previously assigned
 	target_stand = null
@@ -81,7 +87,7 @@ func set_work_destination(workplace: Node3D, position: Vector3) -> void:
 	# Create a temporary marker at work position
 	var work_marker = Node3D.new()
 	work_marker.name = "WorkMarker_%s" % name
-	work_marker.global_position = position
+	work_marker.position = work_position  # Use local position before adding to tree
 	
 	# Add to scene
 	if get_parent():

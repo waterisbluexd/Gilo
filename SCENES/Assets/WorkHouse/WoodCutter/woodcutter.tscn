@@ -5,12 +5,11 @@
 
 [node name="Woodcutter" type="Node3D" unique_id=1638819482]
 
-[node name="Workplace" type="Node3D" parent="." unique_id=291986013]
+[node name="Workplace" type="Node3D" parent="." unique_id=291986013 node_paths=PackedStringArray("work_position_markers")]
 script = ExtResource("1_v7vq3")
 workplace_name = "Woodcutter's Hut"
 job_type = "woodcutter"
-max_workers = 0
-work_positions = Array[Vector3]([])
+work_position_markers = [NodePath("../WorkPosition1"), NodePath("../WorkPosition2"), NodePath("../WorkPosition3")]
 
 [node name="WorkPosition1" type="Marker3D" parent="." unique_id=1552949266]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.431707, 0, -1.6645508)

@@ -26,7 +26,13 @@ class WorkplaceData:
 		assigned_workers = []
 	
 	func has_vacancy() -> bool:
+		# Check if workplace is still valid
+		if not is_instance_valid(workplace):
+			return false
 		return assigned_workers.size() < max_workers
+	
+	func is_valid() -> bool:
+		return is_instance_valid(workplace)
 	
 	func get_next_work_position() -> Vector3:
 		if work_positions.is_empty():
@@ -90,6 +96,16 @@ func assign_worker_to_workplace(unit: Unit, workplace_id: String) -> bool:
 	data.assigned_workers.append(unit)
 	job_assignments[unit] = workplace_id
 	available_workers.erase(unit)
+	
+	# Validate unit is still valid
+	if not is_instance_valid(unit):
+		print("⚠️ Worker unit is no longer valid, cancelling assignment")
+		return false
+	
+	# Validate workplace is still valid
+	if not data.is_valid():
+		print("⚠️ Workplace is no longer valid, cancelling assignment")
+		return false
 	
 	# Get work position
 	var work_position = data.get_next_work_position()

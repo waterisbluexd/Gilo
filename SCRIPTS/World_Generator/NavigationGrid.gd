@@ -169,6 +169,67 @@ func get_cell(grid_pos: Vector2i) -> CellState:
 func is_walkable(grid_pos: Vector2i) -> bool:
 	return get_cell(grid_pos) == CellState.WALKABLE
 
+## Get cells that should NOT be blocked by buildings
+## These include gathering stands and NPC spawn points
+func _get_protected_cells() -> Array[Vector2i]:
+	var protected: Array[Vector2i] = []
+	
+	# Find ALL nodes in entire scene that might be gathering stands or spawn points
+	# This is more reliable than relying on groups
+	var all_nodes = get_tree().get_nodes_in_group("world")
+	if all_nodes.is_empty():
+		# Fallback: get root nodes
+		all_nodes = get_tree().root.get_children()
+	
+	# Search recursively for gathering stands and spawn points
+	for node in all_nodes:
+		if node is Node:
+			_search_for_protected_positions(node, protected)
+	
+	if debug_mode:
+		print("[NAV GRID] Total protected cells: %d" % protected.size())
+		for pc in protected:
+			print("  Protected cell: %s" % pc)
+	
+	return protected
+
+## Recursive search for protected positions
+func _search_for_protected_positions(node: Node, protected: Array[Vector2i]) -> void:
+	if node == null:
+		return
+	
+	# Check if this node is a gathering stand (by name pattern)
+	if node is Node3D:
+		var node_name = node.name
+		if node_name.begins_with("gathering_stand") or node_name.begins_with("GatheringStand") or node_name.begins_with("gatheringStand"):
+			var grid_pos = world_to_grid(node.global_position)
+			if not grid_pos in protected:
+				protected.append(grid_pos)
+				if debug_mode:
+					print("[PROTECTED] Gathering stand: %s at world %s -> grid %s" % [node.name, node.global_position, grid_pos])
+		
+		# Check if this is a spawn point
+		elif node_name.begins_with("unit_spawn") or node_name.begins_with("spawnpoint") or node_name.begins_with("SpawnPoint"):
+			var grid_pos = world_to_grid(node.global_position)
+			if not grid_pos in protected:
+				protected.append(grid_pos)
+				if debug_mode:
+					print("[PROTECTED] Spawn point: %s at world %s -> grid %s" % [node.name, node.global_position, grid_pos])
+	
+	# Also check CastleSpawner nodes for their spawnpoints
+	if node is Node and node.has_method("get_spawn_position"):
+		var spawn_pos = node.get_spawn_position()
+		if spawn_pos != Vector3.ZERO:
+			var grid_pos = world_to_grid(spawn_pos)
+			if not grid_pos in protected:
+				protected.append(grid_pos)
+				if debug_mode:
+					print("[PROTECTED] CastleSpawner spawn: at world %s -> grid %s" % [spawn_pos, grid_pos])
+	
+	# Continue searching children
+	for child in node.get_children():
+		_search_for_protected_positions(child, protected)
+
 
 func block_area(world_pos: Vector3, size: Vector2):
 	var grid_start = world_to_grid(world_pos)
@@ -388,9 +449,19 @@ func place_building_with_name(world_pos: Vector3, building_size: Vector2, buildi
 	
 	var affected_cells = []
 	
+	# Get list of protected positions (gathering stands, spawn points)
+	var protected_cells = _get_protected_cells()
+	
 	for x in range(grid_start.x, grid_end.x):
 		for y in range(grid_start.y, grid_end.y):
 			var grid_pos = Vector2i(x, y)
+			
+			# Skip blocking if this cell is protected
+			if grid_pos in protected_cells:
+				if debug_mode:
+					print("  [SKIP] Cell %s is protected (gathering stand/spawn)" % grid_pos)
+				continue
+			
 			set_cell(grid_pos, CellState.BLOCKED)
 			building_blocked_cells[grid_pos] = building_name
 			affected_cells.append(grid_pos)
@@ -436,6 +507,105 @@ func remove_building_with_name(world_pos: Vector3, building_size: Vector2, build
 	
 	if debug_mode:
 		print("Removed building at %s (%d cells freed)" % [world_pos, affected_cells.size()])
+
+
+# NEW: Place building with walkable interior (for castle spawn areas)
+# Only blocks perimeter cells, leaves interior walkable for NPCs to move through
+func place_building_perimeter_only(world_pos: Vector3, size: Vector2, building_name: String):
+	var pos_key = _world_pos_to_key(world_pos)
+	
+	if building_registrations.has(pos_key):
+		if debug_mode:
+			print("Building already registered at %s" % world_pos)
+		return
+	
+	var grid_start = world_to_grid(world_pos)
+	var grid_end = world_to_grid(world_pos + Vector3(size.x, 0, size.y))
+	
+	var affected_cells = []
+	
+	# Only block the perimeter cells, leave interior walkable
+	# But also add openings/gates for NPCs to enter/exit
+	for x in range(grid_start.x, grid_end.x):
+		for y in range(grid_start.y, grid_end.y):
+			var grid_pos = Vector2i(x, y)
+			
+			# Check if this is a perimeter cell (edge of building)
+			var is_perimeter = (x == grid_start.x or x == grid_end.x - 1 or 
+							  y == grid_start.y or y == grid_end.y - 1)
+			
+			if is_perimeter:
+				# Check if this perimeter cell should be open (for NPC passage)
+				# We'll leave some cells unblocked based on building size
+				# For small buildings (size <= 5), leave 2 openings
+				# For larger buildings, leave more openings
+				var should_open = _should_leave_opening(grid_pos, grid_start, grid_end, size)
+				
+				if not should_open:
+					# Block the perimeter cell
+					set_cell(grid_pos, CellState.BLOCKED)
+					building_blocked_cells[grid_pos] = building_name
+					affected_cells.append(grid_pos)
+				else:
+					# Leave this cell walkable for NPCs to enter/exit
+					if debug_mode:
+						print("  → Leaving perimeter cell open at %s" % grid_pos)
+			# Interior cells remain WALKABLE for NPCs
+	
+	building_registrations[pos_key] = {
+		"grid_cells": affected_cells,
+		"size": size,
+		"name": building_name,
+		"world_pos": world_pos,
+		"perimeter_only": true
+	}
+	
+	if debug_mode:
+		print("Placed building perimeter: %s at %s (%d cells)" % [building_name, world_pos, affected_cells.size()])
+
+# Determine if a perimeter cell should be left open for NPC passage
+func _should_leave_opening(grid_pos: Vector2i, grid_start: Vector2i, grid_end: Vector2i, building_size: Vector2) -> bool:
+	# Calculate which side of the building this cell is on
+	var on_left_edge = (grid_pos.x == grid_start.x)
+	var on_right_edge = (grid_pos.x == grid_end.x - 1)
+	var on_top_edge = (grid_pos.y == grid_start.y)
+	var on_bottom_edge = (grid_pos.y == grid_end.y - 1)
+	
+	# Get the range for this edge
+	var edge_length = 0
+	var is_horizontal_edge = false
+	
+	if on_left_edge or on_right_edge:
+		edge_length = grid_end.y - grid_start.y
+	else:
+		edge_length = grid_end.x - grid_start.x
+	
+	# Leave openings at ~25% and ~75% along each edge
+	# This creates 2 openings per side
+	var opening_positions = []
+	if edge_length > 2:
+		var pos1 = int(float(edge_length) * 0.25)
+		var pos2 = int(float(edge_length) * 0.75)
+		opening_positions = [pos1, pos2]
+	else:
+		# For very small edges, leave center open
+		opening_positions = [edge_length / 2]
+	
+	# Calculate position along the edge
+	var pos_along_edge = 0
+	if on_left_edge:
+		pos_along_edge = grid_pos.y - grid_start.y
+	elif on_right_edge:
+		pos_along_edge = grid_pos.y - grid_start.y
+	elif on_top_edge or on_bottom_edge:
+		pos_along_edge = grid_pos.x - grid_start.x
+	
+	# Check if this is an opening position
+	for opening in opening_positions:
+		if pos_along_edge == opening:
+			return true  # Leave this cell open
+	
+	return false  # Block this cell
 
 
 func get_building_at_world_pos(world_pos: Vector3) -> Dictionary:
@@ -527,32 +697,64 @@ func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1
 	var start_grid = world_to_grid(start_world)
 	var end_grid = world_to_grid(end_world)
 	
-	if not is_walkable(start_grid) or not is_walkable(end_grid):
+	# SIMPLIFIED: Both start and end must be walkable for pathfinding
+	# No fallback to nearest walkable cell (removed complexity)
+	if not is_walkable(start_grid):
+		if debug_mode:
+			print("PATHFINDING FAILED: Start position not walkable")
 		return []
+	
+	if not is_walkable(end_grid):
+		if debug_mode:
+			print("PATHFINDING FAILED: End position not walkable")
+		return []
+	
+	if debug_mode:
+		print("=== PATHFINDING DEBUG ===")
+		print("Start world: %s -> Grid: %s" % [start_world, start_grid])
+		print("End world: %s -> Grid: %s" % [end_world, end_grid])
+		print("Start walkable: %s" % is_walkable(start_grid))
+		print("End walkable: %s" % is_walkable(end_grid))
 	
 	var open_set: Array[Vector2i] = [start_grid]
 	var came_from: Dictionary = {}
-	var g_score: Dictionary = {start_grid: 0}
-	var f_score: Dictionary = {start_grid: _heuristic(start_grid, end_grid)}
+	var g_score: Dictionary = {start_grid: 0.0}
+	var f_score: Dictionary = {start_grid: float(_heuristic(start_grid, end_grid))}
 	
-	var directions = [Vector2i(0, 1), Vector2i(1, 0), Vector2i(0, -1), Vector2i(-1, 0)]
-	var iterations = 0
+	var directions = [
+		Vector2i(0, 1),   # Right
+		Vector2i(1, 0),   # Down
+		Vector2i(0, -1),  # Left
+		Vector2i(-1, 0)   # Up
+		# REMOVED diagonal movement for simpler, more reliable pathfinding
+	]
+	var iterations: int = 0
 	
 	while open_set.size() > 0 and iterations < max_iterations:
 		iterations += 1
 		
 		var current = _get_lowest_f_score(open_set, f_score)
 		if current == end_grid:
+			if debug_mode:
+				print("Path found after %d iterations" % iterations)
 			return _reconstruct_path(came_from, current)
 		
 		open_set.erase(current)
 		
 		for dir in directions:
 			var neighbor = current + dir
+			
+			# REMOVED diagonal movement - now using 4-directional pathfinding only
+			# (No corner cutting prevention needed)
+			
 			if not is_walkable(neighbor):
 				continue
 			
-			var tentative_g = g_score[current] + 1
+			# All movements cost the same (1) for 4-directional
+			var move_cost = 1.0
+			
+			var tentative_g = g_score[current] + move_cost
+			
 			if not g_score.has(neighbor) or tentative_g < g_score[neighbor]:
 				came_from[neighbor] = current
 				g_score[neighbor] = tentative_g
@@ -566,15 +768,34 @@ func find_path(start_world: Vector3, end_world: Vector3, max_iterations: int = 1
 	return []
 
 
-func _heuristic(a: Vector2i, b: Vector2i) -> int:
-	return abs(a.x - b.x) + abs(a.y - b.y)
+func _heuristic(a: Vector2i, b: Vector2i) -> float:
+	# Manhattan distance - simpler for 4-directional movement
+	return float(abs(a.x - b.x) + abs(a.y - b.y))
+
+# Find nearest walkable cell to a blocked position
+func _find_nearest_walkable_cell(blocked_pos: Vector2i, search_radius: int = 10) -> Vector2i:
+	# Spiral search outward from blocked position
+	for radius in range(1, search_radius + 1):
+		# Check all cells at this radius
+		for x in range(blocked_pos.x - radius, blocked_pos.x + radius + 1):
+			for y in range(blocked_pos.y - radius, blocked_pos.y + radius + 1):
+				# Only check the perimeter of the search square
+				if abs(x - blocked_pos.x) == radius or abs(y - blocked_pos.y) == radius:
+					var check_pos = Vector2i(x, y)
+					if is_walkable(check_pos):
+						if debug_mode:
+							print("Found walkable cell at %s (distance %d)" % [check_pos, radius])
+						return check_pos
+	
+	# No walkable cell found within search radius
+	return blocked_pos
 
 
 func _get_lowest_f_score(open_set: Array[Vector2i], f_score: Dictionary) -> Vector2i:
 	var lowest = open_set[0]
-	var lowest_score = f_score.get(lowest, INF)
+	var lowest_score: float = f_score.get(lowest, INF)
 	for node in open_set:
-		var score = f_score.get(node, INF)
+		var score: float = f_score.get(node, INF)
 		if score < lowest_score:
 			lowest = node
 			lowest_score = score
