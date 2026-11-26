@@ -1,0 +1,13 @@
+# Godot generated files
+godot/.godot/
+
+# Rust build artifacts
+rust/target/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://cn6nlyo48u1cg"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("ProceduralSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 2
+sky = SubResource("Sky_ig7tw")
+glow_enabled = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ffe5y"]
+viewport_path = NodePath("Render/SubViewportContainer/SubViewport")
+
+[sub_resource type="BoxMesh" id="BoxMesh_ffe5y"]
+
+[node name="Main" type="Node3D" unique_id=1680021949]
+
+[node name="Lighting" type="Node" parent="." unique_id=531331864]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting" unique_id=294803125]
+environment = SubResource("Environment_0xm2m")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting/WorldEnvironment" unique_id=1502133401]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Render" type="Node" parent="." unique_id=1437934213]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Render" unique_id=448043703]
+texture_filter = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="Render/SubViewportContainer" unique_id=543241694]
+handle_input_locally = false
+size = Vector2i(640, 360)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Node3D" type="Node3D" parent="Render/SubViewportContainer/SubViewport" unique_id=1257546539]
+
+[node name="Camera3D" type="Camera3D" parent="Render/SubViewportContainer/SubViewport/Node3D" unique_id=2023160224]
+transform = Transform3D(1, 0, 0, 0, 0.9063078, 0.4226183, 0, -0.4226183, 0.9063078, 0, 8.277, 17)
+projection = 1
+size = 5.0
+
+[node name="Display" type="Node" parent="." unique_id=845726108]
+
+[node name="Control" type="Control" parent="Display" unique_id=1375212546]
+texture_filter = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Display/Control" unique_id=965540246]
+texture_filter = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_ffe5y")
+
+[node name="Meshes" type="Node" parent="." unique_id=144886688]
+
+[node name="Terrain" type="MeshInstance3D" parent="Meshes" unique_id=357726604]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, 0, 0)
+mesh = SubResource("BoxMesh_ffe5y")
