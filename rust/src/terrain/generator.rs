@@ -3,7 +3,7 @@ use std::time::Instant;
 use super::noise::{fbm3, next_random, value_noise3};
 
 pub const DEFAULT_RESOLUTION: usize = 256*256;
-pub const DEFAULT_WORLD_SIZE: f32 = 14.0*2.0;
+pub const DEFAULT_WORLD_SIZE: f32 = 28.0;
 
 pub struct TerrainData {
     pub resolution: usize,

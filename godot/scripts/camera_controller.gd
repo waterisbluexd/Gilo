@@ -101,7 +101,7 @@ func _pan_by_pixels(relative: Vector2) -> void:
 	screen_up.y = 0.0
 	screen_up = screen_up.normalized()
 
-	_orbit_target += (-right * relative.x - screen_up * relative.y) * world_units_per_pixel
+	_orbit_target += (-right * relative.x + screen_up * relative.y) * world_units_per_pixel
 	_apply_orbit_pose()
 
 
