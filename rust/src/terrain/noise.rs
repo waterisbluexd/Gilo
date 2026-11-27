@@ -1,15 +1,20 @@
-pub fn hash3(i: i32, j: i32, k: i32) -> f64 {
+pub fn hash3(i: i64, j: i64, k: i64) -> f64 {
     let mut value = (i as u32).wrapping_mul(73_856_093)
         ^ (j as u32).wrapping_mul(19_349_663)
         ^ (k as u32).wrapping_mul(83_492_791);
+    for coordinate in [i, j, k] {
+        if coordinate < i32::MIN as i64 || coordinate > i32::MAX as i64 {
+            value ^= ((coordinate >> 31) as u32).wrapping_mul(2_654_435_761);
+        }
+    }
     value = (value ^ (value >> 15)).wrapping_mul(2_246_822_519);
     ((value ^ (value >> 13)) & 4095) as f64 / 4095.0
 }
 
 pub fn value_noise3(x: f64, y: f64, z: f64) -> f64 {
-    let i = x.floor() as i32;
-    let j = y.floor() as i32;
-    let k = z.floor() as i32;
+    let i = x.floor() as i64;
+    let j = y.floor() as i64;
+    let k = z.floor() as i64;
     let fx = x - i as f64;
     let fy = y - j as f64;
     let fz = z - k as f64;
@@ -57,5 +62,27 @@ mod tests {
         assert_eq!(first, fbm3(-1.25, 0.75, 4.5));
         assert!((0.0..=1.0).contains(&hash3(-2, 4, 9)));
         assert!((0.0..=1.0).contains(&value_noise3(-1.25, 0.75, 4.5)));
+    }
+
+    #[test]
+    fn lattice_noise_supports_large_world_coordinates() {
+        let first = value_noise3(3_000_000_000.25, 4.5, -6.75);
+        let next_cell = value_noise3(3_000_000_001.25, 4.5, -6.75);
+        assert_ne!(first, next_cell);
+    }
+
+    #[test]
+    fn ordinary_coordinates_keep_the_original_hash_values() {
+        fn original_hash3(i: i32, j: i32, k: i32) -> f64 {
+            let mut value = (i as u32).wrapping_mul(73_856_093)
+                ^ (j as u32).wrapping_mul(19_349_663)
+                ^ (k as u32).wrapping_mul(83_492_791);
+            value = (value ^ (value >> 15)).wrapping_mul(2_246_822_519);
+            ((value ^ (value >> 13)) & 4095) as f64 / 4095.0
+        }
+
+        assert_eq!(hash3(-2, 4, 9), original_hash3(-2, 4, 9));
+        assert_eq!(hash3(i32::MIN as i64, 0, 0), original_hash3(i32::MIN, 0, 0));
+        assert_eq!(hash3(i32::MAX as i64, 0, 0), original_hash3(i32::MAX, 0, 0));
     }
 }

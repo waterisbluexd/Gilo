@@ -17,6 +17,15 @@ uniform vec3 light_dir = vec3(-0.52, 0.78, 0.34);
 varying vec3 wpos;
 varying vec3 wnrm;
 
+vec3 surface_biome_col(float shade, vec2 fc, vec4 weights) {
+	weights = max(weights, vec4(0.0));
+	weights /= max(dot(weights, vec4(1.0)), 0.0001);
+	return pal_col(3, shade, fc) * weights.r
+		+ pal_col(4, shade, fc) * weights.g
+		+ pal_col(6, shade, fc) * weights.b
+		+ pal_col(2, shade, fc) * weights.a;
+}
+
 void vertex() {
 	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	wnrm = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
@@ -64,13 +73,6 @@ int pick_mat(vec3 p, float ny, vec4 q, float terrace, float rd, out float wi, ou
 		is_rock = 1;
 		return (q.x > q.y + 0.08 || terrace > 0.45) ? rock_pal : (rock_pal == 0 ? 1 : 0);
 	}
-	float patchN = vn(vec3(p.x * 0.32 + seed_off.x, 2.2, p.z * 0.32 + seed_off.y));
-	float fineN = vn(vec3(p.x * 1.4 + seed_off.z, 5.1, p.z * 1.4 + seed_off.x));
-	if (q.y > 0.42 || (p.y < height_max * 0.34 && patchN > 0.56)) {
-		wi = (fineN - 0.5) * 0.10;
-		return patchN > 0.66 ? 4 : 3;
-	}
-	wi = (fineN - 0.5) * 0.12 + (patchN - 0.5) * 0.08;
 	return 3;
 }
 
@@ -109,6 +111,8 @@ void fragment() {
 			ALBEDO = pal_col(pm, shade, FRAGCOORD.xy);
 		}
 	} else {
-		ALBEDO = pal_col(pm, shade, FRAGCOORD.xy);
+		ALBEDO = pm == 2
+			? pal_col(pm, shade, FRAGCOORD.xy)
+			: surface_biome_col(shade, FRAGCOORD.xy, COLOR);
 	}
 }

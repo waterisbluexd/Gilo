@@ -15,11 +15,26 @@ struct GiloTerrain {
     #[var(set = set_seed)]
     seed: i64,
     #[export]
-    #[var(set = set_resolution)]
-    resolution: i64,
+    #[var(set = set_chunk_coord)]
+    chunk_coord: Vector2i,
     #[export]
-    #[var(set = set_world_size)]
-    world_size: f64,
+    #[var(set = set_biome_scale)]
+    biome_scale: f64,
+    #[export]
+    #[var(set = set_biome_blend_width)]
+    biome_blend_width: f64,
+    #[export]
+    #[var(set = set_biome_boundary_warp)]
+    biome_boundary_warp: f64,
+    #[export]
+    #[var(set = set_biome_coverage)]
+    biome_coverage: f64,
+    #[export]
+    #[var(set = set_surface_bump_strength)]
+    surface_bump_strength: f64,
+    #[export]
+    #[var(set = set_surface_bump_scale)]
+    surface_bump_scale: f64,
     #[export]
     #[var(set = set_generate_in_editor)]
     generate_in_editor: bool,
@@ -36,12 +51,29 @@ impl GiloTerrain {
     }
 
     fn regenerate_mesh(&mut self) -> (terrain::generator::TerrainData, u128) {
-        let resolution = self.resolution.clamp(64, 512) as usize;
-        let world_size = self.world_size.clamp(1.0, 256.0) as f32;
-        let data = terrain::generator::generate(self.seed as u32, resolution, world_size);
+        let settings = terrain::generator::TerrainSettings {
+            biome_scale: self.biome_scale,
+            biome_blend_width: self.biome_blend_width,
+            biome_boundary_warp: self.biome_boundary_warp,
+            biome_coverage: self.biome_coverage,
+            surface_bump_strength: self.surface_bump_strength,
+            surface_bump_scale: self.surface_bump_scale,
+        };
+        let data = terrain::generator::generate(
+            self.seed as u32,
+            self.chunk_coord.x,
+            self.chunk_coord.y,
+            settings,
+        );
         let mesh_started = std::time::Instant::now();
         let generated_mesh = terrain::mesh::build_mesh(&data);
         let mesh_micros = mesh_started.elapsed().as_micros();
+        let current_position = self.base().get_position();
+        self.base_mut().set_position(Vector3::new(
+            data.chunk_x as f32 * data.size,
+            current_position.y,
+            data.chunk_z as f32 * data.size,
+        ));
         self.base_mut().set_mesh(&generated_mesh);
         (data, mesh_micros)
     }
@@ -56,14 +88,44 @@ impl GiloTerrain {
     }
 
     #[func]
-    pub fn set_resolution(&mut self, resolution: i64) {
-        self.resolution = resolution;
+    pub fn set_chunk_coord(&mut self, chunk_coord: Vector2i) {
+        self.chunk_coord = chunk_coord;
         self.regenerate_if_editor_enabled();
     }
 
     #[func]
-    pub fn set_world_size(&mut self, world_size: f64) {
-        self.world_size = world_size;
+    pub fn set_biome_scale(&mut self, biome_scale: f64) {
+        self.biome_scale = biome_scale.clamp(8.0, 4096.0);
+        self.regenerate_if_editor_enabled();
+    }
+
+    #[func]
+    pub fn set_biome_blend_width(&mut self, biome_blend_width: f64) {
+        self.biome_blend_width = biome_blend_width.clamp(0.25, 64.0);
+        self.regenerate_if_editor_enabled();
+    }
+
+    #[func]
+    pub fn set_biome_boundary_warp(&mut self, biome_boundary_warp: f64) {
+        self.biome_boundary_warp = biome_boundary_warp.clamp(0.0, 2.0);
+        self.regenerate_if_editor_enabled();
+    }
+
+    #[func]
+    pub fn set_biome_coverage(&mut self, biome_coverage: f64) {
+        self.biome_coverage = biome_coverage.clamp(0.05, 0.95);
+        self.regenerate_if_editor_enabled();
+    }
+
+    #[func]
+    pub fn set_surface_bump_strength(&mut self, surface_bump_strength: f64) {
+        self.surface_bump_strength = surface_bump_strength.clamp(0.0, 0.12);
+        self.regenerate_if_editor_enabled();
+    }
+
+    #[func]
+    pub fn set_surface_bump_scale(&mut self, surface_bump_scale: f64) {
+        self.surface_bump_scale = surface_bump_scale.clamp(0.4, 8.0);
         self.regenerate_if_editor_enabled();
     }
 
@@ -80,8 +142,13 @@ impl IMeshInstance3D for GiloTerrain {
         Self {
             base,
             seed: 42,
-            resolution: terrain::generator::DEFAULT_RESOLUTION as i64,
-            world_size: terrain::generator::DEFAULT_WORLD_SIZE as f64,
+            chunk_coord: Vector2i::ZERO,
+            biome_scale: terrain::generator::DEFAULT_BIOME_SCALE,
+            biome_blend_width: terrain::generator::DEFAULT_BIOME_BLEND_WIDTH,
+            biome_boundary_warp: terrain::generator::DEFAULT_BIOME_BOUNDARY_WARP,
+            biome_coverage: terrain::generator::DEFAULT_BIOME_COVERAGE,
+            surface_bump_strength: terrain::generator::DEFAULT_SURFACE_BUMP_STRENGTH,
+            surface_bump_scale: terrain::generator::DEFAULT_SURFACE_BUMP_SCALE,
             generate_in_editor: false,
         }
     }
@@ -127,9 +194,13 @@ impl IMeshInstance3D for GiloTerrain {
         let bounds_in_view = bounds_in_view.map(|result| result.0).unwrap_or(false);
         if !is_editor {
             godot_print!(
-                "Terrain ready: seed={}, world size={}, resolution={}x{}, triangles={}, bounds in view={}, height generation={} ms, mesh build={} ms",
+                "Terrain chunk ready: seed={}, chunk=({}, {}), world size={}, subdivisions={}x{}, samples={}x{}, triangles={}, bounds in view={}, height generation={} ms, mesh build={} ms",
                 self.seed,
+                data.chunk_x,
+                data.chunk_z,
                 data.size,
+                data.resolution,
+                data.resolution,
                 data.resolution + 1,
                 data.resolution + 1,
                 data.triangle_count,
