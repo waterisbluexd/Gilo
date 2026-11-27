@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cn6nlyo48u1cg"]
 
+[ext_resource type="Script" uid="uid://biq73jgafexx8" path="res://scripts/camera_controller.gd" id="1_camera_controller"]
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -14,8 +16,6 @@ glow_enabled = true
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ffe5y"]
 viewport_path = NodePath("Render/SubViewportContainer/SubViewport")
-
-[sub_resource type="BoxMesh" id="BoxMesh_ffe5y"]
 
 [node name="Main" type="Node3D" unique_id=1680021949]
 
@@ -47,12 +47,13 @@ size = Vector2i(640, 360)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
-[node name="Node3D" type="Node3D" parent="Render/SubViewportContainer/SubViewport" unique_id=1257546539]
+[node name="Camera_Pivot" type="Node3D" parent="Render/SubViewportContainer/SubViewport" unique_id=1257546539]
 
-[node name="Camera3D" type="Camera3D" parent="Render/SubViewportContainer/SubViewport/Node3D" unique_id=2023160224]
-transform = Transform3D(1, 0, 0, 0, 0.9063078, 0.4226183, 0, -0.4226183, 0.9063078, 0, 8.277, 17)
+[node name="Camera3D" type="Camera3D" parent="Render/SubViewportContainer/SubViewport/Camera_Pivot" unique_id=2023160224]
+transform = Transform3D(1, 0, 0, 0, 0.9063078, 0.4226183, 0, -0.4226183, 0.9063078, 0, 30.345518, 64.32608)
 projection = 1
-size = 5.0
+size = 18.0
+script = ExtResource("1_camera_controller")
 
 [node name="Display" type="Node" parent="." unique_id=845726108]
 
@@ -64,6 +65,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="TextureRect" type="TextureRect" parent="Display/Control" unique_id=965540246]
 texture_filter = 3
@@ -73,10 +75,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = SubResource("ViewportTexture_ffe5y")
 
 [node name="Meshes" type="Node" parent="." unique_id=144886688]
 
-[node name="Terrain" type="MeshInstance3D" parent="Meshes" unique_id=357726604]
-transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, 0, 0)
-mesh = SubResource("BoxMesh_ffe5y")
+[node name="Terrain" type="GiloTerrain" parent="Meshes" unique_id=357726604]
+transform = Transform3D(0.16970563, 0, -0.16970563, 0, 0.24, 0, 0.16970563, 0, 0.16970563, 0, 0, 0)
