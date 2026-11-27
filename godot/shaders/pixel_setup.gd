@@ -1,11 +1,3 @@
-# pixel_setup.gd  (Godot 4.3+)  -- attach to your root Node3D
-# Scene layout:
-#   SubViewportContainer (stretch = true, stretch_shrink = 3, texture_filter = Nearest)
-#     SubViewport (msaa_3d = Disabled, screen_space_aa = Disabled)
-#       WorldEnvironment (tonemap Linear, glow/fog/ssao OFF, background colour #222427)
-#       Camera3D  (Orthogonal, size ~10, rotation_degrees = (-30, 45, 0))  -> child: MeshInstance3D + pixel_outline.gdshader
-#       Terrain MeshInstance3D  (ShaderMaterial pixel_terrain.gdshader)
-#       Props   (ShaderMaterial pixel_object.gdshader)
 extends Node3D
 
 const PALETTES := [

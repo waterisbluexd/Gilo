@@ -1,10 +1,8 @@
-// pixel_object.gdshader (Godot 4.3+) -- trees, shrubs, farm, windmill, tower, pond
-// Bake the part index into vertex COLOR.r: 0 -> part 0, 0.5 -> part 1, 1.0 -> part 2
 shader_type spatial;
 render_mode unshaded, cull_back;
 #include "res://shaders/pixel_common.gdshaderinc"
 
-uniform ivec3 part_palette = ivec3(8, 4, 4); // palette row for part 0 / 1 / 2
+uniform ivec3 part_palette = ivec3(8, 4, 4);
 uniform vec3 light_dir = vec3(-0.52, 0.78, 0.34);
 
 varying vec3 wpos;

@@ -1,8 +1,6 @@
-// pixel_common.gdshaderinc  (Godot 4.3+)
-// Shared: palette lookup, 4x4 Bayer dither, integer-hash value noise.
-uniform sampler2D palette_tex : source_color, filter_nearest; // 5 columns (shades) x N rows (materials)
-uniform vec3 seed_off = vec3(0.0);   // per-seed noise offset (uO in the web demo)
-uniform float pixel_world = 0.03;    // world units per screen pixel (for fine-detail fade)
+uniform sampler2D palette_tex : source_color, filter_nearest; 
+uniform vec3 seed_off = vec3(0.0);   
+uniform float pixel_world = 0.03;    
 
 const float BAY[16] = float[16](
 	 0.0,  8.0,  2.0, 10.0,
@@ -28,15 +26,12 @@ float vn(vec3 p) {
 	return mix(mix(a, c, f.y), mix(d, e, f.y), f.z);
 }
 
-// shade (0..1) -> 5 quantised levels, ordered-dithered, -> palette colour.
-// fc = FRAGCOORD.xy (built-ins are not visible inside custom functions)
 vec3 pal_col(int pm, float shade, vec2 fc) {
 	float bay = BAY[int(mod(fc.y, 4.0)) * 4 + int(mod(fc.x, 4.0))] / 16.0;
 	int lv = int(clamp(floor(clamp(shade, 0.0, 1.0) * 4.0 + (bay - 0.5) * 0.22 + 0.5), 0.0, 4.0));
 	return texelFetch(palette_tex, ivec2(lv, pm), 0).rgb;
 }
 
-// fade high-frequency detail out when it would be sub-pixel
 float fd(float freq) {
 	return 1.0 - smoothstep(0.15, 0.5, pixel_world * freq);
 }

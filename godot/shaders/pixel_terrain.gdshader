@@ -1,24 +1,21 @@
-// pixel_terrain.gdshader  (Godot 4.3+)  -- unlit, hand-lit, banded + dithered palette terrain
 shader_type spatial;
 render_mode unshaded, cull_back;
 #include "res://shaders/pixel_common.gdshaderinc"
 
-uniform sampler2D height_tex : filter_nearest;                 // R32F world heights, (grid_n+1)^2
-uniform sampler2D bio_tex : filter_linear, hint_default_black;  // r=rock weight g=lush a=terrace
-uniform sampler2D road_tex : filter_linear, hint_default_black; // r=ramp/trail mask
+uniform sampler2D height_tex : filter_nearest;                 
+uniform sampler2D bio_tex : filter_linear, hint_default_black;  
+uniform sampler2D road_tex : filter_linear, hint_default_black; 
 uniform float world_size = 14.0;
 uniform float cell_size = 0.02734375;
 uniform int grid_n = 512;
 uniform float height_max = 3.0;
-uniform int rock_pal = 0;              // 0 = cool limestone, 1 = warm
+uniform int rock_pal = 0;     
 uniform float moss_amt = 0.15;
 uniform float crack_amt = 0.22;
 uniform vec3 light_dir = vec3(-0.52, 0.78, 0.34);
 
 varying vec3 wpos;
 varying vec3 wnrm;
-
-// palette rows: 0 rockCool 1 rockWarm 2 trail 3 meadow 4 moss 5 amber 6 forest 7 cliff 8 trunk 9 white 10 blue 11 roof 12 water
 
 void vertex() {
 	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
