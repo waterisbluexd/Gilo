@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Gilo"
-run/main_scene="uid://cn6nlyo48u1cg"
+run/main_scene="res://main.scn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

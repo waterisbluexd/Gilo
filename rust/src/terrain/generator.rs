@@ -2,8 +2,8 @@ use std::time::Instant;
 
 use super::noise::{fbm3, next_random, value_noise3};
 
-pub const DEFAULT_RESOLUTION: usize = 256;
-pub const DEFAULT_WORLD_SIZE: f32 = 38.0;
+pub const DEFAULT_RESOLUTION: usize = 1;
+pub const DEFAULT_WORLD_SIZE: f32 = 14.0;
 
 pub struct TerrainData {
     pub resolution: usize,
@@ -17,7 +17,7 @@ pub struct TerrainData {
 
 pub fn generate(seed: u32, resolution: usize, world_size: f32) -> TerrainData {
     let started = Instant::now();
-    let resolution = resolution.clamp(64, 1024);
+    let resolution = resolution.clamp(64, 512);
     let side = resolution + 1;
     let mut random_state = if seed == 0 { 42 } else { seed };
 

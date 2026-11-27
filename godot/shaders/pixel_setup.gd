@@ -1,3 +1,4 @@
+@tool
 extends Node3D
 
 const PALETTES := [
@@ -34,5 +35,7 @@ func _ready() -> void:
 			m.set_shader_parameter("seed_off", off)
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if windmill_blades:  # sails face local +Z, spin about it
 		windmill_blades.rotate_object_local(Vector3.BACK, delta * 0.9)
