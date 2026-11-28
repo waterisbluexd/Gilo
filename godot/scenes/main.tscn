@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://dttok54m2mndv"]
+
+[ext_resource type="Script" uid="uid://dfpec7ysrd46u" path="res://shaders/pixel_setup.gd" id="1_tefeu"]
+[ext_resource type="Shader" uid="uid://qt5o0pk4pw58" path="res://shaders/pixel_terrain.gdshader" id="2_o6xl0"]
+[ext_resource type="Script" uid="uid://c6icr6bfoh6h4" path="res://scripts/UI/Debugger/debug_output_panel.gd" id="3_tipki"]
+[ext_resource type="Script" uid="uid://biq73jgafexx8" path="res://scripts/camera_controller.gd" id="4_85g3d"]
+[ext_resource type="Shader" uid="uid://dck324gb6ix8m" path="res://shaders/pixel_outline.gdshader" id="5_choun"]
+[ext_resource type="ArrayMesh" path="res://resources/generated_terrain_mesh.res" id="6_ya4ey"]
+
+[sub_resource type="Image" id="Image_eb6dy"]
+data = {
+"data": PackedByteArray(86, 85, 90, 115, 113, 119, 149, 146, 145, 185, 182, 176, 216, 213, 207, 92, 83, 73, 123, 111, 97, 158, 142, 123, 194, 178, 156, 223, 210, 190, 107, 93, 56, 141, 121, 70, 179, 153, 86, 209, 183, 106, 232, 210, 132, 158, 127, 38, 191, 160, 48, 212, 184, 62, 227, 202, 82, 240, 220, 114, 42, 94, 29, 62, 127, 36, 88, 161, 46, 118, 194, 59, 149, 220, 76, 143, 58, 18, 184, 79, 22, 217, 105, 24, 238, 133, 36, 255, 163, 56, 24, 61, 28, 36, 88, 36, 52, 118, 44, 72, 150, 54, 98, 182, 68, 38, 36, 38, 56, 53, 56, 77, 73, 77, 102, 97, 102, 130, 124, 130, 58, 41, 27, 86, 61, 40, 117, 83, 54, 148, 107, 70, 179, 133, 91, 184, 181, 174, 206, 203, 196, 227, 224, 217, 242, 240, 235, 252, 251, 248, 44, 90, 140, 58, 114, 173, 75, 140, 201, 103, 165, 222, 139, 192, 242, 92, 61, 40, 122, 82, 54, 153, 104, 70, 184, 128, 88, 212, 154, 110, 42, 111, 158, 58, 140, 192, 85, 168, 216, 124, 196, 234, 180, 226, 246),
+"format": "RGB8",
+"height": 13,
+"mipmaps": false,
+"width": 5
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_trceg"]
+image = SubResource("Image_eb6dy")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_terrain"]
+render_priority = 0
+shader = ExtResource("2_o6xl0")
+shader_parameter/palette_tex = SubResource("ImageTexture_trceg")
+shader_parameter/seed_off = Vector3(32.885, 44.055, 75.665)
+shader_parameter/pixel_world = 0.03
+shader_parameter/world_size = 14.0
+shader_parameter/cell_size = 0.02734375
+shader_parameter/grid_n = 512
+shader_parameter/height_max = 3.0
+shader_parameter/rock_pal = 0
+shader_parameter/moss_amt = 0.15
+shader_parameter/crack_amt = 0.22
+shader_parameter/light_dir = Vector3(-0.123, 0.083, 0.695)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0.77254903)
+
+[sub_resource type="Theme" id="Theme_lquwl"]
+Panel/styles/panel = SubResource("StyleBoxFlat_1bvp3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+render_priority = 0
+shader = ExtResource("5_choun")
+shader_parameter/edge_threshold = 0.12
+shader_parameter/ink_strength = 0.55
+shader_parameter/ink_color = Vector3(0.227, 0.208, 0.192)
+shader_parameter/ink_background_edge = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_outline"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[node name="Main" type="Node3D" unique_id=1680021949]
+script = ExtResource("1_tefeu")
+terrain_mat = SubResource("ShaderMaterial_terrain")
+
+[node name="UI" type="Node" parent="." unique_id=1471856563]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI" unique_id=1654295633]
+follow_viewport_enabled = true
+
+[node name="Control" type="Control" parent="UI/CanvasLayer" unique_id=1624456976]
+top_level = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="debug_output_panel" type="Panel" parent="UI/CanvasLayer/Control" unique_id=709629028]
+top_level = true
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_lquwl")
+script = ExtResource("3_tipki")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/CanvasLayer/Control/debug_output_panel" unique_id=471771135]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/CanvasLayer/Control/debug_output_panel/MarginContainer" unique_id=1960879849]
+layout_mode = 2
+
+[node name="Render" type="Node" parent="." unique_id=1437934213]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Render" unique_id=448043703]
+clip_children = 2
+texture_filter = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="Render/SubViewportContainer" unique_id=543241694]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Camera_Pivot" type="Node3D" parent="Render/SubViewportContainer/SubViewport" unique_id=1257546539]
+
+[node name="Camera3D" type="Camera3D" parent="Render/SubViewportContainer/SubViewport/Camera_Pivot" unique_id=2023160224]
+transform = Transform3D(1, 0, 0, 0, 0.9063078, 0.4226183, 0, -0.4226183, 0.9063078, 0, 10.144749, 21.005402)
+projection = 1
+current = true
+size = 81.741
+near = 0.1
+script = ExtResource("4_85g3d")
+
+[node name="Outline" type="MeshInstance3D" parent="Render/SubViewportContainer/SubViewport/Camera_Pivot/Camera3D" unique_id=357726605]
+material_override = SubResource("ShaderMaterial_outline")
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_outline")
+
+[node name="Meshes" type="Node" parent="." unique_id=144886688]
+
+[node name="TerrainChunks" type="GiloChunkManager" parent="Meshes" unique_id=357726604]
+seed = 34
+camera_path = NodePath("../../Render/SubViewportContainer/SubViewport/Camera_Pivot/Camera3D")
+terrain_material = SubResource("ShaderMaterial_terrain")
+bootstrap_mesh = ExtResource("6_ya4ey")
+
+[node name="TerrainEditorPreview" type="GiloTerrain" parent="Meshes"]
+seed = 34
+generate_in_editor = true
+editor_only = true
+material_override = SubResource("ShaderMaterial_terrain")

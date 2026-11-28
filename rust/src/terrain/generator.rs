@@ -169,6 +169,7 @@ fn cached_boundary_biome_weights(
     weights
 }
 
+#[derive(Clone)]
 pub struct TerrainData {
     pub resolution: usize,
     pub size: f32,

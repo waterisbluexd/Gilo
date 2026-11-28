@@ -38,6 +38,8 @@ struct GiloTerrain {
     #[export]
     #[var(set = set_generate_in_editor)]
     generate_in_editor: bool,
+    #[export]
+    editor_only: bool,
 }
 
 impl GiloTerrain {
@@ -66,7 +68,8 @@ impl GiloTerrain {
             settings,
         );
         let mesh_started = std::time::Instant::now();
-        let generated_mesh = terrain::mesh::build_mesh(&data);
+        let mesh_data = terrain::mesh::build_mesh_data(&data);
+        let generated_mesh = terrain::mesh::build_mesh(&mesh_data);
         let mesh_micros = mesh_started.elapsed().as_micros();
         let current_position = self.base().get_position();
         self.base_mut().set_position(Vector3::new(
@@ -150,11 +153,16 @@ impl IMeshInstance3D for GiloTerrain {
             surface_bump_strength: terrain::generator::DEFAULT_SURFACE_BUMP_STRENGTH,
             surface_bump_scale: terrain::generator::DEFAULT_SURFACE_BUMP_SCALE,
             generate_in_editor: false,
+            editor_only: false,
         }
     }
 
     fn ready(&mut self) {
         let is_editor = Engine::singleton().is_editor_hint();
+        if self.editor_only && !is_editor {
+            self.base_mut().set_visible(false);
+            return;
+        }
         if is_editor && !self.generate_in_editor {
             return;
         }

@@ -8,7 +8,17 @@ use godot::prelude::*;
 
 use super::generator::TerrainData;
 
-pub fn build_mesh(data: &TerrainData) -> Gd<ArrayMesh> {
+#[derive(Clone)]
+pub struct MeshData {
+    pub vertices: Vec<[f32; 3]>,
+    pub normals: Vec<[f32; 3]>,
+    pub colors: Vec<[f32; 4]>,
+    pub indices: Vec<i32>,
+    pub min_height: f32,
+    pub max_height: f32,
+}
+
+pub fn build_mesh_data(data: &TerrainData) -> MeshData {
     let resolution = data.resolution;
     let side = resolution + 1;
     let half_size = data.size * 0.5;
@@ -26,11 +36,9 @@ pub fn build_mesh(data: &TerrainData) -> Gd<ArrayMesh> {
             let normal = data.normals[index];
             let weights = data.biome_weights[index];
 
-            vertices.push(Vector3::new(x, data.heights[index], z));
-            normals.push(Vector3::new(normal[0], normal[1], normal[2]));
-            colors.push(Color::from_rgba(
-                weights[0], weights[1], weights[2], weights[3],
-            ));
+            vertices.push([x, data.heights[index], z]);
+            normals.push(normal);
+            colors.push([weights[0], weights[1], weights[2], weights[3]]);
         }
     }
 
@@ -48,10 +56,36 @@ pub fn build_mesh(data: &TerrainData) -> Gd<ArrayMesh> {
         }
     }
 
-    let packed_vertices = PackedVector3Array::from(vertices);
-    let packed_normals = PackedVector3Array::from(normals);
-    let packed_colors = PackedColorArray::from(colors);
-    let packed_indices = PackedInt32Array::from(indices);
+    MeshData {
+        vertices,
+        normals,
+        colors,
+        indices,
+        min_height: data.min_height,
+        max_height: data.max_height,
+    }
+}
+
+pub fn build_mesh(data: &MeshData) -> Gd<ArrayMesh> {
+    let packed_vertices = PackedVector3Array::from(
+        data.vertices
+            .iter()
+            .map(|vertex| Vector3::new(vertex[0], vertex[1], vertex[2]))
+            .collect::<Vec<_>>(),
+    );
+    let packed_normals = PackedVector3Array::from(
+        data.normals
+            .iter()
+            .map(|normal| Vector3::new(normal[0], normal[1], normal[2]))
+            .collect::<Vec<_>>(),
+    );
+    let packed_colors = PackedColorArray::from(
+        data.colors
+            .iter()
+            .map(|color| Color::from_rgba(color[0], color[1], color[2], color[3]))
+            .collect::<Vec<_>>(),
+    );
+    let packed_indices = PackedInt32Array::from(data.indices.clone());
     let mut arrays = Array::<Variant>::new();
     arrays.resize(ArrayType::MAX.ord() as usize, &Variant::nil());
     arrays.set(
